@@ -21,6 +21,10 @@ class _ExpenditureFormState extends State<ExpenditureForm> {
             validator: (value) => widget.validator.name(value),
             decoration: widget.decorator.textForm('Nome', 'Adicione o nome da despesa.'),
           ),
+          TextFormField(
+            validator: (value) => widget.validator.name(value),
+            decoration: widget.decorator.textForm('Valor', 'Valor da despesa'),
+          ),
         ],
       ),
     );

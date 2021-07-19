@@ -15,10 +15,12 @@ class BottomNavBar extends StatefulWidget {
   final Color color = Colors.black;
   final double height = 60;
   final String centerItemText;
+  final int selectedIndex;
 
   BottomNavBar({
     required this.onTabSelected,
     required this.centerItemText,
+    this.selectedIndex = 0,
   });
 
   @override
@@ -33,13 +35,8 @@ class BottomNavBar extends StatefulWidget {
 }
 
 class _NavBarState extends State<BottomNavBar> {
-  int _selectedIndex = 0;
-
   _updateIndex(int index) {
-    widget.onTabSelected(index == 1 ? index + 1 : index);
-    setState(() {
-      _selectedIndex = index;
-    });
+    widget.onTabSelected(index);
   }
 
   @override
@@ -61,14 +58,20 @@ class _NavBarState extends State<BottomNavBar> {
   }
 
   List<Widget> _getTabs() {
-    List<Widget> items = List.generate(widget.items.length, (int index) {
-      return _buildTabItem(
+    List<Widget> items = [];
+    var middle = (widget.items.length / 2).truncate();
+    widget.items.asMap().forEach((int index, element) {
+      var position = index;
+      if (middle == index) {
+        items.add(_buildMiddleTabItem());
+        position = index +1;
+      }
+      items.add(_buildTabItem(
         item: widget.items[index],
-        index: index,
+        index: position,
         onPressed: _updateIndex,
-      );
+      ));
     });
-    items.insert(items.length >> 1, _buildMiddleTabItem());
     return items;
   }
 
@@ -96,7 +99,7 @@ class _NavBarState extends State<BottomNavBar> {
     int index = 0,
     required ValueChanged<int> onPressed,
   }) {
-    Color color = _selectedIndex == index ? widget.selectedColor : widget.color;
+    Color color = widget.selectedIndex == index ? widget.selectedColor : widget.color;
     return Expanded(
       child: SizedBox(
         height: widget.height,

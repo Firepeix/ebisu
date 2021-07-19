@@ -69,7 +69,9 @@ class _MyHomePageState extends State<MyHomePage> {
       floatingActionButton: this._getMainButton(),
       bottomNavigationBar: BottomNavBar(
           onTabSelected: (int value) => _changePageTo(value),
-          centerItemText: 'Despesa'),
+          centerItemText: 'Despesa',
+          selectedIndex: currentPage
+      ),
       body: widget.router.pages[currentPage],
     );
   }
