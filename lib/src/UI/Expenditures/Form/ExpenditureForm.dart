@@ -1,9 +1,7 @@
 import 'package:ebisu/card/Domain/Card.dart';
 import 'package:ebisu/card/Domain/Repositories/CardRepositoryInterface.dart';
-import 'package:ebisu/card/Infrastructure/CardModuleServiceProvider.dart';
 import 'package:ebisu/expenditure/Domain/Expenditure.dart';
 import 'package:ebisu/expenditure/Domain/Repositories/ExpenditureRepositoryInterface.dart';
-import 'package:ebisu/expenditure/Infrastructure/ExpenditureModuleServiceProvider.dart';
 import 'package:ebisu/src/UI/Components/Form/InputDecorator.dart';
 import 'package:ebisu/src/UI/Components/Form/InputFactory.dart';
 import 'package:ebisu/src/UI/Components/Form/InputValidator.dart';
@@ -13,15 +11,25 @@ import 'package:flutter/material.dart';
 class ExpenditureForm extends StatefulWidget {
   final ExpenditureFormValidator validator = ExpenditureFormValidator();
   final InputFormDecorator decorator = InputFormDecorator();
-  final CardRepositoryInterface cardRepository = CardModuleServiceProvider.cardRepository();
-  final ExpenditureRepositoryInterface expenditureRepository = ExpenditureModuleServiceProvider.expenditureRepository();
+  final CardRepositoryInterface cardRepository;
+  final ExpenditureRepositoryInterface expenditureRepository;
   final _formKey = GlobalKey<FormState>();
+  final state = _ExpenditureFormState();
+
+  ExpenditureForm({required this.cardRepository, required this.expenditureRepository});
 
   get stateKey => this._formKey;
 
-
   @override
-  State<StatefulWidget> createState() => _ExpenditureFormState();
+  State<StatefulWidget> createState() => state;
+
+  ExpenditureResponse submit () {
+    if(this.stateKey.currentState!.validate()) {
+      return state.response();
+    }
+
+    throw Exception('Formulário Invalido');
+  }
 
   Widget build (_ExpenditureFormState state) {
     return Form(
@@ -31,6 +39,7 @@ class ExpenditureForm extends StatefulWidget {
         child: Column(
           children: <Widget>[
             TextFormField(
+              onChanged: state.handleNameChange,
               validator: (value) => validator.name(value),
               decoration: decorator.textForm('Nome', 'Adicione o nome da despesa.'),
             ),
@@ -56,7 +65,7 @@ class ExpenditureForm extends StatefulWidget {
                     padding: EdgeInsets.only(top: 16),
                     child: SelectInput(
                       value: state._card,
-                      validator: (value) => validator.card(value),
+                      validator: (value) => validator.card(value, state._type == CardClass.CREDIT.index),
                       onChanged: state.handleCardChange,
                       decoration: decorator.selectForm('Cartão', 'Selecione o cartão'),
                       items: cardRepository.getCardTypes(),
@@ -66,7 +75,7 @@ class ExpenditureForm extends StatefulWidget {
                     padding: EdgeInsets.only(top: 16),
                     child: SelectInput(
                       value: state._expenditureType,
-                      validator: (value) => validator.expenditureType(value),
+                      validator: (value) => validator.expenditureType(value, state._type == CardClass.CREDIT.index),
                       onChanged: state.handleExpenditureTypeChange,
                       decoration: decorator.selectForm('Tipo', 'Selecione o tipo da despesa'),
                       items: expenditureRepository.getExpenditureTypes(),
@@ -86,12 +95,14 @@ class ExpenditureForm extends StatefulWidget {
                 child: Row(
                   children: [
                     Expanded(flex: 10,child: NumberInput(
-                      validator: (value) => validator.activeInstallment(value),
+                      onChanged: state.handleCurrentInstallmentChange,
+                      validator: (value) => validator.activeInstallment(value, state._expenditureType == ExpenditureType.ASSINATURA.index.toString()),
                       decoration: decorator.textForm('Parcela Atual', 'Adicione a parcela atual.'),
                     )),
                     Spacer(flex: 1,),
                     Expanded(flex: 10,child: NumberInput(
-                      validator: (value) => validator.totalInstallments(value),
+                      onChanged: state.handleInstallmentTotalChange,
+                      validator: (value) => validator.totalInstallments(value, state._expenditureType == ExpenditureType.ASSINATURA.index.toString()),
                       decoration: decorator.textForm('Total de Parcelas', 'Adicione o total de parcelas'),
                     )),
                   ],
@@ -101,6 +112,8 @@ class ExpenditureForm extends StatefulWidget {
             Padding(
               padding: EdgeInsets.only(top: 16),
               child: AmountInput(
+                value: state._amount,
+                onChanged: state.handleAmountChange,
                 validator: (value) => validator.amount(value),
               ),
               ),
@@ -114,9 +127,14 @@ class ExpenditureForm extends StatefulWidget {
 class _ExpenditureFormState extends State<ExpenditureForm> with TickerProviderStateMixin {
   late AnimationController creditOptionsController;
   late AnimationController installmentOptionsController;
+
   int? _type;
   String? _card;
+  String? _name;
   String? _expenditureType;
+  int? _amount;
+  int? _currentInstallment;
+  int? _installmentTotal;
 
   _ExpenditureFormState() {
     this.creditOptionsController = AnimationController(vsync: this, duration: Duration(milliseconds: 500));
@@ -125,6 +143,18 @@ class _ExpenditureFormState extends State<ExpenditureForm> with TickerProviderSt
 
   @override
   Widget build(BuildContext context) => widget.build(this);
+
+  ExpenditureResponse response () {
+    return ExpenditureResponse(
+        name: _name!,
+        type: _type!,
+        amount: _amount!,
+        cardType: _card != null ? int.tryParse(_card!) : null,
+        expenditureType: _expenditureType != null ? int.tryParse(_expenditureType!) : null,
+        currentInstallment: _currentInstallment,
+        installmentTotal: _installmentTotal,
+    );
+  }
 
   void handleTypeChange(int? value) {
     setState(() {
@@ -153,6 +183,30 @@ class _ExpenditureFormState extends State<ExpenditureForm> with TickerProviderSt
       _card = value;
     });
   }
+
+  void handleNameChange(String? value) {
+    setState(() {
+      this._name = value;
+    });
+  }
+
+  void handleCurrentInstallmentChange(int? value) {
+    setState(() {
+      _currentInstallment = value;
+    });
+  }
+
+  void handleAmountChange(int? value) {
+    setState(() {
+      _amount = value;
+    });
+  }
+
+  void handleInstallmentTotalChange(int? value) {
+    setState(() {
+      _installmentTotal = value;
+    });
+  }
 }
 
 class ExpenditureFormValidator extends InputValidator{
@@ -170,29 +224,29 @@ class ExpenditureFormValidator extends InputValidator{
     return null;
   }
 
-  String? card (String? value) {
-    if (this.isRequired(value)) {
+  String? card (String? value, bool required) {
+    if (required && this.isRequired(value)) {
       return 'Cartão da Despesa é obrigatório';
     }
     return null;
   }
 
-  String? expenditureType (String? value) {
-    if (this.isRequired(value)) {
+  String? expenditureType (String? value, bool required) {
+    if (required && this.isRequired(value)) {
       return 'Tipo de despesa é obrigatório';
     }
     return null;
   }
 
-  String? activeInstallment (String? value) {
-    if (this.isRequired(value)) {
+  String? activeInstallment (String? value, bool required) {
+    if (required && this.isRequired(value)) {
       return 'Obrigatório';
     }
     return null;
   }
 
-  String? totalInstallments (String? value) {
-    if (this.isRequired(value)) {
+  String? totalInstallments (String? value, bool required) {
+    if (required && this.isRequired(value)) {
       return 'Obrigatório';
     }
     return null;
@@ -207,4 +261,24 @@ class ExpenditureFormValidator extends InputValidator{
     }
     return 'Classe da despesa é obrigatório';
   }
+}
+
+class ExpenditureResponse {
+  final String name;
+  final int type;
+  final int amount;
+  final int? cardType;
+  final int? expenditureType;
+  final int? currentInstallment;
+  final int? installmentTotal;
+
+  ExpenditureResponse({
+    required this.name,
+    required this.type,
+    required this.amount,
+    this.cardType,
+    this.expenditureType,
+    this.currentInstallment,
+    this.installmentTotal
+  });
 }

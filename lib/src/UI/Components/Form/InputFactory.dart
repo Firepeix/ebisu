@@ -100,16 +100,19 @@ class NumberInput extends StatelessWidget  {
   final FormFieldValidator<String>? validator;
   final InputDecoration? decoration;
   final int? maxLength;
+  final ValueChanged<int?>? onChanged;
 
   NumberInput({
     this.validator,
     this.maxLength,
-    this.decoration
+    this.decoration,
+    this.onChanged
   });
 
   @override
   Widget build(BuildContext context) {
     return TextFormField(
+      onChanged: (value) => onChanged!(int.tryParse(value)),
       validator: validator,
       maxLength: maxLength,
       maxLengthEnforcement: MaxLengthEnforcement.enforced,
@@ -123,22 +126,30 @@ class NumberInput extends StatelessWidget  {
 class AmountInput extends StatelessWidget  {
   final FormFieldValidator<String>? validator;
   final InputFormDecorator decorator = InputFormDecorator();
+  final ValueChanged<int?>? onChanged;
+  final int? value;
+  late final MoneyMaskedTextController controller;
 
   AmountInput({
     this.validator,
-  });
+    this.value,
+    this.onChanged,
+  }) {
+    this.controller = MoneyMaskedTextController(initialValue: this.value != null ? this.value!.toDouble() / 100 : 0.0);
+  }
 
   @override
   Widget build(BuildContext context) {
     return TextFormField(
-        maxLength: 8,
-        textAlign: TextAlign.center,
-        controller: MoneyMaskedTextController(),
-        maxLengthEnforcement: MaxLengthEnforcement.enforced,
-        keyboardType: TextInputType.number,
-        style: TextStyle(fontSize: 76, fontWeight: FontWeight.w500),
-        validator: validator,
-        decoration: decorator.amountForm()
+      onChanged: (value) => onChanged!((controller.numberValue * 100).toInt()),
+      maxLength: 8,
+      textAlign: TextAlign.center,
+      controller: controller,
+      maxLengthEnforcement: MaxLengthEnforcement.enforced,
+      keyboardType: TextInputType.number,
+      style: TextStyle(fontSize: 76, fontWeight: FontWeight.w500),
+      validator: validator,
+      decoration: decorator.amountForm()
     );
   }
 }
