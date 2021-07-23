@@ -2,6 +2,7 @@ import 'package:ebisu/card/Domain/Card.dart';
 import 'package:ebisu/card/Domain/Repositories/CardRepositoryInterface.dart';
 import 'package:ebisu/expenditure/Domain/Expenditure.dart';
 import 'package:ebisu/expenditure/Domain/Repositories/ExpenditureRepositoryInterface.dart';
+import 'package:ebisu/expenditure/Domain/Services/ExpenditureServiceInterface.dart';
 import 'package:ebisu/src/UI/Components/Form/InputDecorator.dart';
 import 'package:ebisu/src/UI/Components/Form/InputFactory.dart';
 import 'package:ebisu/src/UI/Components/Form/InputValidator.dart';
@@ -263,7 +264,7 @@ class ExpenditureFormValidator extends InputValidator{
   }
 }
 
-class ExpenditureResponse {
+class ExpenditureResponse implements ExpenditureBuilder{
   final String name;
   final int type;
   final int amount;
