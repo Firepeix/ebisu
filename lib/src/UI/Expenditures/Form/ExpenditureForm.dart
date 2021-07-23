@@ -6,19 +6,23 @@ import 'package:ebisu/src/UI/Components/Form/InputDecorator.dart';
 import 'package:ebisu/src/UI/Components/Form/InputFactory.dart';
 import 'package:ebisu/src/UI/Components/General/KeyboardAvoider.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 
 class ExpenditureForm extends StatefulWidget {
   final ExpenditureFormValidator validator = ExpenditureFormValidator();
   final InputFormDecorator decorator = InputFormDecorator();
   final CardRepositoryInterface cardRepository = CardModuleServiceProvider.cardRepository();
   final ExpenditureRepositoryInterface expenditureRepository = ExpenditureModuleServiceProvider.expenditureRepository();
+  final _formKey = GlobalKey<FormState>();
+
+  get stateKey => this._formKey;
+
+
   @override
   State<StatefulWidget> createState() => _ExpenditureFormState();
 
   Widget build (_ExpenditureFormState state) {
     return Form(
-      key: state._formKey,
+      key: _formKey,
       child: KeyboardAvoider(
         autoScroll: true,
         child: Column(
@@ -55,12 +59,12 @@ class ExpenditureForm extends StatefulWidget {
               padding: EdgeInsets.only(top: 16),
               child: Row(
                 children: [
-                  Expanded(flex: 10,child: TextFormField(
+                  Expanded(flex: 10,child: NumberInput(
                     validator: (value) => validator.name(value),
                     decoration: decorator.textForm('Parcela Atual', 'Adicione a parcela atual.'),
                   )),
                   Spacer(flex: 1,),
-                  Expanded(flex: 10,child: TextFormField(
+                  Expanded(flex: 10,child: NumberInput(
                     validator: (value) => validator.name(value),
                     decoration: decorator.textForm('Total de Parcelas', 'Adicione o total de parcelas'),
                   )),
@@ -69,17 +73,8 @@ class ExpenditureForm extends StatefulWidget {
             ),
             Padding(
               padding: EdgeInsets.only(top: 16),
-              child: TextFormField(
-                initialValue: '0,00',
-                maxLength: 8,
-                textAlign: TextAlign.center,
-                maxLengthEnforcement: MaxLengthEnforcement.enforced,
-                keyboardType: TextInputType.number,
-                style: TextStyle(fontSize: 76, fontWeight: FontWeight.w500),
-                validator: (value) => validator.name(value),
-                decoration: decorator.amountForm(),
+              child: AmountInput(),
               ),
-            ),
           ],
         ),
       ),
@@ -88,7 +83,6 @@ class ExpenditureForm extends StatefulWidget {
 }
 
 class _ExpenditureFormState extends State<ExpenditureForm> {
-  final _formKey = GlobalKey<FormState>();
   String? _type;
   String? _card;
   String? _expenditureType;

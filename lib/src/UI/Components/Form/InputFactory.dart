@@ -1,4 +1,8 @@
+import 'package:ebisu/src/UI/Components/Form/InputDecorator.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+
+import 'InputFormatter.dart';
 
 class RadioInput extends StatelessWidget {
   final String? groupValue;
@@ -76,3 +80,49 @@ class SelectInput extends StatelessWidget  {
   }
 }
 
+class NumberInput extends StatelessWidget  {
+  final FormFieldValidator<String>? validator;
+  final InputDecoration? decoration;
+  final int? maxLength;
+
+  NumberInput({
+    this.validator,
+    this.maxLength,
+    this.decoration
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return TextFormField(
+      validator: validator,
+      maxLength: maxLength,
+      maxLengthEnforcement: MaxLengthEnforcement.enforced,
+      inputFormatters: [NumbersOnlyFormatter()],
+      keyboardType: TextInputType.number,
+      decoration: decoration,
+    );
+  }
+}
+
+class AmountInput extends StatelessWidget  {
+  final FormFieldValidator<String>? validator;
+  final InputFormDecorator decorator = InputFormDecorator();
+
+  AmountInput({
+    this.validator,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return TextFormField(
+        maxLength: 8,
+        textAlign: TextAlign.center,
+        controller: MoneyMaskedTextController(),
+        maxLengthEnforcement: MaxLengthEnforcement.enforced,
+        keyboardType: TextInputType.number,
+        style: TextStyle(fontSize: 76, fontWeight: FontWeight.w500),
+        validator: validator,
+        decoration: decorator.amountForm()
+    );
+  }
+}

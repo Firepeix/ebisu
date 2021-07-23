@@ -5,19 +5,25 @@ import 'package:flutter/material.dart';
 
 class CreateExpenditurePage extends AbstractPage implements MainButtonPage {
   static const PAGE_INDEX = 1;
+  final form = ExpenditureForm();
 
   @override
   Widget build(BuildContext context) {
     return Padding(
         padding: EdgeInsets.symmetric(vertical: 40, horizontal: 30),
-        child: ExpenditureForm()
+        child: form
     );
   }
 
   @override
-  FloatingActionButton getMainButton() {
+  FloatingActionButton getMainButton(BuildContext context) {
     return FloatingActionButton(
-      onPressed: () {},
+      onPressed: () {
+        if (this.form.stateKey.currentState!.validate()) {
+          ScaffoldMessenger.of(context)
+              .showSnackBar(SnackBar(content: Text('Processing Data')));
+        }
+      },
       tooltip: "Salvar Despesa",
       child: Icon(Icons.check),
       elevation: 2.0,

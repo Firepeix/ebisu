@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
 
 abstract class MainButtonPage {
-  FloatingActionButton getMainButton ();
+  FloatingActionButton getMainButton (BuildContext context);
 }

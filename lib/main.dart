@@ -39,11 +39,11 @@ class _MyHomePageState extends State<MyHomePage> {
     });
   }
 
-  FloatingActionButton _getMainButton() {
+  FloatingActionButton _getMainButton(BuildContext context) {
     var page = widget.router.pages[currentPage];
     if (page is MainButtonPage) {
       var mainButtonPage = (page as MainButtonPage);
-      return mainButtonPage.getMainButton();
+      return mainButtonPage.getMainButton(context);
     }
     return this._getDefaultMainButton();
   }
@@ -69,7 +69,7 @@ class _MyHomePageState extends State<MyHomePage> {
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       floatingActionButton: Visibility(
         visible: !keyboardIsOpen,
-        child: this._getMainButton(),
+        child: this._getMainButton(context),
       ),
       bottomNavigationBar: BottomNavBar(
           onTabSelected: (int value) => _changePageTo(value),
