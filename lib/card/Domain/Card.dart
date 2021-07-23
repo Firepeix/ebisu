@@ -6,3 +6,8 @@ enum CardType {
   NUBANK,
   MELIUZ
 }
+
+enum CardClass {
+  CREDIT,
+  DEBIT
+}

@@ -7,4 +7,9 @@ class CardRepository implements CardRepositoryInterface {
   Map<int, String> getCardTypes() {
     return Map.fromIterable(CardType.values, key: (e) => e.index, value: (e) => e.toString().split('.').elementAt(1));
   }
+
+  @override
+  getCardClass() {
+    return CardClass;
+  }
 }

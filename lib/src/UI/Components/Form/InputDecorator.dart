@@ -7,6 +7,7 @@ class InputFormDecorator {
       border: OutlineInputBorder(),
       hintText: hint ?? '',
       labelText: label ?? '',
+      errorStyle: TextStyle(fontSize: 16),
       isDense: true,
       contentPadding: EdgeInsets.fromLTRB(12, 20, 12, 12)
     );
@@ -18,15 +19,17 @@ class InputFormDecorator {
         hintText: hint ?? '',
         labelText: label ?? '',
         isDense: true,
+        errorStyle: TextStyle(fontSize: 16),
         contentPadding: EdgeInsets.fromLTRB(12, 20, 12, 9)
     );
   }
 
   InputDecoration amountForm () {
     return InputDecoration(
-      prefix: Text('R\$ '),
-      contentPadding: EdgeInsets.fromLTRB(12, 20, 12, 12),
-      prefixStyle: TextStyle(fontSize: 30, fontWeight: FontWeight.w500, color: Colors.grey)
+        prefix: Text('R\$ '),
+        errorStyle: TextStyle(fontSize: 16),
+        contentPadding: EdgeInsets.fromLTRB(12, 20, 12, 12),
+        prefixStyle: TextStyle(fontSize: 30, fontWeight: FontWeight.w500, color: Colors.grey)
     );
   }
 }
