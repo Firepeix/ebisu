@@ -61,12 +61,16 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
+    bool keyboardIsOpen = MediaQuery.of(context).viewInsets.bottom != 0;
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.title),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-      floatingActionButton: this._getMainButton(),
+      floatingActionButton: Visibility(
+        visible: !keyboardIsOpen,
+        child: this._getMainButton(),
+      ),
       bottomNavigationBar: BottomNavBar(
           onTabSelected: (int value) => _changePageTo(value),
           centerItemText: 'Despesa',
