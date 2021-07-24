@@ -5,6 +5,6 @@ import 'package:ebisu/expenditure/Domain/Services/ExpenditureServiceInterface.da
 import 'Repositories/ExpenditureRepository.dart';
 
 class ExpenditureModuleServiceProvider {
-  static ExpenditureRepositoryInterface expenditureRepository () => ExpenditureRepository();
+  static ExpenditureRepositoryInterface expenditureRepository () => GoogleSheetExpenditureRepository();
   static ExpenditureServiceInterface expenditureService () => ExpenditureService();
 }

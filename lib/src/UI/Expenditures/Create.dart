@@ -1,5 +1,6 @@
 import 'package:ebisu/card/Infrastructure/CardModuleServiceProvider.dart';
 import 'package:ebisu/expenditure/Domain/Expenditure.dart';
+import 'package:ebisu/expenditure/Domain/Repositories/ExpenditureRepositoryInterface.dart';
 import 'package:ebisu/expenditure/Domain/Services/ExpenditureServiceInterface.dart';
 import 'package:ebisu/expenditure/Infrastructure/ExpenditureModuleServiceProvider.dart';
 import 'package:ebisu/src/Domain/Pages/AbstractPage.dart';
@@ -10,9 +11,10 @@ import 'package:flutter/material.dart';
 class CreateExpenditurePage extends AbstractPage implements MainButtonPage {
   static const PAGE_INDEX = 1;
   final ExpenditureServiceInterface service = ExpenditureModuleServiceProvider.expenditureService();
-  final form = ExpenditureForm(
+  final ExpenditureRepositoryInterface repository = ExpenditureModuleServiceProvider.expenditureRepository();
+  late final form = ExpenditureForm(
     cardRepository: CardModuleServiceProvider.cardRepository(),
-    expenditureRepository: ExpenditureModuleServiceProvider.expenditureRepository(),
+    expenditureRepository: repository,
   );
 
   @override
@@ -29,8 +31,15 @@ class CreateExpenditurePage extends AbstractPage implements MainButtonPage {
       onPressed: () {
         if (this.form.stateKey.currentState!.validate()) {
           Expenditure expenditure = this.service.createExpenditure(this.form.submit());
-          ScaffoldMessenger.of(context)
-              .showSnackBar(SnackBar(content: Text('Processing Data')));
+          ScaffoldMessengerState messenger = ScaffoldMessenger.of(context);
+          messenger.showSnackBar(SnackBar(content: Text('Processando')));
+          this.repository.insert(expenditure).then((value) {
+            messenger.hideCurrentSnackBar();
+            messenger.showSnackBar(SnackBar(content: Text('Sucesso'), backgroundColor: Colors.green,));
+          }).catchError((error) {
+            messenger.hideCurrentSnackBar();
+            messenger.showSnackBar(SnackBar(content: Text('Erro' + error.toString()), backgroundColor: Colors.red,));
+          });
         }
       },
       tooltip: "Salvar Despesa",
