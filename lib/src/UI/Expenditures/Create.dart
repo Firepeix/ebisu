@@ -12,10 +12,7 @@ class CreateExpenditurePage extends AbstractPage implements MainButtonPage {
   static const PAGE_INDEX = 1;
   final ExpenditureServiceInterface service = ExpenditureModuleServiceProvider.expenditureService();
   final ExpenditureRepositoryInterface repository = ExpenditureModuleServiceProvider.expenditureRepository();
-  late final form = ExpenditureForm(
-    cardRepository: CardModuleServiceProvider.cardRepository(),
-    expenditureRepository: repository,
-  );
+  final form = ExpenditureForm(cardRepository: CardModuleServiceProvider.cardRepository());
 
   @override
   Widget build(BuildContext context) {

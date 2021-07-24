@@ -1,14 +1,97 @@
+import 'dart:io';
+
+import 'package:ebisu/expenditure/Domain/Repositories/ExpenditureRepositoryInterface.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class SetupApp extends StatefulWidget {
+  final Function? onSetup;
+
+  SetupApp(this.onSetup);
+
   @override
   _SetupAppState createState() => _SetupAppState();
+
+  Widget build(_SetupAppState state) {
+    return Center(
+        child: Padding(
+          padding: EdgeInsets.zero,
+          child: SingleChildScrollView(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                Column(
+                  children: <Widget>[
+                    ElevatedButton(
+                      onPressed: () => state._openFileExplorer(),
+                      child: const Text("Buscar Credenciais"),
+                    ),
+                    ElevatedButton(
+                      onPressed: () => state._applyAuth(onSetup),
+                      child: const Text("Aplicar Credenciais"),
+                    ),
+                  ],
+                ),
+                Builder(
+                  builder: (BuildContext context) => state._loadingPath
+                      ? Padding(
+                    padding: const EdgeInsets.only(bottom: 10.0),
+                    child: const CircularProgressIndicator(),
+                  )
+                      : state._directoryPath != null
+                      ? ListTile(
+                    title: const Text('Directory path'),
+                    subtitle: Text(state._directoryPath!),
+                  )
+                      : state._paths != null
+                      ? Container(
+                    padding: const EdgeInsets.only(bottom: 28.0),
+                    height:
+                    MediaQuery.of(context).size.height * 0.50,
+                    child: Scrollbar(
+                        child: ListView.separated(
+                          itemCount:
+                          state._paths != null && state._paths!.isNotEmpty
+                              ? state._paths!.length
+                              : 1,
+                          itemBuilder:
+                              (BuildContext context, int index) {
+                            final bool isMultiPath =
+                                state._paths != null && state._paths!.isNotEmpty;
+                            final String name = (isMultiPath
+                                ? state._paths!
+                                .map((e) => e.name)
+                                .toList()[index]
+                                : state._fileName ?? '...');
+                            final path = state._paths!
+                                .map((e) => e.path)
+                                .toList()[index]
+                                .toString();
+
+                            return ListTile(
+                              title: Text(
+                                name,
+                              ),
+                              subtitle: Text(path),
+                            );
+                          },
+                          separatorBuilder:
+                              (BuildContext context, int index) =>
+                          const Divider(),
+                        )),
+                  )
+                      : const SizedBox(),
+                ),
+              ],
+            ),
+          ),
+        ));
+  }
 }
 
 class _SetupAppState extends State<SetupApp> {
-  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   String? _fileName;
   List<PlatformFile>? _paths;
   String? _directoryPath;
@@ -63,94 +146,35 @@ class _SetupAppState extends State<SetupApp> {
     });
   }
 
-  void _selectFolder() {
-    FilePicker.platform.getDirectoryPath().then((value) {
-      setState(() => _directoryPath = value);
-    });
+  void _applyAuth(Function? onSetup) async {
+    if (_paths != null) {
+      final messenger = ScaffoldMessenger.of(context);
+
+      try {
+        File auth = File(_paths![0].path!);
+        String credentials = await auth.readAsString();
+        final prefs = await SharedPreferences.getInstance();
+        await prefs.setString(ExpenditureRepositoryInterface.CREDENTIALS_KEY, credentials);
+        messenger.showSnackBar(
+          SnackBar(
+            backgroundColor: Colors.green,
+            content: Text('Sucesso - Credenciais Salvas'),
+          ),
+        );
+        if(onSetup != null) {
+          onSetup();
+        }
+      } catch (error) {
+        messenger.showSnackBar(
+          SnackBar(
+            backgroundColor: Colors.red,
+            content: Text('Falha - ' + error.toString()),
+          ),
+        );
+      }
+    }
   }
 
   @override
-  Widget build(BuildContext context) {
-    return Center(
-        child: Padding(
-          padding: EdgeInsets.zero,
-          child: SingleChildScrollView(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                Padding(
-                  padding: const EdgeInsets.only(top: 50.0, bottom: 20.0),
-                  child: Column(
-                    children: <Widget>[
-                      ElevatedButton(
-                        onPressed: () => _openFileExplorer(),
-                        child: const Text("Open file picker"),
-                      ),
-                      ElevatedButton(
-                        onPressed: () => _selectFolder(),
-                        child: const Text("Pick folder"),
-                      ),
-                      ElevatedButton(
-                        onPressed: () => _clearCachedFiles(),
-                        child: const Text("Clear temporary files"),
-                      ),
-                    ],
-                  ),
-                ),
-                Builder(
-                  builder: (BuildContext context) => _loadingPath
-                      ? Padding(
-                    padding: const EdgeInsets.only(bottom: 10.0),
-                    child: const CircularProgressIndicator(),
-                  )
-                      : _directoryPath != null
-                      ? ListTile(
-                    title: const Text('Directory path'),
-                    subtitle: Text(_directoryPath!),
-                  )
-                      : _paths != null
-                      ? Container(
-                    padding: const EdgeInsets.only(bottom: 30.0),
-                    height:
-                    MediaQuery.of(context).size.height * 0.50,
-                    child: Scrollbar(
-                        child: ListView.separated(
-                          itemCount:
-                          _paths != null && _paths!.isNotEmpty
-                              ? _paths!.length
-                              : 1,
-                          itemBuilder:
-                              (BuildContext context, int index) {
-                            final bool isMultiPath =
-                                _paths != null && _paths!.isNotEmpty;
-                            final String name = 'File $index: ' +
-                                (isMultiPath
-                                    ? _paths!
-                                    .map((e) => e.name)
-                                    .toList()[index]
-                                    : _fileName ?? '...');
-                            final path = _paths!
-                                .map((e) => e.path)
-                                .toList()[index]
-                                .toString();
-
-                            return ListTile(
-                              title: Text(
-                                name,
-                              ),
-                              subtitle: Text(path),
-                            );
-                          },
-                          separatorBuilder:
-                              (BuildContext context, int index) =>
-                          const Divider(),
-                        )),
-                  )
-                      : const SizedBox(),
-                ),
-              ],
-            ),
-          ),
-        ));
-  }
+  Widget build(BuildContext context) => widget.build(this);
 }

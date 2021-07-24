@@ -3,7 +3,8 @@
 import 'package:ebisu/expenditure/Domain/Expenditure.dart';
 
 abstract class ExpenditureRepositoryInterface {
-  Map<int, String> getExpenditureTypes();
+  static const CREDENTIALS_KEY = 'credentials-key';
+
   Future<void> insert(Expenditure expenditure);
-  bool isSetup();
+  Future<bool> isSetup();
 }

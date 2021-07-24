@@ -8,6 +8,6 @@ enum CardType {
 }
 
 enum CardClass {
-  CREDIT,
-  DEBIT
+  DEBIT,
+  CREDIT
 }

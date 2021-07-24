@@ -40,8 +40,8 @@ class RadioInput extends StatelessWidget {
 class RadioGroup extends FormField  {
   final List<RadioInput> children;
 
-  RadioGroup({required this.children, FormFieldValidator? validator}) :
-        super(builder: (FormFieldState state) => build(children, state), validator: validator);
+  RadioGroup({required this.children, FormFieldValidator? validator, FormFieldSetter<int>? onSaved}) :
+        super(builder: (FormFieldState state) => build(children, state), validator: validator, onSaved: (dynamic value) => onSaved!(value));
 
   static Widget build(List<RadioInput> children, FormFieldState state) {
     return Column(
@@ -74,7 +74,9 @@ class SelectInput extends StatelessWidget  {
   final InputDecoration? decoration;
   final Map items;
   final FormFieldValidator<String>? validator;
-  SelectInput({required this.items, required this.value, required this.onChanged, this.style, this.decoration, this.validator});
+  final FormFieldSetter<String>? onSaved;
+
+  SelectInput({required this.items, this.value, required this.onChanged, this.style, this.decoration, this.validator, this.onSaved});
 
   @override
   Widget build(BuildContext context) {
@@ -82,7 +84,7 @@ class SelectInput extends StatelessWidget  {
       children: [
         Expanded(
             child: DropdownButtonFormField<String>(
-              value: value,
+              onSaved:this.onSaved,
               validator: validator,
               icon: Icon(Icons.arrow_downward_rounded),
               isDense: true,
@@ -101,17 +103,20 @@ class NumberInput extends StatelessWidget  {
   final InputDecoration? decoration;
   final int? maxLength;
   final ValueChanged<int?>? onChanged;
+  final FormFieldSetter<int>? onSaved;
 
   NumberInput({
     this.validator,
     this.maxLength,
     this.decoration,
-    this.onChanged
+    this.onChanged,
+    this.onSaved
   });
 
   @override
   Widget build(BuildContext context) {
     return TextFormField(
+      onSaved: (value) => onSaved!(value != null ? int.tryParse(value) : null),
       onChanged: (value) => onChanged!(int.tryParse(value)),
       validator: validator,
       maxLength: maxLength,
@@ -129,11 +134,13 @@ class AmountInput extends StatelessWidget  {
   final ValueChanged<int?>? onChanged;
   final int? value;
   late final MoneyMaskedTextController controller;
+  final FormFieldSetter<int>? onSaved;
 
   AmountInput({
     this.validator,
     this.value,
     this.onChanged,
+    this.onSaved,
   }) {
     this.controller = MoneyMaskedTextController(initialValue: this.value != null ? this.value!.toDouble() / 100 : 0.0);
   }
@@ -141,6 +148,7 @@ class AmountInput extends StatelessWidget  {
   @override
   Widget build(BuildContext context) {
     return TextFormField(
+      onSaved: (value) => onSaved!((controller.numberValue * 100).toInt()),
       onChanged: (value) => onChanged!((controller.numberValue * 100).toInt()),
       maxLength: 8,
       textAlign: TextAlign.center,
