@@ -9,6 +9,11 @@ class Expenditure {
   final ExpenditureType? expenditureType;
   final ExpenditureInstallments? installments;
 
+  String? get cardTypeLabel {
+    final label = cardType.toString().split('.').elementAt(1);
+    return label[0] + label.substring(1).toLowerCase();
+  }
+
   Expenditure({
     required this.name,
     required this.type,
@@ -31,11 +36,17 @@ class ExpenditureName extends StringValueObject {
 
 class ExpenditureAmount extends IntValueObject {
   ExpenditureAmount(int value) : super(value);
+
+  double toMoney () {
+    return value / 100;
+  }
 }
 
 class ExpenditureInstallments {
   int currentInstallment;
   int totalInstallments;
+
+  String get summary => '$currentInstallment/$totalInstallments';
 
   ExpenditureInstallments({required this.currentInstallment, required this.totalInstallments});
 }

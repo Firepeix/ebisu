@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 
 class HomePage extends AbstractPage {
   final ExpenditureRepositoryInterface repository = ExpenditureModuleServiceProvider.expenditureRepository();
+  static const PAGE_INDEX = 0;
 
   @override
   Widget build(BuildContext context) {

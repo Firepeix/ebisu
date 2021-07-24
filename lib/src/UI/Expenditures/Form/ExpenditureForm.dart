@@ -97,14 +97,14 @@ class ExpenditureForm extends StatefulWidget {
                     Expanded(flex: 10,child: NumberInput(
                       onSaved: (value) => model.currentInstallment = value,
                       onChanged: state.handleCurrentInstallmentChange,
-                      validator: (value) => validator.activeInstallment(value, state._expenditureType == ExpenditureType.ASSINATURA.index.toString()),
+                      validator: (value) => validator.activeInstallment(value, state._expenditureType == ExpenditureType.PARCELADA.index.toString()),
                       decoration: decorator.textForm('Parcela Atual', 'Adicione a parcela atual.'),
                     )),
                     Spacer(flex: 1,),
                     Expanded(flex: 10,child: NumberInput(
                       onSaved: (value) => model.installmentTotal = value,
                       onChanged: state.handleInstallmentTotalChange,
-                      validator: (value) => validator.totalInstallments(value, state._expenditureType == ExpenditureType.ASSINATURA.index.toString()),
+                      validator: (value) => validator.totalInstallments(value, state._expenditureType == ExpenditureType.PARCELADA.index.toString()),
                       decoration: decorator.textForm('Total de Parcelas', 'Adicione o total de parcelas'),
                     )),
                   ],
