@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:ebisu/expenditure/Domain/Repositories/ExpenditureRepositoryInterface.dart';
+import 'package:ebisu/shared/Infrastructure/Repositories/Persistence/GoogleSheetsRepository.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -154,7 +154,7 @@ class _SetupAppState extends State<SetupApp> {
         File auth = File(_paths![0].path!);
         String credentials = await auth.readAsString();
         final prefs = await SharedPreferences.getInstance();
-        await prefs.setString(ExpenditureRepositoryInterface.CREDENTIALS_KEY, credentials);
+        await prefs.setString(GoogleSheetsRepository.CREDENTIALS_KEY, credentials);
         messenger.showSnackBar(
           SnackBar(
             backgroundColor: Colors.green,

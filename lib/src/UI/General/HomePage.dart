@@ -1,26 +1,20 @@
-import 'package:ebisu/expenditure/Domain/Repositories/ExpenditureRepositoryInterface.dart';
-import 'package:ebisu/expenditure/Infrastructure/ExpenditureModuleServiceProvider.dart';
+import 'package:ebisu/shared/Infrastructure/Repositories/Persistence/GoogleSheetsRepository.dart';
 import 'package:ebisu/src/Domain/Pages/AbstractPage.dart';
 import 'package:ebisu/src/UI/General/SetupApp.dart';
 import 'package:flutter/material.dart';
 
 class HomePage extends AbstractPage {
-  final ExpenditureRepositoryInterface repository = ExpenditureModuleServiceProvider.expenditureRepository();
   static const PAGE_INDEX = 0;
 
   @override
   Widget build(BuildContext context) {
-    return Home(this.repository);
+    return Home();
   }
 }
 
 class Home extends StatefulWidget {
-  final ExpenditureRepositoryInterface repository;
-
-  Home(this.repository);
-
   @override
-  State createState() => _HomeState(this.repository);
+  State createState() => _HomeState();
 
   Widget build (_HomeState state) {
     return Column(
@@ -72,7 +66,6 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home>{
-  final ExpenditureRepositoryInterface repository;
   bool? isSetup;
 
 
@@ -83,13 +76,13 @@ class _HomeState extends State<Home>{
   }
 
   void _checkSetup () async {
-    final isSetup = await repository.isSetup();
+    final isSetup = await GoogleSheetsRepository.isSetup();
     setState(() {
       this.isSetup = isSetup;
     });
   }
 
-  _HomeState(this.repository);
+  _HomeState();
 
   @override
   Widget build(BuildContext context) => widget.build(this);

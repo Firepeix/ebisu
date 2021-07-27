@@ -1,7 +1,7 @@
 
 
 abstract class CardRepositoryInterface {
-  Map<int, String> getCardTypes();
+  Future<Map<int, String>> getCardTypes();
 
   getCardClass();
 }

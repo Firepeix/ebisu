@@ -1,5 +1,4 @@
 import 'package:ebisu/card/Domain/Card.dart';
-import 'package:ebisu/card/Domain/Repositories/CardRepositoryInterface.dart';
 import 'package:ebisu/expenditure/Domain/Expenditure.dart';
 import 'package:ebisu/expenditure/Domain/Services/ExpenditureServiceInterface.dart';
 import 'package:ebisu/src/UI/Components/Form/InputDecorator.dart';
@@ -11,10 +10,11 @@ import 'package:flutter/material.dart';
 class ExpenditureForm extends StatefulWidget {
   final ExpenditureFormValidator validator = ExpenditureFormValidator();
   final InputFormDecorator decorator = InputFormDecorator();
-  final CardRepositoryInterface cardRepository;
   final _formKey = GlobalKey<FormState>();
   final ExpenditureModel model = ExpenditureModel();
-  ExpenditureForm({required this.cardRepository}) : super(key: GlobalKey<_ExpenditureFormState>());
+  final Map<int, String> cardTypes;
+
+  ExpenditureForm({required this.cardTypes});
 
   get stateKey => this._formKey;
 
@@ -68,7 +68,7 @@ class ExpenditureForm extends StatefulWidget {
                       validator: (value) => validator.card(value, state._type == CardClass.CREDIT.index),
                       onChanged: state.handleCardChange,
                       decoration: decorator.selectForm('Cartão', 'Selecione o cartão'),
-                      items: cardRepository.getCardTypes(),
+                      items: cardTypes,
                     ),
                   ),
                   Padding(

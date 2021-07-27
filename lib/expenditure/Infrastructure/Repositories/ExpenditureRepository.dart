@@ -1,14 +1,10 @@
 import 'package:ebisu/card/Domain/Card.dart';
 import 'package:ebisu/expenditure/Domain/Expenditure.dart';
 import 'package:ebisu/expenditure/Domain/Repositories/ExpenditureRepositoryInterface.dart';
-import 'package:gsheets/gsheets.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:ebisu/shared/Infrastructure/Repositories/Persistence/GoogleSheetsRepository.dart';
 
 
-class GoogleSheetExpenditureRepository implements ExpenditureRepositoryInterface{
-  final String _spreadSheet = '';
-  final String _debitSheetName = 'Atual - Debito';
-  final String _creditSheetName = 'Atual - Credito';
+class GoogleSheetExpenditureRepository extends GoogleSheetsRepository implements ExpenditureRepositoryInterface{
 
   /*Future<void> _setSheets (String credentials) async {
 
@@ -109,96 +105,59 @@ class GoogleSheetExpenditureRepository implements ExpenditureRepositoryInterface
   }
 
   Future<void> _insertDebitExpenditure(Expenditure expenditure) async {
-    final sheet = await _getSheet(_debitSheetName);
-    if (sheet != null) {
-      await sheet.values.appendRow([expenditure.name.value, expenditure.amount.toMoney()], fromColumn: DebitColumns.TO_PAY_LABEL.index);
-      return Future.value();
-    }
-    throw Error.safeToString('Planilha não encontrada');
-  }
-
-  Future<Worksheet?> _getSheet(String sheetName) async {
-    final credentials = await _getCredentials();
-    final googleSheets = GSheets(credentials!);
-    final spreadSheet = await googleSheets.spreadsheet(_spreadSheet);
-    return Future(() => spreadSheet.worksheetByTitle(sheetName));
+    final sheet = await getSheet(debitSheetName);
+    await sheet.values.appendRow([expenditure.name.value, expenditure.amount.toMoney()], fromColumn: DebitColumns.TO_PAY_LABEL.index);
+    return Future.value();
   }
 
   Future<void> _insertCreditExpenditure(Expenditure expenditure) async {
-    final sheet = await _getSheet(_creditSheetName);
-    if (sheet != null) {
-      final expenditureMap = {
-        ExpenditureType.UNICA: _insertSinglePurchaseCreditExpenditure,
-        ExpenditureType.PARCELADA: _insertInstallmentPurchaseCreditExpenditure,
-        ExpenditureType.ASSINATURA: _insertSubscriptionPurchaseCreditExpenditure,
-      }[expenditure.expenditureType];
+    final expenditureMap = {
+      ExpenditureType.UNICA: _insertSinglePurchaseCreditExpenditure,
+      ExpenditureType.PARCELADA: _insertInstallmentPurchaseCreditExpenditure,
+      ExpenditureType.ASSINATURA: _insertSubscriptionPurchaseCreditExpenditure,
+    }[expenditure.expenditureType];
 
-      await expenditureMap!(expenditure);
+    await expenditureMap!(expenditure);
 
-      return Future.value();
-    }
-    throw Error.safeToString('Planilha não encontrada');
+    return Future.value();
   }
 
   Future<void> _insertSinglePurchaseCreditExpenditure(Expenditure expenditure) async {
-    final sheet = await _getSheet(_creditSheetName);
-    if (sheet != null) {
-      final row = [
-        expenditure.name.value,
-        expenditure.amount.toMoney(),
-        0,
-        expenditure.amount.toMoney() * -1,
-        expenditure.cardTypeLabel
-      ];
-      await sheet.values.appendRow(row, fromColumn: CreditColumns.SINGLE_PURCHASE_LABEL.index);
-      return Future.value();
-    }
-    throw Error.safeToString('Planilha não encontrada');
+    final sheet = await getSheet(creditSheetName);
+    final row = [
+      expenditure.name.value,
+      expenditure.amount.toMoney(),
+      0,
+      expenditure.amount.toMoney() * -1,
+      expenditure.cardTypeLabel
+    ];
+    await sheet.values.appendRow(row, fromColumn: CreditColumns.SINGLE_PURCHASE_LABEL.index);
+    return Future.value();
   }
 
   Future<void> _insertInstallmentPurchaseCreditExpenditure(Expenditure expenditure) async {
-    final sheet = await _getSheet(_creditSheetName);
-    if (sheet != null) {
-      final row = [
-        expenditure.name.value,
-        expenditure.amount.toMoney(),
-        0,
-        expenditure.amount.toMoney() * -1,
-        expenditure.cardTypeLabel,
-        expenditure.installments!.summary
-      ];
-      await sheet.values.appendRow(row, fromColumn: CreditColumns.INSTALLMENT_PURCHASE_LABEL.index);
-      return Future.value();
-    }
-    throw Error.safeToString('Planilha não encontrada');
+    final sheet = await getSheet(creditSheetName);
+    final row = [
+      expenditure.name.value,
+      expenditure.amount.toMoney(),
+      0,
+      expenditure.amount.toMoney() * -1,
+      expenditure.cardTypeLabel,
+      expenditure.installments!.summary
+    ];
+    await sheet.values.appendRow(row, fromColumn: CreditColumns.INSTALLMENT_PURCHASE_LABEL.index);
+    return Future.value();
   }
 
   Future<void> _insertSubscriptionPurchaseCreditExpenditure(Expenditure expenditure) async {
-    final sheet = await _getSheet(_creditSheetName);
-    if (sheet != null) {
-      final row = [
-        expenditure.name.value,
-        expenditure.amount.toMoney(),
-        expenditure.cardTypeLabel
-      ];
-      await sheet.values.appendRow(row, fromColumn: CreditColumns.SUBSCRIPTION_PURCHASE_LABEL.index);
-      return Future.value();
-    }
-    throw Error.safeToString('Planilha não encontrada');
-  }
-
-  Future<String?> _getCredentials () async {
-    final prefs = await SharedPreferences.getInstance();
-    return Future(() {
-      return prefs.getString(ExpenditureRepositoryInterface.CREDENTIALS_KEY);
-    });
-  }
-
-  Future<bool> isSetup() async {
-    final credentials = await _getCredentials();
-    return Future(() {
-      return credentials != null ? true : false;
-    });
+    final sheet = await getSheet(creditSheetName);
+    final row = [
+      expenditure.name.value,
+      expenditure.amount.toMoney(),
+      expenditure.cardTypeLabel
+    ];
+    await sheet.values.appendRow(row, fromColumn: CreditColumns.SUBSCRIPTION_PURCHASE_LABEL.index);
+    return Future.value();
   }
 }
 

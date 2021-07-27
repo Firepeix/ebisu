@@ -1,7 +1,7 @@
+import 'package:ebisu/expenditure/UI/Pages/CreateExpenditure.dart';
 import 'package:ebisu/src/Domain/Pages/AbstractPage.dart';
 import 'package:ebisu/src/UI/Components/Nav/BottomNavBar.dart';
 import 'package:ebisu/src/UI/Components/Nav/MainButtonPage.dart';
-import 'package:ebisu/src/UI/Expenditures/Create.dart';
 import 'package:ebisu/src/UI/Expenditures/List.dart';
 import 'package:ebisu/src/UI/General/HomePage.dart';
 import 'package:flutter/cupertino.dart';
