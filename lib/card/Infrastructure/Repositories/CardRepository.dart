@@ -95,7 +95,7 @@ class GoogleSheetCardRepository extends GoogleSheetsRepository implements CardRe
   Future<Map<int, String>> getCardTypes() async {
     final sheet = await getSheet(creditSheetName);
     final cells = await sheet.cells.allRows(fromRow: 3, fromColumn: 1, length: CARD_COLUMNS.LABEL.index);
-    return Map.fromIterable(cells, key: (v) => v[0].row, value: (v) => v[0].value);
+    return cells.toList().map((cell) => cell[0].value).toList().asMap();
   }
 
   @override

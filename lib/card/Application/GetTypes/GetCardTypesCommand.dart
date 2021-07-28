@@ -13,5 +13,4 @@ class GetCardTypesCommandHandler implements CommandHandler<GetCardTypesCommand> 
   Future<Map<int, String>> handle(GetCardTypesCommand command) async {
     return await _repository.getCardTypes();
   }
-
 }

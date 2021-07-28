@@ -8,7 +8,7 @@ abstract class ExpenditureBuilder {
   String get name;
   int  get type;
   int  get amount;
-  int? get cardType;
+  String? get cardType;
   int? get expenditureType;
   int? get currentInstallment;
   int? get installmentTotal;

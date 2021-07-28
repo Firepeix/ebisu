@@ -129,7 +129,7 @@ class GoogleSheetExpenditureRepository extends GoogleSheetsRepository implements
       expenditure.amount.toMoney(),
       0,
       expenditure.amount.toMoney() * -1,
-      expenditure.cardTypeLabel
+      expenditure.cardType!.value
     ];
     await sheet.values.appendRow(row, fromColumn: CreditColumns.SINGLE_PURCHASE_LABEL.index);
     return Future.value();
@@ -142,7 +142,7 @@ class GoogleSheetExpenditureRepository extends GoogleSheetsRepository implements
       expenditure.amount.toMoney(),
       0,
       expenditure.amount.toMoney() * -1,
-      expenditure.cardTypeLabel,
+      expenditure.cardType!.value,
       expenditure.installments!.summary
     ];
     await sheet.values.appendRow(row, fromColumn: CreditColumns.INSTALLMENT_PURCHASE_LABEL.index);
@@ -154,7 +154,7 @@ class GoogleSheetExpenditureRepository extends GoogleSheetsRepository implements
     final row = [
       expenditure.name.value,
       expenditure.amount.toMoney(),
-      expenditure.cardTypeLabel
+      expenditure.cardType!.value
     ];
     await sheet.values.appendRow(row, fromColumn: CreditColumns.SUBSCRIPTION_PURCHASE_LABEL.index);
     return Future.value();

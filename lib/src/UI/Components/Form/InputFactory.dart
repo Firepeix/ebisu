@@ -69,28 +69,28 @@ class RadioGroup extends FormField  {
 
 class SelectInput extends StatelessWidget  {
   final String? value;
-  final ValueChanged<String?> onChanged;
+  final ValueChanged<int?>? onChanged;
   final TextStyle? style;
   final InputDecoration? decoration;
   final Map items;
-  final FormFieldValidator<String>? validator;
-  final FormFieldSetter<String>? onSaved;
+  final FormFieldValidator<int>? validator;
+  final FormFieldSetter<int>? onSaved;
 
-  SelectInput({required this.items, this.value, required this.onChanged, this.style, this.decoration, this.validator, this.onSaved});
+  SelectInput({required this.items, this.value, this.onChanged, this.style, this.decoration, this.validator, this.onSaved});
 
   @override
   Widget build(BuildContext context) {
     return Row(
       children: [
         Expanded(
-            child: DropdownButtonFormField<String>(
+            child: DropdownButtonFormField<int>(
               onSaved:this.onSaved,
               validator: validator,
               icon: Icon(Icons.arrow_downward_rounded),
               isDense: true,
               decoration: decoration,
               onChanged: onChanged,
-              items: items.entries.map((e) => DropdownMenuItem(value: e.key.toString(), child: Text(e.value[0] + e.value.substring(1).toLowerCase()))).toList(),
+              items: items.entries.map((e) => DropdownMenuItem(value: e.key as int, child: Text(e.value[0] + e.value.substring(1).toLowerCase()))).toList(),
             )
         )
       ],

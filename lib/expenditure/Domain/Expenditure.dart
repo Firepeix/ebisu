@@ -9,11 +9,6 @@ class Expenditure {
   final ExpenditureType? expenditureType;
   final ExpenditureInstallments? installments;
 
-  String? get cardTypeLabel {
-    final label = cardType.toString().split('.').elementAt(1);
-    return label[0] + label.substring(1).toLowerCase();
-  }
-
   Expenditure({
     required this.name,
     required this.type,

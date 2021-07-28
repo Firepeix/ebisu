@@ -1,10 +1,11 @@
+import 'package:ebisu/shared/Domain/ValueObjects.dart';
+
 class Card {
 
 }
 
-enum CardType {
-  NUBANK,
-  MELIUZ
+class CardType extends StringValueObject {
+  CardType(String value) : super(value);
 }
 
 enum CardClass {

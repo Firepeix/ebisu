@@ -10,42 +10,31 @@ import 'package:flutter/material.dart';
 class ExpenditureForm extends StatefulWidget {
   final ExpenditureFormValidator validator = ExpenditureFormValidator();
   final InputFormDecorator decorator = InputFormDecorator();
-  final _formKey = GlobalKey<FormState>();
-  final ExpenditureModel model = ExpenditureModel();
+  final GlobalKey<FormState> _internalFormKey = GlobalKey<FormState>();
   final Map<int, String> cardTypes;
 
-  ExpenditureForm({required this.cardTypes});
+  ExpenditureForm({required this.cardTypes, Key? formKey}) : super(key: formKey);
 
-  get stateKey => this._formKey;
 
   @override
-  State<StatefulWidget> createState() =>  _ExpenditureFormState();
+  State<StatefulWidget> createState() =>  ExpenditureFormState(formKey: _internalFormKey);
 
-  ExpenditureModel submit () {
-    if(this.stateKey.currentState!.validate()) {
-      this.stateKey.currentState!.save();
-      return model;
-    }
-
-    throw Exception('Formulário Invalido');
-  }
-
-  Widget build (_ExpenditureFormState state) {
+  Widget build (ExpenditureFormState state) {
     return Form(
-      key: _formKey,
+      key: _internalFormKey,
       child: KeyboardAvoider(
         autoScroll: true,
         child: Column(
           children: <Widget>[
             TextFormField(
-              onSaved: (value) => model.name = value!,
+              onSaved: (value) => state.model.name = value!,
               validator: (value) => validator.name(value),
               decoration: decorator.textForm('Nome', 'Adicione o nome da despesa.'),
             ),
             Padding(
               padding: EdgeInsets.only(right: 16, top: 10),
               child: RadioGroup(
-                onSaved: (value) => model.type = state._type!,
+                onSaved: (value) => state.model.type = state._type!,
                 validator: (value) => validator.type(state._type),
                 children: [
                   RadioInput(label: 'Credito', value: CardClass.CREDIT.index, groupValue: state._type, onChanged: state.handleTypeChange),
@@ -64,9 +53,9 @@ class ExpenditureForm extends StatefulWidget {
                   Padding(
                     padding: EdgeInsets.only(top: 16),
                     child: SelectInput(
-                      onSaved: (value) => model.cardType = value,
+                      onSaved: (value) => state.model.cardType = cardTypes[value] ?? null,
+                      onChanged: (value) => state._cardType = value,
                       validator: (value) => validator.card(value, state._type == CardClass.CREDIT.index),
-                      onChanged: state.handleCardChange,
                       decoration: decorator.selectForm('Cartão', 'Selecione o cartão'),
                       items: cardTypes,
                     ),
@@ -74,7 +63,7 @@ class ExpenditureForm extends StatefulWidget {
                   Padding(
                     padding: EdgeInsets.only(top: 16),
                     child: SelectInput(
-                      onSaved: (value) => model.expenditureType = value,
+                      onSaved: (value) => state.model.expenditureType = value,
                       validator: (value) => validator.expenditureType(value, state._type == CardClass.CREDIT.index),
                       onChanged: state.handleExpenditureTypeChange,
                       decoration: decorator.selectForm('Tipo', 'Selecione o tipo da despesa'),
@@ -95,16 +84,14 @@ class ExpenditureForm extends StatefulWidget {
                 child: Row(
                   children: [
                     Expanded(flex: 10,child: NumberInput(
-                      onSaved: (value) => model.currentInstallment = value,
-                      onChanged: state.handleCurrentInstallmentChange,
-                      validator: (value) => validator.activeInstallment(value, state._expenditureType == ExpenditureType.PARCELADA.index.toString()),
+                      onSaved: (value) => state.model.currentInstallment = value,
+                      validator: (value) => validator.activeInstallment(value, state._expenditureType == ExpenditureType.PARCELADA.index),
                       decoration: decorator.textForm('Parcela Atual', 'Adicione a parcela atual.'),
                     )),
                     Spacer(flex: 1,),
                     Expanded(flex: 10,child: NumberInput(
-                      onSaved: (value) => model.installmentTotal = value,
-                      onChanged: state.handleInstallmentTotalChange,
-                      validator: (value) => validator.totalInstallments(value, state._expenditureType == ExpenditureType.PARCELADA.index.toString()),
+                      onSaved: (value) => state.model.installmentTotal = value,
+                      validator: (value) => validator.totalInstallments(value, state._expenditureType == ExpenditureType.PARCELADA.index),
                       decoration: decorator.textForm('Total de Parcelas', 'Adicione o total de parcelas'),
                     )),
                   ],
@@ -116,7 +103,7 @@ class ExpenditureForm extends StatefulWidget {
               child: AmountInput(
                 value: state.amount,
                 onChanged: state.handleAmountChange,
-                onSaved: (value) => model.amount = value!,
+                onSaved: (value) => state.model.amount = value!,
                 validator: (value) => validator.amount(value),
               ),
               ),
@@ -127,20 +114,33 @@ class ExpenditureForm extends StatefulWidget {
   }
 }
 
-class _ExpenditureFormState extends State<ExpenditureForm> with TickerProviderStateMixin {
+class ExpenditureFormState extends State<ExpenditureForm> with TickerProviderStateMixin {
+  final GlobalKey<FormState> formKey;
   late AnimationController creditOptionsController;
   late AnimationController installmentOptionsController;
+  final ExpenditureModel model = ExpenditureModel();
 
   int? _type;
-  String? _card;
-  String? _expenditureType;
+  int? _expenditureType;
+  int? _cardType;
   int? amount;
-  int? _currentInstallment;
-  int? _installmentTotal;
 
-  _ExpenditureFormState() {
+  ExpenditureFormState({required this.formKey}) {
     this.creditOptionsController = AnimationController(vsync: this, duration: Duration(milliseconds: 500));
     this.installmentOptionsController = AnimationController(vsync: this, duration: Duration(milliseconds: 500));
+  }
+
+  ExpenditureModel submit () {
+    if(this.formKey.currentState!.validate()) {
+      this.formKey.currentState!.save();
+      return model;
+    }
+
+    throw Exception('Formulário Invalido');
+  }
+
+  bool validate () {
+    return this.formKey.currentState!.validate();
   }
 
   @override
@@ -157,10 +157,10 @@ class _ExpenditureFormState extends State<ExpenditureForm> with TickerProviderSt
     });
   }
 
-  void handleExpenditureTypeChange(String? value) {
+  void handleExpenditureTypeChange(int? value) {
     setState(() {
       _expenditureType = value;
-      if(value != null && int.parse(value) == ExpenditureType.PARCELADA.index) {
+      if(value != null && value == ExpenditureType.PARCELADA.index) {
         installmentOptionsController.forward();
         return;
       }
@@ -168,27 +168,9 @@ class _ExpenditureFormState extends State<ExpenditureForm> with TickerProviderSt
     });
   }
 
-  void handleCardChange(String? value) {
-    setState(() {
-      _card = value;
-    });
-  }
-
-  void handleCurrentInstallmentChange(int? value) {
-    setState(() {
-      _currentInstallment = value;
-    });
-  }
-
   void handleAmountChange(int? value) {
     setState(() {
       amount = value;
-    });
-  }
-
-  void handleInstallmentTotalChange(int? value) {
-    setState(() {
-      _installmentTotal = value;
     });
   }
 }
@@ -208,14 +190,14 @@ class ExpenditureFormValidator extends InputValidator{
     return null;
   }
 
-  String? card (String? value, bool required) {
+  String? card (int? value, bool required) {
     if (required && this.isRequired(value)) {
       return 'Cartão da Despesa é obrigatório';
     }
     return null;
   }
 
-  String? expenditureType (String? value, bool required) {
+  String? expenditureType (int? value, bool required) {
     if (required && this.isRequired(value)) {
       return 'Tipo de despesa é obrigatório';
     }
@@ -251,7 +233,7 @@ class ExpenditureModel implements ExpenditureBuilder{
   String? _name;
   int? _type;
   int? _amount;
-  int? _cardType;
+  String? _cardType;
   int? _expenditureType;
   int? currentInstallment;
   int? installmentTotal;
@@ -277,15 +259,16 @@ class ExpenditureModel implements ExpenditureBuilder{
     _name = value;
   }
 
+  String? get cardType => _cardType;
+
+  set cardType (String? cardType) {
+    this._cardType = cardType;
+  }
+
   int? get expenditureType => _expenditureType;
 
-  set expenditureType(dynamic value) {
-    _expenditureType = value != null ? int.tryParse(value!) : null;
+  set expenditureType(int? value) {
+    _expenditureType = value != null ? value : null;
   }
 
-  int? get cardType => _cardType;
-
-  set cardType(dynamic value) {
-    _cardType = value != null ? int.tryParse(value!) : null;
-  }
 }
