@@ -135,12 +135,14 @@ class AmountInput extends StatelessWidget  {
   final int? value;
   late final MoneyMaskedTextController controller;
   final FormFieldSetter<int>? onSaved;
+  final bool? enabled;
 
   AmountInput({
     this.validator,
     this.value,
     this.onChanged,
     this.onSaved,
+    this.enabled,
   }) {
     this.controller = MoneyMaskedTextController(initialValue: this.value != null ? this.value!.toDouble() / 100 : 0.0);
   }
@@ -153,9 +155,10 @@ class AmountInput extends StatelessWidget  {
       maxLength: 8,
       textAlign: TextAlign.center,
       controller: controller,
+      enabled: enabled ?? true,
       maxLengthEnforcement: MaxLengthEnforcement.enforced,
       keyboardType: TextInputType.number,
-      style: TextStyle(fontSize: 76, fontWeight: FontWeight.w500),
+      style: TextStyle(fontSize: 76, color: enabled == null || enabled! ? Colors.black : Colors.grey, fontWeight: FontWeight.w500),
       validator: validator,
       decoration: decorator.amountForm()
     );

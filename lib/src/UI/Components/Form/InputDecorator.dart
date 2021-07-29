@@ -27,6 +27,7 @@ class InputFormDecorator {
   InputDecoration amountForm () {
     return InputDecoration(
         prefix: Text('R\$ '),
+        helperStyle: TextStyle(fontSize: 0),
         errorStyle: TextStyle(fontSize: 16),
         contentPadding: EdgeInsets.fromLTRB(12, 20, 12, 12),
         prefixStyle: TextStyle(fontSize: 30, fontWeight: FontWeight.w500, color: Colors.grey)

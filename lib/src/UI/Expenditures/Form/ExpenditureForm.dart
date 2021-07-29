@@ -1,6 +1,7 @@
 import 'package:ebisu/card/Domain/Card.dart';
 import 'package:ebisu/expenditure/Domain/Expenditure.dart';
 import 'package:ebisu/expenditure/Domain/Services/ExpenditureServiceInterface.dart';
+import 'package:ebisu/shared/UI/Components/Shimmer.dart';
 import 'package:ebisu/src/UI/Components/Form/InputDecorator.dart';
 import 'package:ebisu/src/UI/Components/Form/InputFactory.dart';
 import 'package:ebisu/src/UI/Components/Form/InputValidator.dart';
@@ -271,4 +272,62 @@ class ExpenditureModel implements ExpenditureBuilder{
     _expenditureType = value != null ? value : null;
   }
 
+}
+
+class ExpenditureFormSkeleton extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Shimmer(
+      child: ShimmerLoading(isLoading: true, child: Column(
+        children: [
+          Container(
+            width: 351,
+            height: 51,
+            decoration: const BoxDecoration(
+              color: Colors.black,
+              borderRadius: BorderRadius.all(Radius.circular(8)),
+              shape: BoxShape.rectangle,
+            ),
+          ),
+          Padding(
+            padding: EdgeInsets.only(right: 16, top: 10),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                Row(children: [
+                  Container(
+                    width: 48,
+                    height: 20,
+                    decoration: const BoxDecoration(
+                      color: Colors.grey,
+                      shape: BoxShape.circle,
+                    ),
+                  ),
+                  Text('Credito', style: TextStyle(color: Colors.grey, fontSize: 16),)
+                ],),
+                Row(children: [
+                  Container(
+                    width: 48,
+                    height: 20,
+                    decoration: const BoxDecoration(
+                      color: Colors.grey,
+                      shape: BoxShape.circle,
+                    ),
+                  ),
+                  Text('Debito', style: TextStyle(color: Colors.grey, fontSize: 16),)
+                ],)
+              ],
+            ),
+          ),
+          Padding(
+            padding: EdgeInsets.only(top: 16),
+            child: AmountInput(
+              enabled: false,
+              value: 0,
+            ),
+          )
+        ],
+      )),
+    );
+  }
 }

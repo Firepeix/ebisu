@@ -1,3 +1,4 @@
+import 'package:ebisu/configuration/UI/Pages/Configuration.dart';
 import 'package:ebisu/shared/Infrastructure/Ebisu.dart';
 import 'package:flutter/material.dart';
 
@@ -13,7 +14,17 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.red,
       ),
-      home: MyHomePage(title: 'Home'),
+      initialRoute: '/',
+      routes: {
+        '/': (context) => MyHomePage(title: 'Home'),
+      },
+      onGenerateRoute: (settings) {
+        if (settings.name == "/configuration") {
+          return ConfigurationPage.getRoute();
+        }
+        // Unknown route
+        return MaterialPageRoute(builder: (_) => MyHomePage(title: 'Home'));
+      },
     );
   }
 }

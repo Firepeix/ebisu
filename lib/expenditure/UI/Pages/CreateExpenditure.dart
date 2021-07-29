@@ -54,15 +54,10 @@ class Content extends StatefulWidget {
   Content({ required this.formKey });
 
   Widget build (_ContentState state) {
-    return Visibility(
-      visible: state.loaded,
-      child: Padding(
-        padding: EdgeInsets.symmetric(vertical: 40, horizontal: 30),
-        child: ExpenditureForm(
-          formKey: formKey,
-          cardTypes: state.cardTypes,
-        ),
-    ));
+    return Padding(
+      padding: EdgeInsets.symmetric(vertical: 40, horizontal: 30),
+      child: !state.loaded ? ExpenditureFormSkeleton() : ExpenditureForm(formKey: formKey,cardTypes: state.cardTypes,),
+    );
   }
 
   @override
@@ -72,10 +67,6 @@ class Content extends StatefulWidget {
 class _ContentState extends State<Content> with DispatchesCommands {
   Map<int, String> cardTypes = {};
   bool loaded = false;
-
-  void onMainButtonPress () {
-    print('asd');
-  }
 
   @override
   void initState() {

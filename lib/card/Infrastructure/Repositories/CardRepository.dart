@@ -4,7 +4,14 @@ import 'package:ebisu/shared/Infrastructure/Repositories/Persistence/GoogleSheet
 import 'package:shared_preferences/shared_preferences.dart';
 
 class GoogleSheetCardRepository extends GoogleSheetsRepository implements CardRepositoryInterface {
+  static final GoogleSheetCardRepository _singleton = GoogleSheetCardRepository._internal();
   static const CARD_TYPES_CACHE = 'card-types-cache';
+
+  factory GoogleSheetCardRepository() {
+    return _singleton;
+  }
+
+  GoogleSheetCardRepository._internal();
 
   @override
   Future<Map<int, String>> getCardTypes() async {
@@ -28,6 +35,12 @@ class GoogleSheetCardRepository extends GoogleSheetsRepository implements CardRe
   @override
   getCardClass() {
     return CardClass;
+  }
+
+  @override
+  Future<void> cleanCardTypeCache() async {
+    final prefs = await SharedPreferences.getInstance();
+    prefs.remove(CARD_TYPES_CACHE);
   }
 }
 

@@ -16,6 +16,17 @@ class EbisuMainView extends StatefulWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text('Ebisu'),
+        actions: [
+          IconButton(
+            icon: Icon(
+              Icons.settings,
+              size: 26.0,
+            ),
+            onPressed: () {
+              Navigator.pushNamed(context, '/configuration');
+            },
+          )
+        ],
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       floatingActionButton: Visibility(
