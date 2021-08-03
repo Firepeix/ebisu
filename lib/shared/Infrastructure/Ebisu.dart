@@ -1,8 +1,8 @@
 import 'package:ebisu/expenditure/UI/Pages/CreateExpenditure.dart';
+import 'package:ebisu/expenditure/UI/Pages/ListExpenditures.dart';
 import 'package:ebisu/src/Domain/Pages/AbstractPage.dart';
 import 'package:ebisu/src/UI/Components/Nav/BottomNavBar.dart';
 import 'package:ebisu/src/UI/Components/Nav/MainButtonPage.dart';
-import 'package:ebisu/src/UI/Expenditures/List.dart';
 import 'package:ebisu/src/UI/General/HomePage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -84,7 +84,7 @@ class _EbisuMainViewState extends State<EbisuMainView> {
   void _addPages () {
     this._pages.add(HomePage());
     this._pages.add(CreateExpenditurePage(onChangePageTo: (value) => this.changePageTo(value),));
-    this._pages.add(ListExpenditurePage());
+    this._pages.add(ListExpendituresPage());
   }
 
   Widget build(BuildContext context) => widget.build(this, context);
