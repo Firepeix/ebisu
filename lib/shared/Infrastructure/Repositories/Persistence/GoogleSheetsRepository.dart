@@ -1,11 +1,11 @@
+import 'package:ebisu/card/Domain/Card.dart';
 import 'package:gsheets/gsheets.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 abstract class GoogleSheetsRepository {
   static const CREDENTIALS_KEY = 'credentials-key';
   static const SPREADSHEET_ID_KEY = 'spread-sheet-id-key';
-  final String debitSheetName = 'Atual - Debito';
-  final String creditSheetName = 'Atual - Credito';
+  static const ACTIVE_SHEET_CACHE = 'active-sheet-cache';
 
   static Future<String?> _getCredentials () async {
     final prefs = await SharedPreferences.getInstance();
@@ -19,10 +19,17 @@ abstract class GoogleSheetsRepository {
     return prefs.getString(SPREADSHEET_ID_KEY);
   }
 
-  Future<Worksheet> getSheet(String sheetName) async {
+  Future<String> getActiveSheetName(CardClass type) async {
+    final prefs = await SharedPreferences.getInstance();
+    final sheetsNames = prefs.getStringList(ACTIVE_SHEET_CACHE);
+    return sheetsNames != null ? sheetsNames[type.index] : '';
+  }
+
+  Future<Worksheet> getSheet(CardClass type) async {
     final credentials = await _getCredentials();
     final googleSheets = GSheets(credentials!);
     final spreadSheetId = await getSheetId();
+    final sheetName = await getActiveSheetName(type);
     if(spreadSheetId != null) {
       final spreadSheet = await googleSheets.spreadsheet(spreadSheetId);
       return Future(() {

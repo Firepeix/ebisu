@@ -27,7 +27,7 @@ class GoogleSheetCardRepository extends GoogleSheetsRepository implements CardRe
 
 
   Future<List<String>> _getCardTypesFromRepository() async {
-    final sheet = await getSheet(creditSheetName);
+    final sheet = await getSheet(CardClass.CREDIT);
     final cells = await sheet.cells.allRows(fromRow: 3, fromColumn: 1, length: CARD_COLUMNS.LABEL.index);
     return cells.toList().map((cell) => cell[0].value).toList();
   }

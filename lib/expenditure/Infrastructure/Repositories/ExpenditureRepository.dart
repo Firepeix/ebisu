@@ -105,7 +105,7 @@ class GoogleSheetExpenditureRepository extends GoogleSheetsRepository implements
   }
 
   Future<void> _insertDebitExpenditure(Expenditure expenditure) async {
-    final sheet = await getSheet(debitSheetName);
+    final sheet = await getSheet(CardClass.DEBIT);
     await sheet.values.appendRow([expenditure.name.value, expenditure.amount.toMoney()], fromColumn: DebitColumns.TO_PAY_LABEL.index);
     return Future.value();
   }
@@ -123,7 +123,7 @@ class GoogleSheetExpenditureRepository extends GoogleSheetsRepository implements
   }
 
   Future<void> _insertSinglePurchaseCreditExpenditure(Expenditure expenditure) async {
-    final sheet = await getSheet(creditSheetName);
+    final sheet = await getSheet(CardClass.CREDIT);
     final row = [
       expenditure.name.value,
       expenditure.amount.toMoney(),
@@ -136,7 +136,7 @@ class GoogleSheetExpenditureRepository extends GoogleSheetsRepository implements
   }
 
   Future<void> _insertInstallmentPurchaseCreditExpenditure(Expenditure expenditure) async {
-    final sheet = await getSheet(creditSheetName);
+    final sheet = await getSheet(CardClass.CREDIT);
     final row = [
       expenditure.name.value,
       expenditure.amount.toMoney(),
@@ -150,7 +150,7 @@ class GoogleSheetExpenditureRepository extends GoogleSheetsRepository implements
   }
 
   Future<void> _insertSubscriptionPurchaseCreditExpenditure(Expenditure expenditure) async {
-    final sheet = await getSheet(creditSheetName);
+    final sheet = await getSheet(CardClass.CREDIT);
     final row = [
       expenditure.name.value,
       expenditure.amount.toMoney(),
