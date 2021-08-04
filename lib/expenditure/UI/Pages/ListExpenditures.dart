@@ -17,17 +17,19 @@ class ListExpendituresPage extends AbstractPage {
 
 class Content extends StatefulWidget {
   final List<Expenditure> expenditures = [
-    Expenditure(name: ExpenditureName('teste'), type: CardClass.DEBIT, amount: ExpenditureAmount(150050))
+    Expenditure(name: ExpenditureName('Lorem Ipsum'), type: CardClass.DEBIT, amount: ExpenditureAmount(150050)),
+    Expenditure(name: ExpenditureName('Lorem Ipsum'), type: CardClass.CREDIT, amount: ExpenditureAmount(15026), cardType: CardType('Nubank'), expenditureType: ExpenditureType.UNICA),
+    Expenditure(name: ExpenditureName('Lorem Ipsum'), type: CardClass.CREDIT, amount: ExpenditureAmount(580), cardType: CardType('Picpay'), expenditureType: ExpenditureType.PARCELADA, installments: ExpenditureInstallments(currentInstallment: 5, totalInstallments: 7))
   ];
 
 
   Widget build (_ContentState state) {
     return Padding(
-      padding: EdgeInsets.symmetric(vertical: 40, horizontal: 30),
+      padding: EdgeInsets.symmetric(vertical: 30, horizontal: 10),
       child: ListView.builder(
           itemCount: expenditures.length,
           itemBuilder: (BuildContext context, int index) => Padding(
-            padding: EdgeInsets.only(top: index == 0 ? 0 : 30),
+            padding: EdgeInsets.only(top: index == 0 ? 0 : 10),
             child: ExpenditureViewModel(expenditures[index]),
           )
       ),

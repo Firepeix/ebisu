@@ -35,6 +35,11 @@ class ExpenditureAmount extends IntValueObject {
   double toMoney () {
     return value / 100;
   }
+
+  String get real {
+    final amount = value / 100;
+    return "R\$ ${amount.toStringAsFixed(2)}".replaceAll('.', ',');
+  }
 }
 
 class ExpenditureInstallments {
