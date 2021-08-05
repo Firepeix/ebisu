@@ -1,8 +1,10 @@
 import 'package:ebisu/card/Domain/Card.dart';
 import 'package:ebisu/card/Domain/Repositories/CardRepositoryInterface.dart';
 import 'package:ebisu/shared/Infrastructure/Repositories/Persistence/GoogleSheetsRepository.dart';
+import 'package:injectable/injectable.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+@Singleton(as: CardRepositoryInterface)
 class GoogleSheetCardRepository extends GoogleSheetsRepository implements CardRepositoryInterface {
   static final GoogleSheetCardRepository _singleton = GoogleSheetCardRepository._internal();
   static const CARD_TYPES_CACHE = 'card-types-cache';

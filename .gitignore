@@ -45,3 +45,4 @@ app.*.map.json
 /android/app/profile
 /android/app/release
 scout-cred.json
+lib/main.config.dart

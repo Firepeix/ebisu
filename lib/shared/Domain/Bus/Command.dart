@@ -3,30 +3,21 @@ import 'package:ebisu/configuration/Infrastructure/Providers/ConfigurationModule
 
 class BusCommandServiceProvider {
   static final BusCommandServiceProvider _singleton = BusCommandServiceProvider._internal();
-  final List<BusServiceProviderInterface> providers = [
-    CardModuleServiceProvider.getBusProvider(),
-    ConfigurationModuleServiceProvider.getBusProvider()
-  ];
-  final Map<String, Function> commands = {};
+  final Map<String, Function> commands = {
+    ...CardModuleServiceProvider.bus,
+    ...ConfigurationModuleServiceProvider.bus
+  };
 
 
   factory BusCommandServiceProvider() {
     return _singleton;
   }
 
-  BusCommandServiceProvider._internal() {
-    _setCommands();
-  }
-
-  void _setCommands () {
-    providers.forEach((element) {
-      commands.addAll(element.getCommandMap());
-    });
-  }
+  BusCommandServiceProvider._internal();
 }
 
 abstract class BusServiceProviderInterface {
-  Map<String, Function> getCommandMap ();
+  static Map<String, Function> bus = {};
 }
 
 mixin DispatchesCommands {

@@ -5,22 +5,18 @@ import 'package:ebisu/configuration/Application/GetTypes/CleanCredentialsCommand
 import 'package:ebisu/configuration/Application/StoreSheetId.dart';
 import 'package:ebisu/configuration/Domain/Repositories/ConfigurationRepositoryInterface.dart';
 import 'package:ebisu/configuration/Infrastructure/Persistence/ConfigurationRepository.dart';
+import 'package:ebisu/main.dart';
 import 'package:ebisu/shared/Domain/Bus/Command.dart';
 
-class ConfigurationModuleServiceProvider {
+class ConfigurationModuleServiceProvider implements BusServiceProviderInterface {
   static final ConfigurationRepositoryInterface repository = ConfigurationRepository();
-  static BusServiceProviderInterface getBusProvider () => ConfigurationModuleBusServiceProvider();
-}
 
-class ConfigurationModuleBusServiceProvider implements BusServiceProviderInterface{
-  Map<String, Function>  getCommandMap () {
-    return {
-      (CleanCardTypesCacheCommand).toString(): () => new CleanCardTypesCacheCommandHandler(),
-      (CleanCredentialsCommand).toString(): () => new CleanCredentialsCommandHandler(),
-      (GetSheetIdCommand).toString(): () => new GetSheetIdCommandHandler(),
-      (StoreSheetIdCommand).toString(): () => new StoreSheetIdCommandHandler(),
-      (GetActiveSheetNameCommand).toString(): () => new GetActiveSheetNameCommandHandler(),
-      (StoreActiveSheetNameCommand).toString(): () => new StoreActiveSheetNameCommandHandler(),
-    };
-  }
+  static Map<String, Function> bus = {
+    (CleanCardTypesCacheCommand).toString(): () => getIt<CleanCardTypesCacheCommandHandler>(),
+    (CleanCredentialsCommand).toString(): () => getIt<CleanCredentialsCommandHandler>(),
+    (GetSheetIdCommand).toString(): () => getIt<GetSheetIdCommandHandler>(),
+    (StoreSheetIdCommand).toString(): () => getIt<StoreSheetIdCommandHandler>(),
+    (GetActiveSheetNameCommand).toString(): () => getIt<GetActiveSheetNameCommandHandler>(),
+    (StoreActiveSheetNameCommand).toString(): () => getIt<StoreActiveSheetNameCommandHandler>(),
+  };
 }

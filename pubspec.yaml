@@ -31,10 +31,13 @@ dependencies:
   gsheets: ^0.3.1
   file_picker: ^3.0.3
   shared_preferences: ^2.0.6
+  injectable: ^1.4.1
 
 dev_dependencies:
+  build_runner: ^2.1.0
   flutter_test:
     sdk: flutter
+  injectable_generator: ^1.4.1
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

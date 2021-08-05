@@ -1,7 +1,7 @@
 import 'package:ebisu/card/Domain/Card.dart';
 import 'package:ebisu/configuration/Domain/Repositories/ConfigurationRepositoryInterface.dart';
-import 'package:ebisu/configuration/Infrastructure/Providers/ConfigurationModuleServiceProvider.dart';
 import 'package:ebisu/shared/Domain/Bus/Command.dart';
+import 'package:injectable/injectable.dart';
 
 class GetActiveSheetNameCommand implements Command {
   final CardClass type;
@@ -9,8 +9,10 @@ class GetActiveSheetNameCommand implements Command {
   GetActiveSheetNameCommand({required this.type});
 }
 
+@injectable
 class GetActiveSheetNameCommandHandler implements CommandHandler<GetActiveSheetNameCommand> {
-  final ConfigurationRepositoryInterface _repository = ConfigurationModuleServiceProvider.repository;
+  final ConfigurationRepositoryInterface _repository;
+  GetActiveSheetNameCommandHandler(this._repository);
 
   @override
   Future<String?> handle(GetActiveSheetNameCommand command) async {
@@ -25,8 +27,10 @@ class StoreActiveSheetNameCommand implements Command {
   StoreActiveSheetNameCommand({required this.sheetName, required this.type});
 }
 
+@injectable
 class StoreActiveSheetNameCommandHandler implements CommandHandler<StoreActiveSheetNameCommand> {
-  final ConfigurationRepositoryInterface _repository = ConfigurationModuleServiceProvider.repository;
+  final ConfigurationRepositoryInterface _repository;
+  StoreActiveSheetNameCommandHandler(this._repository);
 
   @override
   Future<void> handle(StoreActiveSheetNameCommand command) async {

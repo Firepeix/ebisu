@@ -1,17 +1,12 @@
 import 'package:ebisu/card/Domain/Card.dart';
 import 'package:ebisu/configuration/Domain/Repositories/ConfigurationRepositoryInterface.dart';
 import 'package:ebisu/shared/Infrastructure/Repositories/Persistence/GoogleSheetsRepository.dart';
+import 'package:injectable/injectable.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+@Singleton(as: ConfigurationRepositoryInterface)
 class ConfigurationRepository extends GoogleSheetsRepository implements ConfigurationRepositoryInterface {
-  static final ConfigurationRepository _singleton = ConfigurationRepository._internal();
   static const CARD_TYPES_CACHE = 'card-types-cache';
-
-  factory ConfigurationRepository() {
-    return _singleton;
-  }
-
-  ConfigurationRepository._internal();
 
   @override
   Future<void> cleanCredentials () async {
