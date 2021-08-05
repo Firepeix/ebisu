@@ -2,6 +2,8 @@ import 'package:ebisu/configuration/UI/Pages/Configuration.dart';
 import 'package:ebisu/shared/Infrastructure/Ebisu.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
+import 'package:hive/hive.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 import 'package:injectable/injectable.dart';
 
 import 'main.config.dart';
@@ -12,11 +14,15 @@ final getIt = GetIt.instance;
   preferRelativeImports: true,
   asExtension: false,
 )
-void configureDependencies() => $initGetIt(getIt);
+void configureDependencies() {
+  $initGetIt(getIt);
+}
 
 void main() {
-  configureDependencies();
-  runApp(MyApp());
+  Hive.initFlutter().then((value) {
+    configureDependencies();
+    runApp(MyApp());
+  });
 }
 
 class MyApp extends StatelessWidget {

@@ -1,11 +1,13 @@
 import 'package:ebisu/card/Infrastructure/Providers/CardModuleServiceProvider.dart';
 import 'package:ebisu/configuration/Infrastructure/Providers/ConfigurationModuleServiceProvider.dart';
+import 'package:ebisu/expenditure/Infrastructure/Providers/ExpenditureModuleServiceProvider.dart';
 
 class BusCommandServiceProvider {
   static final BusCommandServiceProvider _singleton = BusCommandServiceProvider._internal();
   final Map<String, Function> commands = {
     ...CardModuleServiceProvider.bus,
-    ...ConfigurationModuleServiceProvider.bus
+    ...ConfigurationModuleServiceProvider.bus,
+    ...ExpenditureModuleServiceProvider.bus
   };
 
 

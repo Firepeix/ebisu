@@ -1,4 +1,5 @@
 import 'package:ebisu/card/Domain/Card.dart';
+import 'package:ebisu/expenditure/Application/ExpenditureCommands.dart';
 import 'package:ebisu/expenditure/Domain/Expenditure.dart';
 import 'package:ebisu/expenditure/UI/Components/Expenditure.dart';
 import 'package:ebisu/shared/Domain/Bus/Command.dart';
@@ -16,23 +17,20 @@ class ListExpendituresPage extends AbstractPage {
 
 
 class Content extends StatefulWidget {
-  final List<Expenditure> expenditures = [
-    Expenditure(name: ExpenditureName('Lorem Ipsum'), type: CardClass.DEBIT, amount: ExpenditureAmount(150050)),
-    Expenditure(name: ExpenditureName('Lorem Ipsum'), type: CardClass.CREDIT, amount: ExpenditureAmount(15026), cardType: CardType('Nubank'), expenditureType: ExpenditureType.UNICA),
-    Expenditure(name: ExpenditureName('Lorem Ipsum'), type: CardClass.CREDIT, amount: ExpenditureAmount(580), cardType: CardType('Picpay'), expenditureType: ExpenditureType.PARCELADA, installments: ExpenditureInstallments(currentInstallment: 5, totalInstallments: 7))
-  ];
-
-
   Widget build (_ContentState state) {
-    return Padding(
-      padding: EdgeInsets.symmetric(vertical: 30, horizontal: 10),
-      child: ListView.builder(
-          itemCount: expenditures.length,
-          itemBuilder: (BuildContext context, int index) => Padding(
-            padding: EdgeInsets.only(top: index == 0 ? 0 : 10),
-            child: ExpenditureViewModel(expenditures[index]),
-          )
-      ),
+    return RefreshIndicator(
+        child: Padding(padding: EdgeInsets.symmetric(vertical: 30, horizontal: 10),
+            child: ListView.builder(
+              itemCount: state.expenditures.length,
+              itemBuilder: (BuildContext context, int index) => Padding(
+                padding: EdgeInsets.only(top: index == 0 ? 0 : 10),
+                child: ExpenditureViewModel(state.expenditures[index]),
+              )
+            ),
+        ),
+        onRefresh: () async {
+
+        }
     );
   }
 
@@ -41,6 +39,8 @@ class Content extends StatefulWidget {
 }
 
 class _ContentState extends State<Content> with DispatchesCommands {
+  List<Expenditure> expenditures = [];
+
   bool loaded = true;
 
   @override
@@ -50,17 +50,22 @@ class _ContentState extends State<Content> with DispatchesCommands {
   }
 
   void _setInitialState () async {
+    _setExpenditures();
     setState(() {
       loaded = true;
     });
   }
 
-  /*Future<void> _setCardTypes () async {
-    final types = await dispatch(new GetCardTypesCommand());
+  Future<void> _setExpenditures () async {
+    final expenditures = await dispatch(new GetExpendituresCommand());
     setState(() {
-      cardTypes = types;
+      this.expenditures = [
+        Expenditure(name: ExpenditureName('Lorem Ipsum'), type: CardClass.DEBIT, amount: ExpenditureAmount(150050)),
+        Expenditure(name: ExpenditureName('Lorem Ipsum'), type: CardClass.CREDIT, amount: ExpenditureAmount(15026), cardType: CardType('Nubank'), expenditureType: ExpenditureType.UNICA),
+        Expenditure(name: ExpenditureName('Lorem Ipsum'), type: CardClass.CREDIT, amount: ExpenditureAmount(580), cardType: CardType('Picpay'), expenditureType: ExpenditureType.PARCELADA, installments: ExpenditureInstallments(currentInstallment: 5, totalInstallments: 7))
+      ];
     });
-  }*/
+  }
 
   @override
   Widget build(BuildContext context) => widget.build(this);

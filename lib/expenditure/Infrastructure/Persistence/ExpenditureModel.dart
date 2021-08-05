@@ -1,0 +1,27 @@
+import 'package:hive/hive.dart';
+
+part 'ExpenditureModel.g.dart';
+
+@HiveType(typeId : 1)
+class ExpenditureHiveModel extends HiveObject {
+  @HiveField(0)
+  String name = '';
+
+  @HiveField(1)
+  int type = 0;
+
+  @HiveField(2)
+  int amount = 0;
+
+  @HiveField(3)
+  int? cardType = 0;
+
+  @HiveField(4)
+  int? expenditureType = 0;
+
+  @HiveField(5)
+  int? currentInstallment = 0;
+
+  @HiveField(6)
+  int? totalInstallment = 0;
+}
