@@ -1,8 +1,12 @@
+import 'package:ebisu/expenditure/Domain/Expenditure.dart';
 import 'package:ebisu/expenditure/Domain/Repositories/ExpenditureRepositoryInterface.dart';
 import 'package:ebisu/shared/Domain/Bus/Command.dart';
 import 'package:injectable/injectable.dart';
 
 class GetExpendituresCommand implements Command {
+  final bool cacheLess;
+
+  GetExpendituresCommand(this.cacheLess);
 
 }
 
@@ -12,8 +16,7 @@ class GetExpendituresCommandHandler implements CommandHandler<GetExpendituresCom
   GetExpendituresCommandHandler(this._repository);
 
   @override
-  Future<List<int>> handle(GetExpendituresCommand command) async {
-    _repository.getExpenditures();
-    return [1];
+  Future<List<Expenditure>> handle(GetExpendituresCommand command) async {
+    return _repository.getExpenditures(command.cacheLess);
   }
 }

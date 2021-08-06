@@ -24,4 +24,7 @@ class ExpenditureHiveModel extends HiveObject {
 
   @HiveField(6)
   int? totalInstallment = 0;
+
+  ExpenditureHiveModel({required this.name, required this.type, required this.amount, this.cardType,
+      this.expenditureType, this.currentInstallment, this.totalInstallment});
 }

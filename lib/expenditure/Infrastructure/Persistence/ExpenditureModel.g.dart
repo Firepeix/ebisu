@@ -16,14 +16,15 @@ class ExpenditureHiveModelAdapter extends TypeAdapter<ExpenditureHiveModel> {
     final fields = <int, dynamic>{
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
-    return ExpenditureHiveModel()
-      ..name = fields[0] as String
-      ..type = fields[1] as int
-      ..amount = fields[2] as int
-      ..cardType = fields[3] as int?
-      ..expenditureType = fields[4] as int?
-      ..currentInstallment = fields[5] as int?
-      ..totalInstallment = fields[6] as int?;
+    return ExpenditureHiveModel(
+      name: fields[0] as String,
+      type: fields[1] as int,
+      amount: fields[2] as int,
+      cardType: fields[3] as int?,
+      expenditureType: fields[4] as int?,
+      currentInstallment: fields[5] as int?,
+      totalInstallment: fields[6] as int?
+    );
   }
 
   @override

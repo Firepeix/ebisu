@@ -1,6 +1,7 @@
 import 'package:ebisu/card/Domain/Card.dart';
 import 'package:ebisu/expenditure/Domain/Expenditure.dart';
 import 'package:ebisu/shared/Infrastructure/Repositories/Persistence/GoogleSheetsRepository.dart';
+import 'package:gsheets/gsheets.dart';
 
 
 class GoogleSheetExpenditureRepository extends GoogleSheetsRepository {
@@ -69,6 +70,33 @@ class GoogleSheetExpenditureRepository extends GoogleSheetsRepository {
     await sheet.values.appendRow(row, fromColumn: CreditColumns.SUBSCRIPTION_PURCHASE_LABEL.index);
     return Future.value();
   }
+
+  Future<List<Expenditure>> getCurrentExpenditures() async {
+    final expenditures = await _getDebitExpenditures();
+    expenditures.addAll(await _getCreditExpenditures());
+    return expenditures;
+  }
+
+  Future<List<Expenditure>> _getDebitExpenditures() async {
+    final sheet = await getSheet(CardClass.DEBIT);
+    final cells = await sheet.cells.allRows(fromRow: 2, fromColumn: DebitColumns.TO_PAY_LABEL.index, length: 2);
+    return cells.toList().map((List<Cell> cell) {
+      final label = cell[0];
+      final amount = (double.parse(cell[1].value) * 100).toInt();
+      return Expenditure(name: ExpenditureName(label.value), type: CardClass.DEBIT, amount: ExpenditureAmount(amount));
+    }).toList();
+  }
+
+  Future<List<Expenditure>> _getCreditExpenditures() async {
+    return [];
+    /*final expenditures = [];
+    final types = [CardClass.DEBIT, CardClass.CREDIT];
+    final sheet = await getSheet(CardClass.CREDIT);
+    final cells = await sheet.cells.allRows(fromRow: 3, fromColumn: 1, length: CARD_COLUMNS.LABEL.index);
+    return cells.toList().map((cell) => cell[0].value).toList();
+    return [];*/
+  }
+
 }
 
 enum DebitColumns {

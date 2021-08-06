@@ -1,4 +1,3 @@
-import 'package:ebisu/card/Domain/Card.dart';
 import 'package:ebisu/expenditure/Application/ExpenditureCommands.dart';
 import 'package:ebisu/expenditure/Domain/Expenditure.dart';
 import 'package:ebisu/expenditure/UI/Components/Expenditure.dart';
@@ -29,7 +28,7 @@ class Content extends StatefulWidget {
             ),
         ),
         onRefresh: () async {
-
+          return await state.setExpenditures(cacheLess: true);
         }
     );
   }
@@ -50,21 +49,18 @@ class _ContentState extends State<Content> with DispatchesCommands {
   }
 
   void _setInitialState () async {
-    _setExpenditures();
+    setExpenditures();
     setState(() {
       loaded = true;
     });
   }
 
-  Future<void> _setExpenditures () async {
-    final expenditures = await dispatch(new GetExpendituresCommand());
+  Future<void> setExpenditures ({cacheLess: false}) async {
+    final expenditures = await dispatch(new GetExpendituresCommand(cacheLess));
     setState(() {
-      this.expenditures = [
-        Expenditure(name: ExpenditureName('Lorem Ipsum'), type: CardClass.DEBIT, amount: ExpenditureAmount(150050)),
-        Expenditure(name: ExpenditureName('Lorem Ipsum'), type: CardClass.CREDIT, amount: ExpenditureAmount(15026), cardType: CardType('Nubank'), expenditureType: ExpenditureType.UNICA),
-        Expenditure(name: ExpenditureName('Lorem Ipsum'), type: CardClass.CREDIT, amount: ExpenditureAmount(580), cardType: CardType('Picpay'), expenditureType: ExpenditureType.PARCELADA, installments: ExpenditureInstallments(currentInstallment: 5, totalInstallments: 7))
-      ];
+      this.expenditures = expenditures;
     });
+    return Future.value();
   }
 
   @override
