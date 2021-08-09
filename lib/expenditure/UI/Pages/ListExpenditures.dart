@@ -16,7 +16,6 @@ class ListExpendituresPage extends AbstractPage {
 
 
 class Content extends StatefulWidget {
-
   Widget _getExpenditureView (_ContentState state) {
     return ListView.builder(
         itemCount: state.expenditures.length,

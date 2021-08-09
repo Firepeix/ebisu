@@ -1,3 +1,4 @@
+import 'package:ebisu/expenditure/UI/Pages/Home.dart';
 import 'package:ebisu/shared/Infrastructure/Repositories/Persistence/GoogleSheetsRepository.dart';
 import 'package:ebisu/src/Domain/Pages/AbstractPage.dart';
 import 'package:ebisu/src/UI/General/SetupApp.dart';
@@ -33,25 +34,7 @@ class Home extends StatefulWidget {
         ),
         Visibility(
             visible: state.isSetup == true,
-            child: Padding(
-                padding: EdgeInsets.symmetric(vertical: 40, horizontal: 30),
-                child: Column(
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Icon(Icons.paid_outlined, size: 300,)
-                      ],
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text('Bem Vindo', style: TextStyle(fontSize: 60, fontWeight: FontWeight.w600),)
-                      ],
-                    )
-                  ],
-                )
-            )
+            child: ExpenditureHomePage()
         ),
         Visibility(
             visible: state.isSetup == false,
