@@ -88,15 +88,48 @@ class GoogleSheetExpenditureRepository extends GoogleSheetsRepository {
   }
 
   Future<List<Expenditure>> _getCreditExpenditures() async {
-    return [];
-    /*final expenditures = [];
-    final types = [CardClass.DEBIT, CardClass.CREDIT];
-    final sheet = await getSheet(CardClass.CREDIT);
-    final cells = await sheet.cells.allRows(fromRow: 3, fromColumn: 1, length: CARD_COLUMNS.LABEL.index);
-    return cells.toList().map((cell) => cell[0].value).toList();
-    return [];*/
+    return _getCreditExpendituresCells();
   }
 
+  Future<List<Expenditure>> _getCreditExpendituresCells() async {
+    final sheet = await getSheet(CardClass.CREDIT);
+    final cells = await sheet.cells.allRows(fromRow: 3, fromColumn: 1, length: 18);
+    final List<Expenditure> expenditures = [];
+
+    cells.forEach((List<Cell> rows) {
+      if (rows.length >= CreditColumns.SINGLE_PURCHASE_TYPE.index) {
+        final expenditureCell = rows.sublist(CreditColumns.SINGLE_PURCHASE_LABEL.index - 1, CreditColumns.SINGLE_PURCHASE_TYPE.index);
+        expenditures.add(_fromListCell(expenditureCell, 4, ExpenditureType.UNICA));
+      }
+      if (rows.length >= CreditColumns.INSTALLMENT_PURCHASE_TOTAL_INSTALLMENT.index) {
+        final expenditureCell = rows.sublist(CreditColumns.INSTALLMENT_PURCHASE_LABEL.index - 1, CreditColumns.INSTALLMENT_PURCHASE_TOTAL_INSTALLMENT.index);
+        expenditures.add(_fromListCell(expenditureCell, 4, ExpenditureType.PARCELADA));
+      }
+      if (rows.length >= CreditColumns.SUBSCRIPTION_PURCHASE_TYPE.index) {
+        final expenditureCell = rows.sublist(CreditColumns.SUBSCRIPTION_PURCHASE_LABEL.index - 1, CreditColumns.SUBSCRIPTION_PURCHASE_TYPE.index);
+        expenditures.add(_fromListCell(expenditureCell, 2, ExpenditureType.ASSINATURA));
+      }
+    });
+
+    return expenditures;
+  }
+
+  Expenditure _fromListCell(List<Cell> cells, int typeCol, ExpenditureType type) {
+    final amount = (double.parse(cells[1].value) * 100).toInt();
+    ExpenditureInstallments? installments;
+    if (type == ExpenditureType.PARCELADA) {
+      final difference = cells[5].value.split('/');
+      installments = ExpenditureInstallments(currentInstallment: int.parse(difference[0]), totalInstallments: int.parse(difference[1]));
+    }
+    return Expenditure(
+        name: ExpenditureName(cells[0].value),
+        type: CardClass.CREDIT,
+        amount: ExpenditureAmount(amount),
+        cardType: CardType(cells[typeCol].value),
+        expenditureType: type,
+        installments: installments
+    );
+  }
 }
 
 enum DebitColumns {

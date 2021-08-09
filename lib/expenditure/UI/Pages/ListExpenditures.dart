@@ -16,16 +16,31 @@ class ListExpendituresPage extends AbstractPage {
 
 
 class Content extends StatefulWidget {
+
+  Widget _getExpenditureView (_ContentState state) {
+    return ListView.builder(
+        itemCount: state.expenditures.length,
+        itemBuilder: (BuildContext context, int index) => Padding(
+          padding: EdgeInsets.only(top: index == 0 ? 0 : 10),
+          child: ExpenditureViewModel(state.expenditures[index]),
+        )
+    );
+  }
+
+  Widget _getExpenditureSkeletonView () {
+    return ListView.builder(
+        itemCount: 5,
+        itemBuilder: (BuildContext context, int index) => Padding(
+          padding: EdgeInsets.only(top: index == 0 ? 0 : 10),
+          child: ExpenditureSkeletonView(),
+        )
+    );
+  }
+
   Widget build (_ContentState state) {
     return RefreshIndicator(
         child: Padding(padding: EdgeInsets.symmetric(vertical: 30, horizontal: 10),
-            child: ListView.builder(
-              itemCount: state.expenditures.length,
-              itemBuilder: (BuildContext context, int index) => Padding(
-                padding: EdgeInsets.only(top: index == 0 ? 0 : 10),
-                child: ExpenditureViewModel(state.expenditures[index]),
-              )
-            ),
+            child: state.loaded ? _getExpenditureView(state) : _getExpenditureSkeletonView(),
         ),
         onRefresh: () async {
           return await state.setExpenditures(cacheLess: true);
@@ -39,8 +54,7 @@ class Content extends StatefulWidget {
 
 class _ContentState extends State<Content> with DispatchesCommands {
   List<Expenditure> expenditures = [];
-
-  bool loaded = true;
+  bool loaded = false;
 
   @override
   void initState() {

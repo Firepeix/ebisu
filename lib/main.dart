@@ -7,6 +7,8 @@ import 'package:hive_flutter/hive_flutter.dart';
 import 'package:injectable/injectable.dart';
 
 import 'main.config.dart';
+import 'shared/Infrastructure/Providers/ServiceProvider.dart';
+
 final getIt = GetIt.instance;
 
 @InjectableInit(
@@ -16,6 +18,7 @@ final getIt = GetIt.instance;
 )
 void configureDependencies() {
   $initGetIt(getIt);
+  ServiceContainer.register();
 }
 
 void main() {

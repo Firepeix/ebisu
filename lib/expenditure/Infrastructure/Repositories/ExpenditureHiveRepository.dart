@@ -1,3 +1,4 @@
+import 'package:ebisu/card/Domain/Card.dart';
 import 'package:ebisu/expenditure/Domain/Expenditure.dart';
 import 'package:ebisu/expenditure/Domain/Repositories/ExpenditureRepositoryInterface.dart';
 import 'package:ebisu/expenditure/Infrastructure/Persistence/ExpenditureModel.dart';
@@ -20,12 +21,19 @@ class ExpenditureHiveRepository extends GoogleSheetExpenditureRepository impleme
     if (cacheLess) {
       expenditures = await super.getCurrentExpenditures();
       await _saveExpendituresHive(expenditures);
-      return expenditures;
+      return expenditures.reversed.toList();
     }
-    final box = await _getBox();
-    return [];
-    //final expenditures = box.values;
+    expenditures = await _getExpendituresFromBox();
+    return expenditures.reversed.toList();
   }
+
+  Future<List<Expenditure>> _getExpendituresFromBox() async {
+    final box = await _getBox();
+    final List<Expenditure> expenditures = [];
+    box.values.forEach((expenditure) => expenditures.add(_fromModelToExpenditure(expenditure)));
+    return expenditures;
+  }
+
 
   Future<void> _saveExpendituresHive(List<Expenditure> expenditures) async {
     final box = await _getBox();
@@ -37,7 +45,22 @@ class ExpenditureHiveRepository extends GoogleSheetExpenditureRepository impleme
     return ExpenditureHiveModel(
         name: expenditure.name.value,
         type: expenditure.type.index,
-        amount: expenditure.amount.value
+        amount: expenditure.amount.value,
+        cardType: expenditure.cardType != null ? expenditure.cardType!.value : null,
+        expenditureType: expenditure.expenditureType != null ? expenditure.expenditureType!.index : null,
+        currentInstallment: expenditure.installments != null ? expenditure.installments!.currentInstallment : null,
+        totalInstallment: expenditure.installments != null ? expenditure.installments!.totalInstallments : null,
+    );
+  }
+
+  Expenditure _fromModelToExpenditure (ExpenditureHiveModel expenditure) {
+    return Expenditure(
+        name: ExpenditureName(expenditure.name),
+        type: CardClass.values[expenditure.type],
+        amount: ExpenditureAmount(expenditure.amount),
+        cardType: expenditure.cardType != null ? CardType(expenditure.cardType!) : null,
+        expenditureType: expenditure.expenditureType != null ? ExpenditureType.values[expenditure.expenditureType!] : null,
+        installments: expenditure.currentInstallment != null ? ExpenditureInstallments(currentInstallment: expenditure.currentInstallment!, totalInstallments: expenditure.totalInstallment!) : null,
     );
   }
 }

@@ -20,7 +20,7 @@ class ExpenditureHiveModelAdapter extends TypeAdapter<ExpenditureHiveModel> {
       name: fields[0] as String,
       type: fields[1] as int,
       amount: fields[2] as int,
-      cardType: fields[3] as int?,
+      cardType: fields[3] as String?,
       expenditureType: fields[4] as int?,
       currentInstallment: fields[5] as int?,
       totalInstallment: fields[6] as int?

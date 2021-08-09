@@ -14,7 +14,7 @@ class ExpenditureHiveModel extends HiveObject {
   int amount = 0;
 
   @HiveField(3)
-  int? cardType = 0;
+  String? cardType = '';
 
   @HiveField(4)
   int? expenditureType = 0;

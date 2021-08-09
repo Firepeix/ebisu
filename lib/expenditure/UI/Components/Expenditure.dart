@@ -1,5 +1,6 @@
 import 'package:ebisu/card/Domain/Card.dart' as CardModel;
 import 'package:ebisu/expenditure/Domain/Expenditure.dart';
+import 'package:ebisu/shared/UI/Components/Shimmer.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -22,7 +23,7 @@ class ExpenditureViewModel extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
+    return  Card(
       shape: RoundedRectangleBorder(
           side: BorderSide(color: Colors.grey.shade400, width: 0.5),
           borderRadius: BorderRadius.all(Radius.circular(5))),
@@ -31,6 +32,27 @@ class ExpenditureViewModel extends StatelessWidget {
         padding: EdgeInsets.all(10),
         child: _getViewModel(),
       ),
+    );
+  }
+}
+
+class ExpenditureSkeletonView extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Shimmer(
+      child: ShimmerLoading(isLoading: true, child: Column(
+        children: [
+          Container(
+            width: 351,
+            height: 99,
+            decoration: const BoxDecoration(
+              color: Colors.black,
+              borderRadius: BorderRadius.all(Radius.circular(8)),
+              shape: BoxShape.rectangle,
+            ),
+          ),
+        ],
+      )),
     );
   }
 }

@@ -19,7 +19,7 @@ class Shimmer extends StatefulWidget {
     stops: [
       0.1,
       0.3,
-      0.4,
+      0.5,
     ],
     begin: Alignment(-1.0, -0.3),
     end: Alignment(1.0, 0.3),
@@ -39,7 +39,7 @@ class ShimmerState extends State<Shimmer> with SingleTickerProviderStateMixin {
     super.initState();
 
     _shimmerController = AnimationController.unbounded(vsync: this)
-      ..repeat(min: -0.5, max: 1.5, period: const Duration(milliseconds: 2000));
+      ..repeat(min: -1.5, max: 1.5, period: const Duration(milliseconds: 1000));
   }
 
   @override
