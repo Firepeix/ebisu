@@ -1,5 +1,7 @@
 import 'package:ebisu/card/Domain/Card.dart';
 import 'package:ebisu/expenditure/Domain/Expenditure.dart';
+import 'package:ebisu/expenditure/Domain/ExpenditureSummary.dart';
+import 'package:ebisu/shared/Domain/ValueObjects.dart';
 import 'package:ebisu/shared/Infrastructure/Repositories/Persistence/GoogleSheetsRepository.dart';
 import 'package:gsheets/gsheets.dart';
 
@@ -75,6 +77,17 @@ class GoogleSheetExpenditureRepository extends GoogleSheetsRepository {
     final expenditures = await _getDebitExpenditures();
     expenditures.addAll(await _getCreditExpenditures());
     return expenditures;
+  }
+
+  Future<List<ExpenditureSummary>> getCurrentCreditExpenditureSummaries() async {
+    final sheet = await getSheet(CardClass.CREDIT);
+    final cells = await sheet.values.allRows(fromRow: 3, fromColumn: 1, length: 4);
+    return cells.map((values) => toExpenditureSummary(values: values)).toList();
+  }
+
+  ExpenditureSummary toExpenditureSummary ({required List<Object?> values, Function? amountTransform}) {
+    final transform = amountTransform ?? IntValueObject.moneyTransform();
+    return ExpenditureSummary(values[0].toString(), ExpenditureSummaryBudget(transform(values[2])), ExpenditureSummarySpent(transform(values[1])));
   }
 
   Future<List<Expenditure>> _getDebitExpenditures() async {

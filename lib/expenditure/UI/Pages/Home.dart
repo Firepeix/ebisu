@@ -1,4 +1,7 @@
+import 'package:ebisu/expenditure/Application/ExpenditureCommands.dart';
+import 'package:ebisu/expenditure/Domain/ExpenditureSummary.dart';
 import 'package:ebisu/shared/Domain/Bus/Command.dart';
+import 'package:ebisu/shared/UI/Components/Summaries.dart';
 import 'package:ebisu/shared/UI/Components/Title.dart';
 import 'package:ebisu/src/Domain/Pages/AbstractPage.dart';
 import 'package:flutter/material.dart';
@@ -13,36 +16,21 @@ class ExpenditureHomePage extends AbstractPage {
 class _Content extends StatefulWidget {
   Widget _getDefaultScreen () => Padding(
       padding: EdgeInsets.symmetric(vertical: 30, horizontal: 10),
-      child: Column(
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(Icons.paid_outlined, size: 300,)
-            ],
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text('Bem Vindo', style: TextStyle(fontSize: 60, fontWeight: FontWeight.w600),)
-            ],
-          )
-        ],
-      )
+      child: Column()
   );
 
 
-
-
-  Widget _getHomeDashboard () => Column(
+  Widget _getHomeDashboard (_ContentState state) => Column(
     children: [
-      EbisuTitle()
+      EbisuTitle('Resumo de Credito'),
+      CreditSummaries(summaries: state.creditSummaries,),
+      EbisuTitle('Resumo de Debito'),
     ],
   );
 
   Widget build (_ContentState state) {
     return RefreshIndicator(
-        child: state.loaded ? _getHomeDashboard() : _getDefaultScreen(),
+        child: state.loaded ? _getHomeDashboard(state) : _getDefaultScreen(),
         onRefresh: () async {
           return print(12);
         }
@@ -55,27 +43,29 @@ class _Content extends StatefulWidget {
 
 class _ContentState extends State<_Content> with DispatchesCommands {
   bool loaded = false;
+  List<ExpenditureSummary> creditSummaries = [];
 
   @override
   void initState() {
     super.initState();
-    _setInitialState();
+    updateHomeState();
   }
 
-  void _setInitialState () async {
-    //setExpenditures();
+  void updateHomeState () async {
+    await _setCreditExpendituresSummary();
     setState(() {
       loaded = true;
     });
   }
 
-  /*Future<void> setExpenditures ({cacheLess: false}) async {
-    final expenditures = await dispatch(new GetExpendituresCommand(cacheLess));
+
+  Future<void> _setCreditExpendituresSummary ({cacheLess: false}) async {
+    final summaries = await dispatch(new GetCreditExpendituresSummariesCommand(cacheLess));
     setState(() {
-      this.expenditures = expenditures;
+      this.creditSummaries = summaries;
     });
     return Future.value();
-  }*/
+  }
 
   @override
   Widget build(BuildContext context) => widget.build(this);

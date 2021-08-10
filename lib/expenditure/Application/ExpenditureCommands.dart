@@ -1,4 +1,5 @@
 import 'package:ebisu/expenditure/Domain/Expenditure.dart';
+import 'package:ebisu/expenditure/Domain/ExpenditureSummary.dart';
 import 'package:ebisu/expenditure/Domain/Repositories/ExpenditureRepositoryInterface.dart';
 import 'package:ebisu/shared/Domain/Bus/Command.dart';
 import 'package:injectable/injectable.dart';
@@ -17,6 +18,24 @@ class GetExpendituresCommandHandler implements CommandHandler<GetExpendituresCom
 
   @override
   Future<List<Expenditure>> handle(GetExpendituresCommand command) async {
-    return _repository.getExpenditures(command.cacheLess);
+    return await _repository.getExpenditures(command.cacheLess);
+  }
+}
+
+class GetCreditExpendituresSummariesCommand implements Command {
+  final bool cacheLess;
+
+  GetCreditExpendituresSummariesCommand(this.cacheLess);
+
+}
+
+@injectable
+class GetCreditExpendituresSummariesCommandHandler implements CommandHandler<GetCreditExpendituresSummariesCommand> {
+  final ExpenditureRepositoryInterface _repository;
+  GetCreditExpendituresSummariesCommandHandler(this._repository);
+
+  @override
+  Future<List<ExpenditureSummary>> handle(GetCreditExpendituresSummariesCommand command) async {
+    return await _repository.getCreditExpenditureSummaries(command.cacheLess);
   }
 }

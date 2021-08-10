@@ -34,12 +34,15 @@ class Home extends StatefulWidget {
         ),
         Visibility(
             visible: state.isSetup == true,
-            child: ExpenditureHomePage()
+            child: Padding(
+                padding: EdgeInsets.symmetric(vertical: 30, horizontal: 10),
+                child: ExpenditureHomePage()
+            )
         ),
         Visibility(
             visible: state.isSetup == false,
             child: Padding(
-                padding: EdgeInsets.symmetric(vertical: 40, horizontal: 30),
+                padding: EdgeInsets.symmetric(vertical: 30, horizontal: 10),
                 child: SetupApp(() => state._checkSetup())
             )
         )
