@@ -17,9 +17,8 @@ class ExpenditureHomePage extends AbstractPage {
 class _Content extends StatefulWidget {
 
   Widget _getHomeDashboard (_ContentState state) => ListView(
-    shrinkWrap: true,
     children: [
-      EbisuTitle('Resumo de Credito'),
+      Padding(padding: EdgeInsets.only(top: 20), child: EbisuTitle('Resumo de Credito'),),
       state.loaded ? CreditSummaries(summaries: state.creditSummaries,) : CreditSummariesSkeleton(),
       EbisuTitle('Resumo de Debito'),
       state.loaded ? DebitSummary(state.debitSummary!) : DebitSummariesSkeleton(),

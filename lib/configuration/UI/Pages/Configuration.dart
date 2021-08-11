@@ -35,7 +35,7 @@ class ConfigurationPage extends AbstractPage {
         title: Text('Configurações'),
       ),
       body: ListView(
-        padding: EdgeInsets.only(top: 30),
+        padding: EdgeInsets.only(top: 20),
         children: <Widget>[
           Padding(padding: EdgeInsets.only(top: 0), child: ActiveSheetConfiguration(type: CardClass.DEBIT),),
           Padding(padding: EdgeInsets.only(top: 15), child: ActiveSheetConfiguration(type: CardClass.CREDIT),),

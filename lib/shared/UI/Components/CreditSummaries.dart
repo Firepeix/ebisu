@@ -3,6 +3,7 @@ import 'package:ebisu/expenditure/Domain/ExpenditureSummary.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
+import 'Grids.dart';
 import 'Shimmer.dart';
 
 class CreditSummaries extends StatelessWidget {
@@ -12,10 +13,23 @@ class CreditSummaries extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) =>
-      Padding(padding: EdgeInsets.symmetric(vertical: 20), child: Row(
-        children: summaries.map((summary) => _CreditSummary(summary: summary))
-            .toList(),
-      ),);
+      Padding(
+        padding: EdgeInsets.only(top: 20, bottom: 14),
+        child: GridView.builder(
+          padding: EdgeInsets.zero,
+          physics: NeverScrollableScrollPhysics(),
+          shrinkWrap: true,
+            gridDelegate: SliverGridDelegateWithFixedCrossAxisCountAndCentralizedLastElement(
+              crossAxisCount: 2,
+              mainAxisSpacing: 0,
+              crossAxisSpacing: 2,
+              childAspectRatio: 1 / 0.91,
+              itemCount: summaries.where((element) => element.isActive).length
+            ),
+            itemCount: summaries.where((element) => element.isActive).length,
+            itemBuilder: (BuildContext context, int index) => _CreditSummary(summary: summaries.where((element) => element.isActive).toList()[index],),
+        ),
+  );
 }
 
 class _CreditSummary extends StatelessWidget {
@@ -81,11 +95,38 @@ class CreditSummariesSkeleton extends StatelessWidget {
   @override
   Widget build(BuildContext context) =>
       Shimmer(
+        child: ShimmerLoading(isLoading: true, child: Padding(
+          padding: EdgeInsets.only(top: 20, bottom: 14),
+          child: GridView.builder(
+            physics: NeverScrollableScrollPhysics(),
+            shrinkWrap: true,
+            gridDelegate: SliverGridDelegateWithFixedCrossAxisCountAndCentralizedLastElement(
+                crossAxisCount: 2,
+                mainAxisSpacing: 0,
+                crossAxisSpacing: 2,
+                childAspectRatio: 1 / 0.91,
+                itemCount: 2
+            ),
+            itemCount: 2,
+            itemBuilder: (BuildContext context, int index) => Container(
+              height: 177.0,
+              decoration: const BoxDecoration(
+                color: Colors.black,
+                borderRadius: BorderRadius.all(Radius.circular(8)),
+                shape: BoxShape.rectangle,
+              ),
+            ),
+          ),
+        )
+        ),
+      ); /* @override
+  Widget build(BuildContext context) =>
+      Shimmer(
         child: ShimmerLoading(isLoading: true, child: Column(
           children: [
             Padding(padding: EdgeInsets.symmetric(vertical: 20), child:
                 Row(
-                  children: List.generate(3, (index) => Padding(padding: EdgeInsets.only(right: 4, left: 4), child:
+                  children: List.generate(2, (index) => Padding(padding: EdgeInsets.only(right: 4, left: 4), child:
                   Container(
                     width: 122,
                     height: 177.0,
@@ -99,5 +140,5 @@ class CreditSummariesSkeleton extends StatelessWidget {
             )
           ],
         )),
-      );
+      );*/
 }

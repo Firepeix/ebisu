@@ -48,6 +48,9 @@ dev_dependencies:
 
 # The following section is specific to Flutter.
 flutter:
+#  scripts:
+#    build: 'flutter build apk --build-number 2 --build-name=2.0.0'
+#    watch: 'flutter packages pub run build_runner watch'
 
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in
@@ -84,5 +87,3 @@ flutter:
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/custom-fonts/#from-packages
-
-#flutter packages pub run build_runner watch

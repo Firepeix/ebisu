@@ -55,7 +55,7 @@ class Content extends StatefulWidget {
 
   Widget build (_ContentState state) {
     return Padding(
-      padding: EdgeInsets.symmetric(vertical: 30, horizontal: 10),
+      padding: EdgeInsets.symmetric(vertical: 20, horizontal: 10),
       child: !state.loaded ? ExpenditureFormSkeleton() : ExpenditureForm(formKey: formKey,cardTypes: state.cardTypes,),
     );
   }

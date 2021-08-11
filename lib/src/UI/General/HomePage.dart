@@ -18,6 +18,16 @@ class Home extends StatefulWidget {
   State createState() => _HomeState();
 
   Widget build (_HomeState state) {
+    if (state.isSetup == true) {
+      return PageView(
+        children: [
+          Padding(
+              padding: EdgeInsets.symmetric(horizontal: 10),
+              child: ExpenditureHomePage()
+          )
+        ],
+      );
+    }
     return Column(
       children: [
         Visibility(
@@ -33,16 +43,9 @@ class Home extends StatefulWidget {
             )
         ),
         Visibility(
-            visible: state.isSetup == true,
-            child: Padding(
-                padding: EdgeInsets.symmetric(vertical: 30, horizontal: 10),
-                child: ExpenditureHomePage()
-            )
-        ),
-        Visibility(
             visible: state.isSetup == false,
             child: Padding(
-                padding: EdgeInsets.symmetric(vertical: 30, horizontal: 10),
+                padding: EdgeInsets.symmetric(vertical: 20, horizontal: 10),
                 child: SetupApp(() => state._checkSetup())
             )
         )

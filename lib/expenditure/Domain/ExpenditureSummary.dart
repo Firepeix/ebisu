@@ -24,6 +24,8 @@ class ExpenditureSummary {
   ExpenditureSummarySpent get spent => _spent;
 
   ExpenditureSummaryResult get result => _result;
+
+  bool get isActive => _spent.value != 0 || _budget.value != 0;
 }
 
 class DebitExpenditureSummary {
