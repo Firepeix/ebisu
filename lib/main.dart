@@ -61,6 +61,12 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
-    return EbisuMainView();
+    try {
+      return EbisuMainView();
+    } catch (error) {
+      ScaffoldMessengerState messenger = ScaffoldMessenger.of(context);
+      messenger.showSnackBar(SnackBar(content: Text('Erro' + error.toString()), backgroundColor: Colors.red, behavior: SnackBarBehavior.floating));
+      return EbisuMainView();
+    }
   }
 }
