@@ -100,6 +100,7 @@ class ExpenditureHiveRepository extends GoogleSheetExpenditureRepository impleme
               ExpenditureSummaryBudget(int.parse(summary[2].toString())),
               ExpenditureSummarySpent(int.parse(summary[1].toString()))
       )));
+      return summaries;
     }
 
     return await queryCreditExpenditureSummaries();

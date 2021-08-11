@@ -26,7 +26,6 @@ class GetCreditExpendituresSummariesCommand implements Command {
   final bool cacheLess;
 
   GetCreditExpendituresSummariesCommand(this.cacheLess);
-
 }
 
 @injectable
