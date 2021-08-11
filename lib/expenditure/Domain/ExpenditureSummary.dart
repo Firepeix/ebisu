@@ -36,14 +36,14 @@ class DebitExpenditureSummary {
   late final ExpenditureSummaryResult _result;
 
   DebitExpenditureSummary(this._income, this._toPay, this._payed) {
-    _result = ExpenditureSummaryResult(_income.value - _toPay.value);
+    _result = ExpenditureSummaryResult(_income.value - (_toPay.value + _payed.value));
     _addSeries();
   }
 
   void _addSeries () {
     _series.add(DebitExpenditureSummarySeries('Entrada', _income, Colors.green));
     _series.add(DebitExpenditureSummarySeries('A Pagar', _toPay, Colors.red));
-    _series.add(DebitExpenditureSummarySeries('Restante', _result, Colors.blue));
+    _series.add(DebitExpenditureSummarySeries('Disponível', _result, Colors.blue));
     _series.add(DebitExpenditureSummarySeries('Pago', _payed, Colors.purple));
   }
 
