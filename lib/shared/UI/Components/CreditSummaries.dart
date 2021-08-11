@@ -39,7 +39,7 @@ class _CreditSummary extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) =>
-      Expanded(child: Card(
+      Card(
         elevation: 4,
         child: Column(
           children: [
@@ -88,7 +88,7 @@ class _CreditSummary extends StatelessWidget {
             )
           ],
         ),
-      ));
+      );
 }
 
 class CreditSummariesSkeleton extends StatelessWidget {
