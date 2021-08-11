@@ -23,7 +23,6 @@ class CreditSummaries extends StatelessWidget {
               crossAxisCount: 2,
               mainAxisSpacing: 0,
               crossAxisSpacing: 2,
-              childAspectRatio: 1 / 0.91,
               itemCount: summaries.where((element) => element.isActive).length
             ),
             itemCount: summaries.where((element) => element.isActive).length,
