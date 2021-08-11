@@ -3,6 +3,7 @@ import 'package:ebisu/expenditure/Domain/Expenditure.dart';
 import 'package:ebisu/expenditure/Domain/ExpenditureSummary.dart';
 import 'package:ebisu/shared/Domain/ValueObjects.dart';
 import 'package:ebisu/shared/Infrastructure/Repositories/Persistence/GoogleSheetsRepository.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:gsheets/gsheets.dart';
 
 
@@ -73,21 +74,33 @@ class GoogleSheetExpenditureRepository extends GoogleSheetsRepository {
     return Future.value();
   }
 
-  Future<List<Expenditure>> getCurrentExpenditures() async {
+  @protected
+  Future<List<Expenditure>> queryExpenditures() async {
     final expenditures = await _getDebitExpenditures();
     expenditures.addAll(await _getCreditExpenditures());
     return expenditures;
   }
 
-  Future<List<ExpenditureSummary>> getCurrentCreditExpenditureSummaries() async {
+  @protected
+  Future<List<ExpenditureSummary>> queryCreditExpenditureSummaries() async {
     final sheet = await getSheet(CardClass.CREDIT);
     final cells = await sheet.values.allRows(fromRow: 3, fromColumn: 1, length: 4);
-    return cells.map((values) => toExpenditureSummary(values: values)).toList();
+    return cells.map((values) => ExpenditureSummary(
+            values[0].toString(),
+            ExpenditureSummaryBudget(IntValueObject.integer(values[2])),
+            ExpenditureSummarySpent(IntValueObject.integer(values[1])))
+    ).toList();
   }
 
-  ExpenditureSummary toExpenditureSummary ({required List<Object?> values, Function? amountTransform}) {
-    final transform = amountTransform ?? IntValueObject.moneyTransform();
-    return ExpenditureSummary(values[0].toString(), ExpenditureSummaryBudget(transform(values[2])), ExpenditureSummarySpent(transform(values[1])));
+  @protected
+  Future<DebitExpenditureSummary> queryDebitExpenditureSummary() async {
+    final sheet = await getSheet(CardClass.DEBIT);
+    final cells = await sheet.values.allRows(fromRow: 2, fromColumn: DebitColumns.SUMMARY_LABEL.index, length: 2);
+    return DebitExpenditureSummary(
+        ExpenditureIncome(IntValueObject.integer(cells[0][1])),
+        ExpenditureAmountToPay(IntValueObject.integer(cells[1][1])),
+        ExpenditureAmountPayed(IntValueObject.integer(cells[2][1]))
+    );
   }
 
   Future<List<Expenditure>> _getDebitExpenditures() async {
@@ -150,7 +163,15 @@ enum DebitColumns {
   PAYED_LABEL,
   PAYED_AMOUNT,
   TO_PAY_LABEL,
-  TO_PAY_AMOUNT
+  TO_PAY_AMOUNT,
+  TBD,
+  TBD1,
+  TBD2,
+  TBD3,
+  TBD4,
+  TBD5,
+  SUMMARY_LABEL,
+  SUMMARY_AMOUNT,
 }
 
 enum CreditColumns {

@@ -39,3 +39,21 @@ class GetCreditExpendituresSummariesCommandHandler implements CommandHandler<Get
     return await _repository.getCreditExpenditureSummaries(command.cacheLess);
   }
 }
+
+class GetDebitExpenditureSummaryCommand implements Command {
+  final bool cacheLess;
+
+  GetDebitExpenditureSummaryCommand(this.cacheLess);
+
+}
+
+@injectable
+class GetDebitExpenditureSummaryCommandHandler implements CommandHandler<GetDebitExpenditureSummaryCommand> {
+  final ExpenditureRepositoryInterface _repository;
+  GetDebitExpenditureSummaryCommandHandler(this._repository);
+
+  @override
+  Future<DebitExpenditureSummary?> handle(GetDebitExpenditureSummaryCommand command) async {
+    return await _repository.getDebitExpenditureSummary(command.cacheLess);
+  }
+}

@@ -1,7 +1,8 @@
 import 'package:ebisu/expenditure/Application/ExpenditureCommands.dart';
 import 'package:ebisu/expenditure/Domain/ExpenditureSummary.dart';
 import 'package:ebisu/shared/Domain/Bus/Command.dart';
-import 'package:ebisu/shared/UI/Components/Summaries.dart';
+import 'package:ebisu/shared/UI/Components/CreditSummaries.dart';
+import 'package:ebisu/shared/UI/Components/DebitSummaries.dart';
 import 'package:ebisu/shared/UI/Components/Title.dart';
 import 'package:ebisu/src/Domain/Pages/AbstractPage.dart';
 import 'package:flutter/material.dart';
@@ -14,25 +15,22 @@ class ExpenditureHomePage extends AbstractPage {
 }
 
 class _Content extends StatefulWidget {
-  Widget _getDefaultScreen () => Padding(
-      padding: EdgeInsets.symmetric(vertical: 30, horizontal: 10),
-      child: Column()
-  );
 
-
-  Widget _getHomeDashboard (_ContentState state) => Column(
+  Widget _getHomeDashboard (_ContentState state) => ListView(
+    shrinkWrap: true,
     children: [
       EbisuTitle('Resumo de Credito'),
-      CreditSummaries(summaries: state.creditSummaries,),
+      state.loaded ? CreditSummaries(summaries: state.creditSummaries,) : CreditSummariesSkeleton(),
       EbisuTitle('Resumo de Debito'),
+      state.loaded ? DebitSummary(state.debitSummary!) : DebitSummariesSkeleton(),
     ],
   );
 
   Widget build (_ContentState state) {
     return RefreshIndicator(
-        child: state.loaded ? _getHomeDashboard(state) : _getDefaultScreen(),
+        child: _getHomeDashboard(state),
         onRefresh: () async {
-          return print(12);
+          return await state.updateHomeState(cacheLess: true);
         }
     );
   }
@@ -44,6 +42,7 @@ class _Content extends StatefulWidget {
 class _ContentState extends State<_Content> with DispatchesCommands {
   bool loaded = false;
   List<ExpenditureSummary> creditSummaries = [];
+  DebitExpenditureSummary? debitSummary;
 
   @override
   void initState() {
@@ -51,19 +50,26 @@ class _ContentState extends State<_Content> with DispatchesCommands {
     updateHomeState();
   }
 
-  void updateHomeState () async {
-    await _setCreditExpendituresSummary();
+  Future<void> updateHomeState ({cacheLess: false}) async {
+    await Future.wait([
+      _setCreditExpendituresSummary(cacheLess),
+      _setDebitExpendituresSummary(cacheLess)
+    ]);
     setState(() {
       loaded = true;
     });
   }
 
 
-  Future<void> _setCreditExpendituresSummary ({cacheLess: false}) async {
+  Future<void> _setCreditExpendituresSummary (bool cacheLess) async {
     final summaries = await dispatch(new GetCreditExpendituresSummariesCommand(cacheLess));
-    setState(() {
-      this.creditSummaries = summaries;
-    });
+    this.creditSummaries = summaries;
+    return Future.value();
+  }
+
+  Future<void> _setDebitExpendituresSummary (bool cacheLess) async {
+    final summary = await dispatch(new GetDebitExpenditureSummaryCommand(cacheLess));
+    this.debitSummary = summary;
     return Future.value();
   }
 

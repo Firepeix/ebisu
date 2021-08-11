@@ -1,4 +1,5 @@
 import 'package:ebisu/shared/Domain/ValueObjects.dart';
+import 'package:flutter/material.dart';
 
 class ExpenditureSummary {
   final String? _title;
@@ -9,11 +10,6 @@ class ExpenditureSummary {
 
   ExpenditureSummary(this._title, this._budget, this._spent) {
     _result = ExpenditureSummaryResult(_budget.value - _spent.value);
-  }
-
-
-  factory ExpenditureSummary.debit(ExpenditureIncome income, ExpenditureAmountToPay toPay, ExpenditureAmountPayed payed) {
-    return DebitExpenditureSummary(income, toPay, payed);
   }
 
   String? get title => _title;
@@ -30,37 +26,66 @@ class ExpenditureSummary {
   ExpenditureSummaryResult get result => _result;
 }
 
-class DebitExpenditureSummary extends ExpenditureSummary {
+class DebitExpenditureSummary {
+  final ExpenditureIncome _income;
+  final ExpenditureAmountToPay _toPay;
   final ExpenditureAmountPayed _payed;
-  DebitExpenditureSummary(ExpenditureIncome income, ExpenditureAmountToPay toPay, this._payed) : super(null, income, toPay);
+  final List<DebitExpenditureSummarySeries> _series = [];
+  late final ExpenditureSummaryResult _result;
+
+  DebitExpenditureSummary(this._income, this._toPay, this._payed) {
+    _result = ExpenditureSummaryResult(_income.value - _toPay.value);
+    _addSeries();
+  }
+
+  void _addSeries () {
+    _series.add(DebitExpenditureSummarySeries('Entrada', _income, Colors.green));
+    _series.add(DebitExpenditureSummarySeries('A Pagar', _toPay, Colors.red));
+    _series.add(DebitExpenditureSummarySeries('Restante', _result, Colors.blue));
+    _series.add(DebitExpenditureSummarySeries('Pago', _payed, Colors.purple));
+  }
+
+  List<DebitExpenditureSummarySeries> get series => _series;
+
+  ExpenditureAmountPayed get payed => _payed;
+
+  ExpenditureAmountToPay get toPay => _toPay;
+
+  ExpenditureIncome get income => _income;
+}
+
+class DebitExpenditureSummarySeries {
+  final String label;
+  final _DebitSummaryValue value;
+  final MaterialColor color;
+
+  DebitExpenditureSummarySeries(this.label, this.value, this.color);
 }
 
 class ExpenditureSummaryBudget extends IntValueObject {
   ExpenditureSummaryBudget(int value) : super(value);
-
-  @override
-  ExpenditureSummaryBudget.money(String value) : super.money(value);
 }
 
 class ExpenditureSummarySpent extends IntValueObject {
   ExpenditureSummarySpent(int value) : super(value);
-
-  @override
-  ExpenditureSummarySpent.money(String value) : super.money(value);
 }
 
-class ExpenditureIncome extends ExpenditureSummaryBudget {
+class _DebitSummaryValue extends IntValueObject {
+  _DebitSummaryValue(int value) : super(value);
+}
+
+class ExpenditureIncome extends _DebitSummaryValue {
   ExpenditureIncome(int value) : super(value);
 }
 
-class ExpenditureAmountToPay extends ExpenditureSummarySpent {
+class ExpenditureAmountToPay extends _DebitSummaryValue {
   ExpenditureAmountToPay(int value) : super(value);
 }
 
-class ExpenditureAmountPayed extends ExpenditureSummarySpent {
+class ExpenditureAmountPayed extends _DebitSummaryValue {
   ExpenditureAmountPayed(int value) : super(value);
 }
 
-class ExpenditureSummaryResult extends IntValueObject {
+class ExpenditureSummaryResult extends _DebitSummaryValue {
   ExpenditureSummaryResult(int value) : super(value);
 }
