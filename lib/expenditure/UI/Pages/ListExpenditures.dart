@@ -2,6 +2,7 @@ import 'package:ebisu/expenditure/Application/ExpenditureCommands.dart';
 import 'package:ebisu/expenditure/Domain/Expenditure.dart';
 import 'package:ebisu/expenditure/UI/Components/Expenditure.dart';
 import 'package:ebisu/shared/Domain/Bus/Command.dart';
+import 'package:ebisu/shared/Domain/ExceptionHandler/ExceptionHandler.dart';
 import 'package:ebisu/src/Domain/Pages/AbstractPage.dart';
 import 'package:flutter/material.dart';
 
@@ -51,7 +52,7 @@ class Content extends StatefulWidget {
   State<StatefulWidget> createState() => _ContentState();
 }
 
-class _ContentState extends State<Content> with DispatchesCommands {
+class _ContentState extends State<Content> with DispatchesCommands, DisplaysErrors {
   List<Expenditure> expenditures = [];
   bool loaded = false;
 
@@ -69,11 +70,14 @@ class _ContentState extends State<Content> with DispatchesCommands {
   }
 
   Future<void> setExpenditures ({cacheLess: false}) async {
-    final expenditures = await dispatch(new GetExpendituresCommand(cacheLess));
-    setState(() {
-      this.expenditures = expenditures;
-    });
-    return Future.value();
+    try {
+      final expenditures = await dispatch(new GetExpendituresCommand(cacheLess));
+      setState(() {
+        this.expenditures = expenditures;
+      });
+    } catch (error) {
+      displayError(error, context: context);
+    }
   }
 
   @override

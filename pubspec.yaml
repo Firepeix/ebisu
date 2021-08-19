@@ -49,7 +49,7 @@ dev_dependencies:
 # The following section is specific to Flutter.
 flutter:
 #  scripts:
-#    build: 'flutter build apk --build-number 6 --build-name=2.0.4'
+#    build: 'flutter build apk --build-number 7 --build-name=2.1.0'
 #    watch: 'flutter packages pub run build_runner watch'
 
   # The following line ensures that the Material Icons font is

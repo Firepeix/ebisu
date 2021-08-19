@@ -1,6 +1,7 @@
 import 'package:ebisu/expenditure/Application/ExpenditureCommands.dart';
 import 'package:ebisu/expenditure/Domain/ExpenditureSummary.dart';
 import 'package:ebisu/shared/Domain/Bus/Command.dart';
+import 'package:ebisu/shared/Domain/ExceptionHandler/ExceptionHandler.dart';
 import 'package:ebisu/shared/UI/Components/CreditSummaries.dart';
 import 'package:ebisu/shared/UI/Components/DebitSummaries.dart';
 import 'package:ebisu/shared/UI/Components/Title.dart';
@@ -38,7 +39,7 @@ class _Content extends StatefulWidget {
   State<StatefulWidget> createState() => _ContentState();
 }
 
-class _ContentState extends State<_Content> with DispatchesCommands {
+class _ContentState extends State<_Content> with DispatchesCommands, DisplaysErrors {
   bool loaded = false;
   List<ExpenditureSummary> creditSummaries = [];
   DebitExpenditureSummary? debitSummary;
@@ -50,10 +51,14 @@ class _ContentState extends State<_Content> with DispatchesCommands {
   }
 
   Future<void> updateHomeState ({cacheLess: false}) async {
-    await Future.wait([
-      _setCreditExpendituresSummary(cacheLess),
-      _setDebitExpendituresSummary(cacheLess)
-    ]);
+    try {
+      await Future.wait([
+        _setCreditExpendituresSummary(cacheLess),
+        _setDebitExpendituresSummary(cacheLess)
+      ]);
+    } catch (error) {
+      displayError(error, context: context);
+    }
     setState(() {
       loaded = true;
     });

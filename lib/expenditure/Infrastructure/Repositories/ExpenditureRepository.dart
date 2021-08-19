@@ -105,12 +105,28 @@ class GoogleSheetExpenditureRepository extends GoogleSheetsRepository {
 
   Future<List<Expenditure>> _getDebitExpenditures() async {
     final sheet = await getSheet(CardClass.DEBIT);
-    final cells = await sheet.cells.allRows(fromRow: 2, fromColumn: DebitColumns.TO_PAY_LABEL.index, length: 2);
-    return cells.toList().map((List<Cell> cell) {
-      final label = cell[0];
-      final amount = (double.parse(cell[1].value) * 100).toInt();
-      return Expenditure(name: ExpenditureName(label.value), type: CardClass.DEBIT, amount: ExpenditureAmount(amount));
-    }).toList();
+    final values = await sheet.values.allRows(fromRow: 2, fromColumn: DebitColumns.PAYED_LABEL.index, length: 4);
+    final List<Expenditure> payedExpenditures = [];
+    final List<Expenditure> toPayExpenditures = [];
+    values.where((element) => element.isNotEmpty).forEach((List<String> cell) {
+      if (cell[DebitColumns.PAYED_LABEL.index] != '') {
+        payedExpenditures.add(Expenditure(
+            name: ExpenditureName(cell[DebitColumns.PAYED_LABEL.index - 1]),
+            type: CardClass.DEBIT,
+            amount: ExpenditureAmount(IntValueObject.integer(cell[DebitColumns.PAYED_AMOUNT.index - 1]))
+        ));
+      }
+
+      if (cell.length == DebitColumns.TO_PAY_AMOUNT.index) {
+        payedExpenditures.add(Expenditure(
+            name: ExpenditureName(cell[DebitColumns.TO_PAY_LABEL.index - 1]),
+            type: CardClass.DEBIT,
+            amount: ExpenditureAmount(IntValueObject.integer(cell[DebitColumns.TO_PAY_AMOUNT.index - 1]))
+        ));
+      }
+    });
+
+    return [...toPayExpenditures, ...payedExpenditures];
   }
 
   Future<List<Expenditure>> _getCreditExpenditures() async {

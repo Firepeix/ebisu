@@ -3,6 +3,7 @@ import 'package:ebisu/expenditure/Domain/Repositories/ExpenditureRepositoryInter
 import 'package:ebisu/expenditure/Domain/Services/ExpenditureServiceInterface.dart';
 import 'package:ebisu/expenditure/Infrastructure/ExpenditureModuleServiceProvider.dart';
 import 'package:ebisu/shared/Domain/Bus/Command.dart';
+import 'package:ebisu/shared/Domain/ExceptionHandler/ExceptionHandler.dart';
 import 'package:ebisu/src/Domain/Pages/AbstractPage.dart';
 import 'package:ebisu/src/UI/Components/Nav/MainButtonPage.dart';
 import 'package:ebisu/src/UI/Expenditures/Form/ExpenditureForm.dart';
@@ -64,7 +65,7 @@ class Content extends StatefulWidget {
   State<StatefulWidget> createState() => _ContentState();
 }
 
-class _ContentState extends State<Content> with DispatchesCommands {
+class _ContentState extends State<Content> with DispatchesCommands, DisplaysErrors {
   Map<int, String> cardTypes = {};
   bool loaded = false;
 
@@ -85,10 +86,14 @@ class _ContentState extends State<Content> with DispatchesCommands {
   }
 
   Future<void> _setCardTypes () async {
-    final types = await dispatch(new GetCardTypesCommand());
-    setState(() {
-      cardTypes = types;
-    });
+    try {
+      final types = await dispatch(new GetCardTypesCommand());
+      setState(() {
+        cardTypes = types;
+      });
+    } catch (error) {
+      displayError(error, context: context);
+    }
   }
 
   @override

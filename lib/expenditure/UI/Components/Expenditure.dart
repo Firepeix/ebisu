@@ -136,7 +136,7 @@ class _DebitExpenditureViewModel extends _BaseExpenditureViewModel {
   String _getSubtitle() => 'Débito';
 
   Widget getIcon() => Container(
-    width: 60,
+    width: 71,
     height: 71,
     child: Icon(Icons.money, size: 71, color: Colors.white,),
       decoration: const BoxDecoration(
@@ -154,7 +154,7 @@ class _CreditPurchaseExpenditureViewModel extends _BaseExpenditureViewModel {
   String _getSubtitle() => 'Credito';
 
   Widget getIcon() => Container(
-      width: 60,
+      width: 71,
       height: 71,
       child: Icon(Icons.credit_card, size: 71, color: Colors.white,),
       decoration: BoxDecoration(
@@ -172,7 +172,7 @@ class _InstallmentPurchaseExpenditureViewModel extends _CreditPurchaseExpenditur
   _InstallmentPurchaseExpenditureViewModel(Expenditure model) : super(model);
 
   Widget getIcon() => Container(
-      width: 60,
+      width: 71,
       height: 71,
       child: Icon(Icons.date_range, size: 71, color: Colors.white,),
       decoration: BoxDecoration(
