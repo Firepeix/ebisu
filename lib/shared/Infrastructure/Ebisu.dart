@@ -23,7 +23,7 @@ class EbisuMainView extends StatefulWidget {
               size: 26.0,
             ),
             onPressed: () {
-              Navigator.pushNamed(context, '/configuration');
+              Navigator.pushNamed(context, '/shopping-list');
             },
           )
         ],

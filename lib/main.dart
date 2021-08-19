@@ -24,11 +24,15 @@ void configureDependencies() {
 void main() {
   Hive.initFlutter().then((value) {
     configureDependencies();
-    runApp(MyApp());
+    runApp(MyApp(getIt<PageContainer>()));
   });
 }
 
 class MyApp extends StatelessWidget {
+  final PageContainer _pageContainer;
+
+  MyApp(this._pageContainer);
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -42,8 +46,14 @@ class MyApp extends StatelessWidget {
       },
       onGenerateRoute: (settings) {
         if (settings.name == "/configuration") {
-          return ConfigurationPage.getRoute();
+          return ConfigurationPage().getRoute();
         }
+
+        if (_pageContainer.hasPage(settings.name ?? '')) {
+          return _pageContainer.getPage(settings.name ?? '').getRoute();
+        }
+
+
         // Unknown route
         return MaterialPageRoute(builder: (_) => MyHomePage(title: 'Home'));
       },

@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 abstract class AbstractPage extends StatelessWidget  {
   final Function? onChangeTo;
   AbstractPage({this.onChangeTo});
-
   Route getRoute() {
     return PageRouteBuilder(
         pageBuilder: (context, animation, secondaryAnimation) => this,
