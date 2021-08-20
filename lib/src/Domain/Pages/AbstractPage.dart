@@ -24,14 +24,4 @@ abstract class AbstractPage extends StatelessWidget  {
           );
         });
   }
-
-  @protected
-  Widget scaffold(BuildContext context, String title, Widget body) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(title),
-      ),
-      body: body,
-    );
-  }
 }

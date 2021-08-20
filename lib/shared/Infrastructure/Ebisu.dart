@@ -1,5 +1,6 @@
 import 'package:ebisu/expenditure/UI/Pages/CreateExpenditure.dart';
 import 'package:ebisu/expenditure/UI/Pages/ListExpenditures.dart';
+import 'package:ebisu/shared/UI/Components/EbisuDrawer.dart';
 import 'package:ebisu/src/Domain/Pages/AbstractPage.dart';
 import 'package:ebisu/src/UI/Components/Nav/BottomNavBar.dart';
 import 'package:ebisu/src/UI/Components/Nav/MainButtonPage.dart';
@@ -23,10 +24,13 @@ class EbisuMainView extends StatefulWidget {
               size: 26.0,
             ),
             onPressed: () {
-              Navigator.pushNamed(context, '/shopping-list');
+              Navigator.pushNamed(context, '/configuration');
             },
           )
         ],
+      ),
+      drawer: Drawer (
+        child: EbisuDrawer(),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       floatingActionButton: Visibility(

@@ -1,3 +1,4 @@
+import 'package:ebisu/shared/UI/Components/EbisuDrawer.dart';
 import 'package:flutter/material.dart';
 
 abstract class AbstractPage extends StatelessWidget  {
@@ -30,6 +31,7 @@ abstract class AbstractPage extends StatelessWidget  {
       appBar: AppBar(
         title: Text(title),
       ),
+      drawer: EbisuDrawer(),
       body: body,
     );
   }
