@@ -53,3 +53,7 @@ abstract class StringValueObject extends Comparable<String> {
     return value != other ? 1 : -1;
   }
 }
+
+abstract class IdValueObject extends StringValueObject {
+  IdValueObject(String value) : super(value);
+}
