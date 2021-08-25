@@ -3,8 +3,17 @@ import 'package:flutter/material.dart';
 
 abstract class AbstractPage extends StatelessWidget  {
   final Function? onChangeTo;
+  final Map<String, dynamic> arguments = {};
   AbstractPage({this.onChangeTo});
-  Route getRoute() {
+
+  void _parseArguments (Map<String, dynamic> arguments) {
+    arguments.forEach((String key, dynamic value) {
+      this.arguments[key] = value;
+    });
+  }
+
+  Route getRoute(Map<String, dynamic> arguments) {
+    _parseArguments(arguments);
     return PageRouteBuilder(
         pageBuilder: (context, animation, secondaryAnimation) => this,
         transitionsBuilder: (context, animation, secondaryAnimation, child) {
@@ -26,12 +35,12 @@ abstract class AbstractPage extends StatelessWidget  {
   }
 
   @protected
-  Widget scaffold(BuildContext context, String title, Widget body) {
+  Widget scaffold(BuildContext context, {String title: '', required body ,hasDrawer: true}) {
     return Scaffold(
       appBar: AppBar(
         title: Text(title),
       ),
-      drawer: EbisuDrawer(),
+      drawer: hasDrawer ? EbisuDrawer() : null,
       body: body,
     );
   }

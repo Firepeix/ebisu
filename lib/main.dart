@@ -50,7 +50,8 @@ class MyApp extends StatelessWidget {
         }
 
         if (_pageContainer.hasPage(settings.name ?? '')) {
-          return _pageContainer.getPage(settings.name ?? '').getRoute();
+          Map<String, dynamic> arguments = settings.arguments != null ? settings.arguments as Map<String, dynamic> : {};
+          return _pageContainer.getPage(settings.name ?? '').getRoute(arguments);
         }
 
 

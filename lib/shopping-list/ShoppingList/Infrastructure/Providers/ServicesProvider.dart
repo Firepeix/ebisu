@@ -15,6 +15,7 @@ import 'package:ebisu/shopping-list/ShoppingList/UI/Pages/ShoppingListsPage.dart
 
 class ShoppingListPageServiceProvider extends PageServiceProvider {
   Map<String, AbstractPage> pages = {
-    '/shopping-list': ShoppingListsPage()
+    '/shopping-list': ShoppingListsPage(),
+    '/shopping-list/purchases': ShoppingListPage()
   };
 }

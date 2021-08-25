@@ -47,3 +47,19 @@ class EbisuTitle extends StatelessWidget {
         ],
       );
 }
+
+class EbisuSubTitle extends StatelessWidget {
+  final String _content;
+  final double size;
+
+  EbisuSubTitle(this._content, {this.size: 22});
+
+  @override
+  Widget build(BuildContext context) => Text(
+    _content,
+    style: TextStyle(
+      fontSize: size,
+      fontWeight: FontWeight.bold,
+    ),
+  );
+}

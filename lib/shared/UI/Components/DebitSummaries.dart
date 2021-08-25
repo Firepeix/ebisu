@@ -98,12 +98,12 @@ class _DebitChartState extends State<DebitChart> {
         show: true,
         bottomTitles: SideTitles(
           showTitles: true,
-          getTextStyles: (value) => TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize: 18),
+          getTextStyles: (context, value) => TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize: 18),
           getTitles: (double value) => _series[value.toInt()].label
         ),
         topTitles: SideTitles(
             showTitles: true,
-            getTextStyles: (value) => TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize: 12),
+            getTextStyles: (context, value) => TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize: 12),
             getTitles: (double value) => _series[value.toInt()].value.real
         ),
         leftTitles: SideTitles(

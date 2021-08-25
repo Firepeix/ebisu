@@ -21,16 +21,42 @@ class ShoppingListsPage extends AbstractPage {
 
   @override
   Widget build(BuildContext context) => scaffold(
-      context, 'Listas De Compra',
-      Padding(
-        padding: EdgeInsets.symmetric(horizontal: 20),
+    context,
+    title: 'Listas De Compra',
+    body: Padding(
+        padding: EdgeInsets.symmetric(horizontal: 10),
         child: Padding(
-          padding: EdgeInsets.only(top: 10),
+          padding: EdgeInsets.only(top: 20),
           child: ListView.builder(
-            itemCount: lorem.length,
-            itemBuilder: _createShoppingList
+              itemCount: lorem.length,
+              itemBuilder: _createShoppingList
           ),
         )
-      ),
+    ),
+  );
+}
+
+class ShoppingListPage extends AbstractPage {
+  Widget _mount () {
+    ShoppingList? list = arguments['list'] ?? null;
+    if (list != null) {
+      return ShoppingListViewModel(list);
+    }
+
+    return Column();
+  }
+
+  @override
+  Widget build(BuildContext context) => scaffold(
+    context,
+    title: 'Listas asdsada',
+    hasDrawer: false,
+    body: Padding(
+        padding: EdgeInsets.symmetric(horizontal: 10),
+        child: Padding(
+          padding: EdgeInsets.only(top: 20),
+          child: _mount(),
+        )
+    ),
   );
 }

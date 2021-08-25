@@ -11,6 +11,10 @@ class ShoppingList {
 
   ShoppingListInputAmount get input => _inputAmount;
   String get name => _name;
+
+
+  IntValueObject get totalBudgeted => _purchases.total;
+  IntValueObject get totalPurchased => _purchases.purchasedTotal;
 }
 
 class ShoppingListInputAmount extends IntValueObject {

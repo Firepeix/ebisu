@@ -1,4 +1,4 @@
-abstract class IntValueObject extends Comparable<int> {
+class IntValueObject extends Comparable<int> {
   late int value;
   IntValueObject(this.value);
 
@@ -38,6 +38,8 @@ abstract class IntValueObject extends Comparable<int> {
     return value > other ? 1 : -1;
   }
 
+  IntValueObject operator +(covariant other) => IntValueObject(other.value + value);
+  IntValueObject operator -(covariant other) => IntValueObject((value - other.value).toInt());
 }
 
 abstract class StringValueObject extends Comparable<String> {
