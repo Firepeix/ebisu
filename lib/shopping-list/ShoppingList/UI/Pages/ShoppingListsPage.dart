@@ -6,8 +6,8 @@ import 'package:flutter/material.dart';
 class ShoppingListsPage extends AbstractPage {
   final lorem = [
     ShoppingList('Compras Abril', ShoppingListInputAmount(70000)),
-    ShoppingList('Compras Março', ShoppingListInputAmount(60000)),
-    ShoppingList('Compras Fevereiro', ShoppingListInputAmount(60000)),
+    ShoppingList('Compras Março', ShoppingListInputAmount(150000)),
+    ShoppingList('Compras Fevereiro', ShoppingListInputAmount(1500000)),
     ShoppingList('Compras Janeiro', ShoppingListInputAmount(30000)),
   ];
 
