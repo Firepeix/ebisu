@@ -37,6 +37,9 @@ class ShoppingListsPage extends AbstractPage {
 }
 
 class ShoppingListPage extends AbstractPage {
+
+  String get _title => arguments['list'] != null ? (arguments['list'] as ShoppingList).name : 'Placeholder';
+
   Widget _mount () {
     ShoppingList? list = arguments['list'] ?? null;
     if (list != null) {
@@ -49,7 +52,7 @@ class ShoppingListPage extends AbstractPage {
   @override
   Widget build(BuildContext context) => scaffold(
     context,
-    title: 'Listas asdsada',
+    title: _title,
     hasDrawer: false,
     body: Padding(
         padding: EdgeInsets.symmetric(horizontal: 10),

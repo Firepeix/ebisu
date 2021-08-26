@@ -2,7 +2,6 @@ import 'package:ebisu/shared/Domain/ValueObjects.dart';
 
 class Purchase {
   final PurchaseTotal _total;
-
   Purchase? _purchase;
 
   Purchase? get purchased => _purchase;
@@ -31,6 +30,9 @@ class Purchase {
     }
     return result;
   }
+
+
+  bool get wasBought => _purchase != null;
 }
 
 class PurchaseTotal extends IntValueObject{

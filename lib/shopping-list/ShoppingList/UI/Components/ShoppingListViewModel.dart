@@ -27,7 +27,8 @@ class ShoppingListViewModel extends StatelessWidget {
   @override
   Widget build(BuildContext context) => Column(
     children: [
-      _ShoppingListSummary(_list)
+      _ShoppingListSummary(_list),
+
     ],
   );
 }
@@ -52,8 +53,8 @@ class _ShoppingListSummary extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
               _ShoppingListSummaryAbsolutes('Entrada', _list.input.real),
-              _ShoppingListSummaryAbsolutes('Diferença Plan./Real.', _list.input.real),
-              _ShoppingListSummaryAbsolutes('Previsão', _list.input.real),
+              _ShoppingListSummaryAbsolutes('Diferença Plan./Real.', _list.totalDifference.real),
+              _ShoppingListSummaryAbsolutes('Previsão', _list.projection.real),
             ],
           ),
         ),
