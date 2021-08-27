@@ -43,11 +43,18 @@ class ShoppingListPage extends AbstractPage {
   Widget _mount () {
     ShoppingList? list = arguments['list'] ?? null;
     if (list != null) {
-      return ShoppingListViewModel(list);
+      return _page(ShoppingListViewModel(list));
     }
 
     return Column();
   }
+
+  Widget _page (ShoppingListViewModel list) => Column(
+    children: [
+      ShoppingListActions(),
+      list
+    ],
+  );
 
   @override
   Widget build(BuildContext context) => scaffold(
@@ -61,5 +68,22 @@ class ShoppingListPage extends AbstractPage {
           child: _mount(),
         )
     ),
+  );
+}
+
+class ShoppingListActions extends StatelessWidget {
+  Widget build(BuildContext context) => Row(
+    children: [
+      ElevatedButton(
+          onPressed: () => print(123),
+          style: ElevatedButton.styleFrom(primary: Colors.green),
+          child: Row(
+            children: [
+              Padding(padding: EdgeInsets.only(right: 8), child: Icon(Icons.refresh),),
+              Text('Sincronizar Planilha')
+            ],
+          )
+      )
+    ],
   );
 }
