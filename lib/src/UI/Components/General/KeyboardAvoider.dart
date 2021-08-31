@@ -27,6 +27,8 @@ class KeyboardAvoider extends StatefulWidget {
   /// Useful in case the focused widget is inside a parent widget that you also want to be visible.
   final double focusPadding;
 
+  final double standardPadding;
+
   KeyboardAvoider({
     Key? key,
     required this.child,
@@ -34,6 +36,7 @@ class KeyboardAvoider extends StatefulWidget {
     this.curve = Curves.easeOut,
     this.autoScroll = false,
     this.focusPadding = 12.0,
+    this.standardPadding = 0,
   })  : assert(child is ScrollView ? child.controller != null : true),
         super(key: key);
 
@@ -128,7 +131,7 @@ class _KeyboardAvoiderState extends State<KeyboardAvoider> with WidgetsBindingOb
   Widget _buildAnimatedContainer(Widget child) {
     return AnimatedContainer(
       key: _animationKey,
-      padding: EdgeInsets.only(bottom: _overlap),
+      padding: EdgeInsets.only(bottom: _overlap + widget.standardPadding),
       duration: widget.duration,
       curve: widget.curve,
       child: child,
@@ -221,8 +224,6 @@ class _KeyboardAvoiderState extends State<KeyboardAvoider> with WidgetsBindingOb
     if (viewport == null) return;
 
     final offset = viewport.getOffsetToReveal(object, 1.0).offset + widget.focusPadding;
-    final a = _scrollController!.position.maxScrollExtent;
-    print(a);
     if (_scrollController == null) return;
     // If the object is covered by the keyboard, scroll to reveal it,
     // and add [focusPadding] between it and top of the keyboard.

@@ -1,6 +1,7 @@
 import 'package:ebisu/shared/Domain/Pages/AbstractPage.dart';
 import 'package:ebisu/shopping-list/ShoppingList/Domain/ShoppingList.dart';
 import 'package:ebisu/shopping-list/ShoppingList/UI/Components/ShoppingListViewModel.dart';
+import 'package:ebisu/src/UI/Components/General/KeyboardAvoider.dart';
 import 'package:flutter/material.dart';
 
 class ShoppingListsPage extends AbstractPage {
@@ -40,20 +41,30 @@ class ShoppingListPage extends AbstractPage {
 
   String get _title => arguments['list'] != null ? (arguments['list'] as ShoppingList).name : 'Placeholder';
 
-  Widget _mount () {
+  Widget _mount (BuildContext context) {
     ShoppingList? list = arguments['list'] ?? null;
     if (list != null) {
-      return _page(ShoppingListViewModel(list));
+      return _page(context, ShoppingListViewModel(list));
     }
 
     return Column();
   }
 
-  Widget _page (ShoppingListViewModel list) => Column(
-    children: [
-      ShoppingListActions(),
-      list
-    ],
+  Widget _page (BuildContext context, ShoppingListViewModel list) => SingleChildScrollView(
+    physics: NeverScrollableScrollPhysics(),
+    child: Container(
+      height: MediaQuery.of(context).size.height ,
+      child: KeyboardAvoider(
+        standardPadding: 12,
+          autoScroll: true,
+          child: Column(
+            children: [
+              ShoppingListActions(),
+              list
+            ],
+          )
+      ),
+    ),
   );
 
   @override
@@ -65,7 +76,7 @@ class ShoppingListPage extends AbstractPage {
         padding: EdgeInsets.symmetric(horizontal: 10),
         child: Padding(
           padding: EdgeInsets.only(top: 10),
-          child: _mount(),
+          child: _mount(context),
         )
     ),
   );
