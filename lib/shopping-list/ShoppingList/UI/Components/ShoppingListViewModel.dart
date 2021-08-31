@@ -1,7 +1,10 @@
 import 'package:ebisu/shared/UI/Components/EbisuCards.dart';
 import 'package:ebisu/shared/UI/Components/Texts/HighlightTexts.dart';
 import 'package:ebisu/shared/UI/Components/Title.dart';
+import 'package:ebisu/shopping-list/Shared/UI/Components/PuchasesViewModel.dart';
 import 'package:ebisu/shopping-list/ShoppingList/Domain/ShoppingList.dart';
+import 'package:ebisu/src/UI/Components/General/KeyboardAvoider.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class ShoppingListViewModelList extends StatelessWidget {
@@ -22,14 +25,21 @@ class ShoppingListViewModelList extends StatelessWidget {
 
 class ShoppingListViewModel extends StatelessWidget {
   final ShoppingList _list;
-  ShoppingListViewModel(this._list);
+  final bool showPurchases;
+  ShoppingListViewModel(this._list, {this.showPurchases: true});
 
   @override
-  Widget build(BuildContext context) => Column(
-    children: [
-      _ShoppingListSummary(_list),
-
-    ],
+  Widget build(BuildContext context) => KeyboardAvoider(
+    focusPadding: 1000,
+    autoScroll: true,
+    child: ListView(
+      shrinkWrap: true,
+      controller: ScrollController(),
+      children: [
+        _ShoppingListSummary(_list),
+        Padding(padding: EdgeInsets.only(top: 10), child: PurchasesViewModel(_list.purchases),)
+      ],
+    )
   );
 }
 

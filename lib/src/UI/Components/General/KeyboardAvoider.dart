@@ -72,7 +72,6 @@ class _KeyboardAvoiderState extends State<KeyboardAvoider> with WidgetsBindingOb
         _animationKey.currentState?.animation.addStatusListener(_animationListener!);
       });
     }
-
     // If [child] is a [ScrollView], get its [ScrollController]
     // and embed the [child] directly in an [AnimatedContainer].
     if (widget.child is ScrollView) {
@@ -117,7 +116,8 @@ class _KeyboardAvoiderState extends State<KeyboardAvoider> with WidgetsBindingOb
   /// AnimationStatus
   void _animationStatusChanged(AnimationStatus status) {
     if (status == AnimationStatus.completed) {
-      final keyboardVisible = MediaQuery.of(context).viewInsets.bottom > 0.0;
+      final viewInsets = EdgeInsets.fromWindowPadding(WidgetsBinding.instance!.window.viewInsets,WidgetsBinding.instance!.window.devicePixelRatio);
+      final keyboardVisible = viewInsets.bottom > 0.0;
       if (keyboardVisible) {
         _keyboardShown();
       }
@@ -154,8 +154,8 @@ class _KeyboardAvoiderState extends State<KeyboardAvoider> with WidgetsBindingOb
     // Calculate top of keyboard
     final mediaQuery = MediaQuery.of(context);
     final screenSize = mediaQuery.size;
-    final screenInsets = mediaQuery.viewInsets;
-    final keyboardTop = screenSize.height - screenInsets.bottom;
+    final viewInsets = EdgeInsets.fromWindowPadding(WidgetsBinding.instance!.window.viewInsets,WidgetsBinding.instance!.window.devicePixelRatio);
+    final keyboardTop = screenSize.height - viewInsets.bottom;
 
     // If widget is entirely covered by keyboard, do nothing
     if (widgetRect.top > keyboardTop) {
@@ -221,12 +221,13 @@ class _KeyboardAvoiderState extends State<KeyboardAvoider> with WidgetsBindingOb
     if (viewport == null) return;
 
     final offset = viewport.getOffsetToReveal(object, 1.0).offset + widget.focusPadding;
-
+    final a = _scrollController!.position.maxScrollExtent;
+    print(a);
     if (_scrollController == null) return;
     // If the object is covered by the keyboard, scroll to reveal it,
     // and add [focusPadding] between it and top of the keyboard.
     if (offset > _scrollController!.position.pixels) {
-      _scrollController!.position.moveTo(
+      _scrollController!.position.animateTo(
         offset,
         duration: widget.duration,
         curve: widget.curve,

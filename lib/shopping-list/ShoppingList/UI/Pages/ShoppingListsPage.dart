@@ -64,7 +64,7 @@ class ShoppingListPage extends AbstractPage {
     body: Padding(
         padding: EdgeInsets.symmetric(horizontal: 10),
         child: Padding(
-          padding: EdgeInsets.only(top: 20),
+          padding: EdgeInsets.only(top: 10),
           child: _mount(),
         )
     ),
@@ -72,18 +72,22 @@ class ShoppingListPage extends AbstractPage {
 }
 
 class ShoppingListActions extends StatelessWidget {
-  Widget build(BuildContext context) => Row(
-    children: [
-      ElevatedButton(
-          onPressed: () => print(123),
-          style: ElevatedButton.styleFrom(primary: Colors.green),
-          child: Row(
-            children: [
-              Padding(padding: EdgeInsets.only(right: 8), child: Icon(Icons.refresh),),
-              Text('Sincronizar Planilha')
-            ],
-          )
-      )
-    ],
+  Widget build(BuildContext context) => Padding(
+    padding: EdgeInsets.symmetric(horizontal: 3),
+    child: Row(
+      mainAxisAlignment: MainAxisAlignment.end,
+      children: [
+        ElevatedButton(
+            onPressed: () => print(123),
+            style: ElevatedButton.styleFrom(primary: Colors.green),
+            child: Row(
+              children: [
+                Padding(padding: EdgeInsets.only(right: 8), child: Icon(Icons.refresh),),
+                Text('Sincronizar Planilha')
+              ],
+            )
+        )
+      ],
+    ),
   );
 }

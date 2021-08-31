@@ -2,14 +2,14 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class InputFormDecorator {
-  InputDecoration textForm (String? label, String? hint) {
+  InputDecoration textForm (String? label, String? hint, {bool dense: false}) {
     return InputDecoration(
       border: OutlineInputBorder(),
       hintText: hint ?? '',
       labelText: label ?? '',
       errorStyle: TextStyle(fontSize: 16),
       isDense: true,
-      contentPadding: EdgeInsets.fromLTRB(12, 20, 12, 12)
+      contentPadding: EdgeInsets.fromLTRB(12, !dense ? 20 : 20, 12, !dense ? 12 : 0)
     );
   }
 
