@@ -16,7 +16,7 @@ class ShoppingList {
   IntValueObject get totalBudgeted => _purchases.total;
   IntValueObject get totalPurchased => _purchases.purchasedTotal;
   IntValueObject get totalDifference => _purchases.total - _purchases.purchasedTotal;
-  IntValueObject get projection => _inputAmount - _purchases.purchasedTotal;
+  IntValueObject get projection => _inputAmount - _purchases.projection;
 
   Purchases get purchases => _purchases;
 }

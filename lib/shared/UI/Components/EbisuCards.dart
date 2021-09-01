@@ -14,6 +14,29 @@ class Summary extends StatelessWidget {
   );
 }
 
+class SimpleCard extends StatelessWidget {
+  final Widget child;
+  final double? height;
+  SimpleCard({required this.child, this.height});
+
+  @override
+  Widget build (BuildContext _) => SizedBox(
+    height: height,
+    width: double.infinity,
+    child: Card(
+      margin: EdgeInsets.zero,
+      shape: RoundedRectangleBorder(
+          side: BorderSide(color: Colors.grey.shade400, width: 0.5),
+          borderRadius: BorderRadius.all(Radius.circular(5))),
+      elevation: 0,
+      child: Padding(
+        padding: EdgeInsets.all(10),
+        child: child,
+      ),
+    ),
+  );
+}
+
 class SummarySection extends StatelessWidget {
   final List<Widget> children;
 
@@ -39,6 +62,10 @@ class SummaryDivider extends StatelessWidget {
       shape: BoxShape.rectangle,
     ),
   );
+}
+
+class EbisuDivider extends SummaryDivider {
+
 }
 
 class VerticalSummaryDivider extends StatelessWidget {
