@@ -131,7 +131,7 @@ class _KeyboardAvoiderState extends State<KeyboardAvoider> with WidgetsBindingOb
   Widget _buildAnimatedContainer(Widget child) {
     return AnimatedContainer(
       key: _animationKey,
-      padding: EdgeInsets.only(bottom: _overlap + widget.standardPadding),
+      padding: EdgeInsets.only(bottom: _overlap + (_overlap == 90 ? 0 : widget.standardPadding)),
       duration: widget.duration,
       curve: widget.curve,
       child: child,

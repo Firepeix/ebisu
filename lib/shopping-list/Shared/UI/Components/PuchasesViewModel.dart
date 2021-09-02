@@ -11,22 +11,35 @@ class PurchasesViewModel extends StatelessWidget {
   PurchasesViewModel(this._purchases);
 
   @override
-  Widget build (BuildContext _) => Column(
-    children: [
-      Row(
-        children: [
-          Expanded(
-            child: TextFormField(decoration: _decorator.textForm('Item', 'Pesquisar Item', dense: true)),
-          )
-        ],
-      ),
-      Padding(child: EbisuDivider(), padding: EdgeInsets.only(top: 5, bottom: 5),),
-      _PurchasesListView(_purchases)
-    ],
-  );
+  Widget build (BuildContext _) {
+    final list = _PurchasesListView(_purchases);
+    return Column(
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Expanded(
+              child: TextFormField(decoration: _decorator.textForm('Item', 'Pesquisar Item', dense: true)),
+              flex: 2,
+            ),
+            Expanded(
+                child: Padding(
+                  padding: EdgeInsets.only(left: 15),
+                  child: ElevatedButton(
+                      onPressed: () => print(123),
+                      child: Text('EXPANDIR', style: TextStyle(fontSize: 16),)
+                  ),)
+            )
+          ],
+        ),
+        Padding(child: EbisuDivider(), padding: EdgeInsets.only(top: 5, bottom: 5),),
+        list
+      ],
+    );
+  }
 }
 
-class _PurchasesListView extends StatelessWidget {
+class _PurchasesListView extends StatefulWidget {
   final Purchases _purchases;
   _PurchasesListView(this._purchases);
 
@@ -46,14 +59,21 @@ class _PurchasesListView extends StatelessWidget {
     itemCount: _purchases.length,
   );
 
-  @override
-  Widget build (BuildContext context) {
+  Widget build (BuildContext context, _PurchasesListViewState state) {
     final mediaQuery = MediaQuery.of(context);
     final screenSize = mediaQuery.size.height;
     return SimpleCard(
-      height: screenSize - _spaceOccupiedOnScreen,
+      height: screenSize - _spaceOccupiedOnScreen - 10,
       child: _purchases.isEmpty ? _buildEmpty() : _buildList()
     );
   }
+
+  @override
+  State<StatefulWidget> createState() => _PurchasesListViewState();
+}
+
+class _PurchasesListViewState extends State<_PurchasesListView> {
+  @override
+  Widget build (BuildContext context) => widget.build(context, this);
 }
 

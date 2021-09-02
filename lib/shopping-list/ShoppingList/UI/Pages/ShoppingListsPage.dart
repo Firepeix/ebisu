@@ -53,7 +53,7 @@ class ShoppingListPage extends AbstractPage {
   Widget _page (BuildContext context, ShoppingListViewModel list) => SingleChildScrollView(
     physics: NeverScrollableScrollPhysics(),
     child: Container(
-      height: MediaQuery.of(context).size.height ,
+      height: MediaQuery.of(context).size.height,
       child: KeyboardAvoider(
         standardPadding: 12,
           autoScroll: true,

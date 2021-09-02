@@ -7,15 +7,22 @@ class Purchase {
 
   Purchase? _purchase;
 
-  Purchase? get purchased => _purchase;
 
   Purchase(this._name, this._amount) {
     _compute();
   }
 
+  Purchase? get purchased => _purchase;
+
   PurchaseTotal get total => _total;
 
   PurchaseTotal get boughtTotal => _purchase != null ? _purchase!._total :_total;
+
+  bool get wasBought => _purchase != null;
+
+  String get name => _name;
+
+  Amount get amount => _amount;
 
   void commit(Purchase purchase) {
     _purchase = purchase;
@@ -45,11 +52,6 @@ class Purchase {
     }
     return result;
   }
-
-
-  bool get wasBought => _purchase != null;
-
-  String get name => _name;
 }
 
 class PurchaseTotal extends IntValueObject{
@@ -74,6 +76,10 @@ class Amount {
   PurchaseTotal _calculateUnitValue () => PurchaseTotal(_quantity * _value);
 
   PurchaseTotal _calculateWeightValue () => PurchaseTotal(((_quantity * _value) / 1000).floor());
+
+  String get description => _type == AmountType.UNIT ? '$_quantity Unidade${_quantity > 1 ? 's': ''}' : '${_quantity}g';
+
+  IntValueObject get value => IntValueObject(_value);
 }
 
 enum AmountType {
