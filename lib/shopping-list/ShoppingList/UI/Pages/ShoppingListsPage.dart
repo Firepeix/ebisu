@@ -38,13 +38,12 @@ class ShoppingListsPage extends AbstractPage {
 }
 
 class ShoppingListPage extends AbstractPage {
-
   String get _title => arguments['list'] != null ? (arguments['list'] as ShoppingList).name : 'Placeholder';
 
   Widget _mount (BuildContext context) {
     ShoppingList? list = arguments['list'] ?? null;
     if (list != null) {
-      return _page(context, ShoppingListViewModel(list));
+      return _page(context, ShoppingListViewModel(list, scroll));
     }
 
     return Column();
@@ -52,6 +51,7 @@ class ShoppingListPage extends AbstractPage {
 
   Widget _page (BuildContext context, ShoppingListViewModel list) => SingleChildScrollView(
     physics: NeverScrollableScrollPhysics(),
+    controller: scroll,
     child: Container(
       height: MediaQuery.of(context).size.height,
       child: KeyboardAvoider(

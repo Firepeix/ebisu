@@ -25,13 +25,15 @@ class ShoppingListViewModelList extends StatelessWidget {
 class ShoppingListViewModel extends StatelessWidget {
   final ShoppingList _list;
   final bool showPurchases;
-  ShoppingListViewModel(this._list, {this.showPurchases: true});
+  final ScrollController _scroll;
+
+  ShoppingListViewModel(this._list, this._scroll, {this.showPurchases: true});
 
   @override
   Widget build(BuildContext context) => Column(
     children: [
       _ShoppingListSummary(_list),
-      Padding(padding: EdgeInsets.only(top: 10), child: PurchasesViewModel(_list.purchases),),
+      Padding(padding: EdgeInsets.only(top: 10), child: PurchasesViewModel(_list.purchases, _scroll),),
     ],
   );
 }

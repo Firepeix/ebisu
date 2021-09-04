@@ -2,6 +2,7 @@ import 'package:ebisu/shared/UI/Components/EbisuDrawer.dart';
 import 'package:flutter/material.dart';
 
 abstract class AbstractPage extends StatelessWidget  {
+  final ScrollController scroll = ScrollController();
   final Function? onChangeTo;
   final Map<String, dynamic> arguments = {};
   AbstractPage({this.onChangeTo});
