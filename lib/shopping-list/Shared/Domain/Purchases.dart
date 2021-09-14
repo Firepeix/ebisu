@@ -2,23 +2,10 @@ import 'package:ebisu/shared/Domain/ValueObjects.dart';
 import 'package:ebisu/shopping-list/Purchase/Domain/Purchase.dart';
 
 class Purchases {
-  final List<Purchase> _value = [
+  List<Purchase> _value = [
     Purchase('Cebola', Amount(249, 1185, AmountType.WEIGHT)),
     Purchase('Mussarela', Amount(5500, 450, AmountType.WEIGHT)),
     Purchase('Molho Barbecue', Amount(1679, 1, AmountType.UNIT)),
-    Purchase('Danete', Amount(899, 2, AmountType.UNIT)),
-    Purchase('Danete', Amount(899, 2, AmountType.UNIT)),
-    Purchase('Danete', Amount(899, 2, AmountType.UNIT)),
-    Purchase('Danete', Amount(899, 2, AmountType.UNIT)),
-    Purchase('Danete', Amount(899, 2, AmountType.UNIT)),
-    Purchase('Danete', Amount(899, 2, AmountType.UNIT)),
-    Purchase('Danete', Amount(899, 2, AmountType.UNIT)),
-    Purchase('Danete', Amount(899, 2, AmountType.UNIT)),
-    Purchase('Danete', Amount(899, 2, AmountType.UNIT)),
-    Purchase('Danete', Amount(899, 2, AmountType.UNIT)),
-    Purchase('Danete', Amount(899, 2, AmountType.UNIT)),
-    Purchase('Danete', Amount(899, 2, AmountType.UNIT)),
-    Purchase('Danete', Amount(899, 2, AmountType.UNIT)),
     Purchase('Danete', Amount(899, 2, AmountType.UNIT)),
   ];
   late Purchase _summary;
@@ -64,4 +51,11 @@ class Purchases {
   IntValueObject get projection => _projection;
 
   operator [](int index) => _value[index];
+
+
+  Purchases filterByName (String query) {
+    final filtered = Purchases();
+    filtered._value = _value.where((purchase) => purchase.name.contains(new RegExp(query, caseSensitive: false))).toList();
+    return filtered;
+  }
 }

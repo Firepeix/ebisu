@@ -56,6 +56,7 @@ class ShoppingListPage extends AbstractPage {
       child: KeyboardAvoider(
         parentController: scroll,
         standardPadding: 12,
+          focusPadding: 253,
           autoScroll: true,
           child: Column(
             children: [
