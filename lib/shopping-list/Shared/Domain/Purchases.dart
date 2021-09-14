@@ -7,6 +7,19 @@ class Purchases {
     Purchase('Mussarela', Amount(5500, 450, AmountType.WEIGHT)),
     Purchase('Molho Barbecue', Amount(1679, 1, AmountType.UNIT)),
     Purchase('Danete', Amount(899, 2, AmountType.UNIT)),
+    Purchase('Danete', Amount(899, 2, AmountType.UNIT)),
+    Purchase('Danete', Amount(899, 2, AmountType.UNIT)),
+    Purchase('Danete', Amount(899, 2, AmountType.UNIT)),
+    Purchase('Danete', Amount(899, 2, AmountType.UNIT)),
+    Purchase('Danete', Amount(899, 2, AmountType.UNIT)),
+    Purchase('Danete', Amount(899, 2, AmountType.UNIT)),
+    Purchase('Danete', Amount(899, 2, AmountType.UNIT)),
+    Purchase('Danete', Amount(899, 2, AmountType.UNIT)),
+    Purchase('Danete', Amount(899, 2, AmountType.UNIT)),
+    Purchase('Danete', Amount(899, 2, AmountType.UNIT)),
+    Purchase('Danete', Amount(899, 2, AmountType.UNIT)),
+    Purchase('Danete', Amount(899, 2, AmountType.UNIT)),
+    Purchase('Danete', Amount(899, 2, AmountType.UNIT)),
   ];
   late Purchase _summary;
   late PurchaseTotal _projection;

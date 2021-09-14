@@ -1,3 +1,4 @@
+
 import 'package:ebisu/shared/UI/Components/EbisuCards.dart';
 import 'package:ebisu/shopping-list/Purchase/UI/Components/Purchase.dart';
 import 'package:ebisu/shopping-list/Shared/Domain/Purchases.dart';
@@ -84,10 +85,9 @@ class _PurchasesListView extends StatefulWidget {
   );
 
   Widget build (BuildContext context, _PurchasesListViewState state) {
-
     return SimpleCard(
-      height: state.height,
-      child: _purchases.isEmpty ? _buildEmpty() : _buildList()
+        height: state.height,
+        child: _purchases.isEmpty ? _buildEmpty() : _buildList()
     );
   }
 
@@ -97,7 +97,6 @@ class _PurchasesListView extends StatefulWidget {
 
 class _PurchasesListViewState extends State<_PurchasesListView> {
   bool _isExpanded = false;
-
   bool get isExpanded => _isExpanded;
 
   @override
@@ -126,13 +125,11 @@ class _PurchasesListViewState extends State<_PurchasesListView> {
   }
 
   void _scroll ({max: true}) {
-    WidgetsBinding.instance?.addPostFrameCallback((_) {
-      widget._scroll.position.animateTo(
-        max ? 9000 : 0,
-        duration: Duration(milliseconds: 100),
-        curve: Curves.easeOut,
-      );
-    });
+    widget._scroll.position.animateTo(
+      max ? 290  : 0,
+      duration: Duration(milliseconds: 400),
+      curve: Curves.easeOut,
+    );
   }
 
   void _shrink () {

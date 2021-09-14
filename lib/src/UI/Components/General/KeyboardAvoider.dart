@@ -29,6 +29,9 @@ class KeyboardAvoider extends StatefulWidget {
 
   final double standardPadding;
 
+  final ScrollController? parentController;
+
+
   KeyboardAvoider({
     Key? key,
     required this.child,
@@ -37,6 +40,7 @@ class KeyboardAvoider extends StatefulWidget {
     this.autoScroll = false,
     this.focusPadding = 12.0,
     this.standardPadding = 0,
+    this.parentController
   })  : assert(child is ScrollView ? child.controller != null : true),
         super(key: key);
 
@@ -48,6 +52,7 @@ class _KeyboardAvoiderState extends State<KeyboardAvoider> with WidgetsBindingOb
   final _animationKey = GlobalKey<ImplicitlyAnimatedWidgetState>();
   Function(AnimationStatus)? _animationListener;
   ScrollController? _scrollController;
+
   double _overlap = 0.0;
 
   @override
@@ -87,7 +92,7 @@ class _KeyboardAvoiderState extends State<KeyboardAvoider> with WidgetsBindingOb
     // embed the [child] in a [SingleChildScrollView] to make
     // it possible to scroll to the focused widget.
     if (widget.autoScroll) {
-      _scrollController = ScrollController();
+      _scrollController = widget.parentController != null ? widget.parentController : ScrollController();
       return _buildAnimatedContainer(LayoutBuilder(
         builder: (context, constraints) {
           return SingleChildScrollView(
