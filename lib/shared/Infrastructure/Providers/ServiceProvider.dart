@@ -1,5 +1,6 @@
 import 'package:ebisu/shared/Domain/Pages/AbstractPage.dart';
 import 'package:ebisu/shared/Infrastructure/Providers/ModelServiceProvider.dart';
+import 'package:ebisu/shopping-list/Purchase/Infrastructure/Providers/ServicesProvider.dart';
 import 'package:ebisu/shopping-list/ShoppingList/Infrastructure/Providers/ServicesProvider.dart';
 import 'package:injectable/injectable.dart';
 
@@ -16,7 +17,8 @@ abstract class PageServiceProvider {
 @singleton
 class PageContainer {
   List<PageServiceProvider?> _providers = [
-    ShoppingListPageServiceProvider()
+    ShoppingListPageServiceProvider(),
+    PurchasePageServiceProvider()
   ];
 
   bool hasPage(String name) {

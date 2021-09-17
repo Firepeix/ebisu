@@ -2,14 +2,17 @@ import 'package:flutter/material.dart';
 
 class Summary extends StatelessWidget {
   final List<Widget> children;
-
-  Summary({required this.children});
+  final EdgeInsets? padding;
+  Summary({required this.children, this.padding});
 
   @override
   Widget build(BuildContext context) => Card(
     elevation: 4,
-    child: Column(
-      children: children
+    child: Padding(
+      padding: padding ?? EdgeInsets.zero,
+      child: Column(
+          children: children
+      ),
     ),
   );
 }
