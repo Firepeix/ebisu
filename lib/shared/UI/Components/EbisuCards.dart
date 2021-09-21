@@ -3,7 +3,8 @@ import 'package:flutter/material.dart';
 class Summary extends StatelessWidget {
   final List<Widget> children;
   final EdgeInsets? padding;
-  Summary({required this.children, this.padding});
+  final CrossAxisAlignment? crossAxisAlignment;
+  Summary({required this.children, this.padding, this.crossAxisAlignment});
 
   @override
   Widget build(BuildContext context) => Card(
@@ -11,6 +12,7 @@ class Summary extends StatelessWidget {
     child: Padding(
       padding: padding ?? EdgeInsets.zero,
       child: Column(
+        crossAxisAlignment: crossAxisAlignment ?? CrossAxisAlignment.center,
           children: children
       ),
     ),

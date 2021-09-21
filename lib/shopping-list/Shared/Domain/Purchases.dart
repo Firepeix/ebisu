@@ -12,6 +12,7 @@ class Purchases {
   late PurchaseTotal _projection;
 
   Purchases() {
+    _value[2].commit(Purchase("Molho Hellman's", Amount(1280, 1, AmountType.UNIT)));
     _summarize();
     _project();
   }

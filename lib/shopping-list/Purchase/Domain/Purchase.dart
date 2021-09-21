@@ -40,7 +40,8 @@ class Purchase {
       result = Purchase(name, Amount(0, 0, AmountType.UNIT));
       result._total = other._total + _total;
       if (other._purchase != null || _purchase != null) {
-        result.commit(other._purchase! + _purchase);
+        final committed = other._purchase != null ? other._purchase! + _purchase : _purchase;
+        result.commit(committed!);
       }
       return result;
     }
