@@ -28,3 +28,8 @@ class ShoppingListInputAmount extends IntValueObject {
 class ShoppingListId extends IdValueObject {
   ShoppingListId(String value) : super(value);
 }
+
+enum SHOPPING_LIST_TYPE {
+  BLANK,
+  SHEET
+}

@@ -13,6 +13,14 @@ abstract class AbstractPage extends StatelessWidget  {
     });
   }
 
+  @protected
+  void dismissKeyboard (BuildContext context) {
+    FocusScopeNode currentFocus = FocusScope.of(context);
+    if (!currentFocus.hasPrimaryFocus) {
+      currentFocus.unfocus();
+    }
+  }
+
   Route getRoute(Map<String, dynamic> arguments) {
     _parseArguments(arguments);
     return PageRouteBuilder(
@@ -36,13 +44,19 @@ abstract class AbstractPage extends StatelessWidget  {
   }
 
   @protected
-  Widget scaffold(BuildContext context, {String title: '', required body ,hasDrawer: true}) {
+  Widget scaffold(BuildContext context, {
+    String title: '',
+    required body ,
+    hasDrawer: true,
+    Widget? actionButton
+  }) {
     return Scaffold(
       appBar: AppBar(
         title: Text(title),
       ),
       drawer: hasDrawer ? EbisuDrawer() : null,
       body: body,
+      floatingActionButton: actionButton,
     );
   }
 }

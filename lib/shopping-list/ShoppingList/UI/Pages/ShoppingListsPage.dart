@@ -1,40 +1,94 @@
+import 'package:ebisu/shared/Domain/Bus/Command.dart';
+import 'package:ebisu/shared/Domain/ExceptionHandler/ExceptionHandler.dart';
 import 'package:ebisu/shared/Domain/Pages/AbstractPage.dart';
+import 'package:ebisu/shared/UI/Components/Buttons.dart';
 import 'package:ebisu/shopping-list/ShoppingList/Domain/ShoppingList.dart';
+import 'package:ebisu/shopping-list/ShoppingList/UI/Components/ShoppingListForm.dart';
 import 'package:ebisu/shopping-list/ShoppingList/UI/Components/ShoppingListViewModel.dart';
 import 'package:ebisu/src/UI/Components/General/KeyboardAvoider.dart';
 import 'package:flutter/material.dart';
 
 class ShoppingListsPage extends AbstractPage {
-  final lorem = [
-    ShoppingList('Compras Abril', ShoppingListInputAmount(70000)),
-    ShoppingList('Compras Março', ShoppingListInputAmount(150000)),
-    ShoppingList('Compras Fevereiro', ShoppingListInputAmount(1500000)),
-    ShoppingList('Compras Janeiro', ShoppingListInputAmount(30000)),
-  ];
-
-  Widget _createShoppingList(_, int index) {
-    return Padding(
-      padding: index == 0 ? EdgeInsets.zero : EdgeInsets.only(top: 20),
-      child: ShoppingListViewModelList(lorem[index]),
-    );
-  }
-
-
   @override
   Widget build(BuildContext context) => scaffold(
     context,
     title: 'Listas De Compra',
-    body: Padding(
+    body: _ShoppingListsContent(),
+    actionButton: ExpandableFab(
+      openChild: Icon(Icons.add),
+      children: [
+        ActionButton(
+          onPressed: () => Navigator.pushNamed(context, '/shopping-list/create', arguments: {'type': SHOPPING_LIST_TYPE.BLANK}),
+          icon: Icon(Icons.insert_drive_file),
+        ),
+        ActionButton(
+          onPressed: () => Navigator.pushNamed(context, '/shopping-list/create', arguments: {'type': SHOPPING_LIST_TYPE.SHEET}),
+          icon: Icon(Icons.description),
+        )
+      ],
+    )
+  );
+}
+
+class _ShoppingListsContent extends StatefulWidget {
+
+  Widget _createShoppingList(int index, ShoppingList list) {
+    return Padding(
+      padding: index == 0 ? EdgeInsets.zero : EdgeInsets.only(top: 20),
+      child: ShoppingListViewModelList(list),
+    );
+  }
+
+  Widget _getExpenditureSkeletonView () {
+    return ListView.builder(
+        itemCount: 5,
+        itemBuilder: (BuildContext context, int index) => Padding(
+          padding: EdgeInsets.only(top: index == 0 ? 0 : 10),
+        )
+    );
+  }
+
+  Widget build (_ShoppingListsContentState state) {
+    return Padding(
         padding: EdgeInsets.symmetric(horizontal: 10),
         child: Padding(
           padding: EdgeInsets.only(top: 20),
           child: ListView.builder(
-              itemCount: lorem.length,
-              itemBuilder: _createShoppingList
+              itemCount: state.lists.length,
+              itemBuilder: (_, int index) => _createShoppingList(index, state.lists[index])
           ),
         )
-    ),
-  );
+    );
+  }
+
+  @override
+  State<StatefulWidget> createState() => _ShoppingListsContentState();
+}
+
+class _ShoppingListsContentState extends State<_ShoppingListsContent> {
+  List<ShoppingList> lists = [];
+  bool loaded = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _setInitialState();
+  }
+
+  void _setInitialState () async {
+    setShoppingLists();
+    setState(() {
+      loaded = true;
+    });
+  }
+
+  Future<void> setShoppingLists () async {
+
+  }
+
+  @override
+  Widget build(BuildContext context) => widget.build(this);
+
 }
 
 class ShoppingListPage extends AbstractPage {
@@ -101,5 +155,36 @@ class ShoppingListActions extends StatelessWidget {
         )
       ],
     ),
+  );
+}
+
+class CreateShoppingListsPage extends AbstractPage with DispatchesCommands, DisplaysErrors  {
+  final GlobalKey<ShoppingListFormState> _formKey = GlobalKey<ShoppingListFormState>();
+
+  @override
+  Widget build(BuildContext context) => scaffold(
+      context,
+      title: 'Criar Lista de Compra',
+      hasDrawer: false,
+      body: Padding(
+          padding: EdgeInsets.symmetric(horizontal: 10),
+          child: Padding(
+            padding: EdgeInsets.only(top: 20),
+            child: ShoppingListForm(
+              formKey: _formKey,
+              formType: arguments['type'],
+            ),
+          )
+      ),
+      actionButton: FloatingActionButton(
+        child: Icon(Icons.check),
+        onPressed: () {
+          if (this._formKey.currentState!.validate()) {
+            dismissKeyboard(context);
+            final model = this._formKey.currentState!.submit();
+            showLoading(context);
+          }
+        }
+      )
   );
 }

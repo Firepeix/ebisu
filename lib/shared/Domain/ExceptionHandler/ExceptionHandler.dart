@@ -4,7 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 mixin DisplaysErrors {
-  ExceptionHandlerServiceInterface _service = getIt<ExceptionHandlerServiceInterface>();
+  final ExceptionHandlerServiceInterface _service = getIt<ExceptionHandlerServiceInterface>();
 
   void displayError (Object error, {BuildContext? context}) {
     print(error);
