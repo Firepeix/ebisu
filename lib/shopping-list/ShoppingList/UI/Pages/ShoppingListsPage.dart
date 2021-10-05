@@ -2,6 +2,7 @@ import 'package:ebisu/shared/Domain/Bus/Command.dart';
 import 'package:ebisu/shared/Domain/ExceptionHandler/ExceptionHandler.dart';
 import 'package:ebisu/shared/Domain/Pages/AbstractPage.dart';
 import 'package:ebisu/shared/UI/Components/Buttons.dart';
+import 'package:ebisu/shopping-list/Application/ShoppingListCommands.dart';
 import 'package:ebisu/shopping-list/ShoppingList/Domain/ShoppingList.dart';
 import 'package:ebisu/shopping-list/ShoppingList/UI/Components/ShoppingListForm.dart';
 import 'package:ebisu/shopping-list/ShoppingList/UI/Components/ShoppingListViewModel.dart';
@@ -178,11 +179,12 @@ class CreateShoppingListsPage extends AbstractPage with DispatchesCommands, Disp
       ),
       actionButton: FloatingActionButton(
         child: Icon(Icons.check),
-        onPressed: () {
+        onPressed: () async {
           if (this._formKey.currentState!.validate()) {
             dismissKeyboard(context);
             final model = this._formKey.currentState!.submit();
             showLoading(context);
+            await dispatch(new CreateShoppingListCommand(model));
           }
         }
       )
