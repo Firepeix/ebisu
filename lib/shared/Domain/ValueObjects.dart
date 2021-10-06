@@ -4,6 +4,8 @@ class IntValueObject extends Comparable<int> {
 
   static int integer (String value) => (double.parse(value) * 100).toInt();
 
+  static int normal (String value) => double.parse(value).toInt();
+
   String get real {
     final amount = value >= 0 ? value / 100 : (value / 100) * -1;
     final money = amount.toStringAsFixed(2).split('.');

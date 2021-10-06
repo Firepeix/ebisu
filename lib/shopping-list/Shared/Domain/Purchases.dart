@@ -1,18 +1,14 @@
+
 import 'package:ebisu/shared/Domain/ValueObjects.dart';
 import 'package:ebisu/shopping-list/Purchase/Domain/Purchase.dart';
+import 'package:ebisu/shopping-list/Purchase/Infrastructure/Persistence/Models/PurchaseModel.dart';
 
 class Purchases {
-  List<Purchase> _value = [
-    Purchase('Cebola', Amount(249, 1185, AmountType.WEIGHT)),
-    Purchase('Mussarela', Amount(5500, 450, AmountType.WEIGHT)),
-    Purchase('Molho Barbecue', Amount(1679, 1, AmountType.UNIT)),
-    Purchase('Danete', Amount(899, 2, AmountType.UNIT)),
-  ];
+  List<Purchase> _value = [];
   late Purchase _summary;
   late PurchaseTotal _projection;
 
-  Purchases() {
-    _value[2].commit(Purchase("Molho Hellman's", Amount(1280, 1, AmountType.UNIT)));
+  void commit() {
     _summarize();
     _project();
   }
@@ -53,10 +49,24 @@ class Purchases {
 
   operator [](int index) => _value[index];
 
+  void add (Purchase purchase) => _value.add(purchase);
+
+  void each (void f(Purchase element)) => _value.forEach(f);
 
   Purchases filterByName (String query) {
     final filtered = Purchases();
     filtered._value = _value.where((purchase) => purchase.name.contains(new RegExp(query, caseSensitive: false))).toList();
     return filtered;
+  }
+
+  List<PurchaseHiveModel> toListModel () {
+    return _value.map((p) {
+      PurchaseHiveModel? boughtPurchase;
+      if (p.wasBought) {
+        final purchased = p.purchased;
+        boughtPurchase = PurchaseHiveModel(purchased!.name, purchased.total.value, null, purchased.amount.value.value, purchased.amount.quantity.value, purchased.amount.type.index);
+      }
+      return PurchaseHiveModel(p.name, p.total.value, boughtPurchase, p.amount.value.value, p.amount.quantity.value, p.amount.type.index);
+    }).toList();
   }
 }

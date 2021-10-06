@@ -18,10 +18,10 @@ class ShoppingListsPage extends AbstractPage {
     actionButton: ExpandableFab(
       openChild: Icon(Icons.add),
       children: [
-        ActionButton(
-          onPressed: () => Navigator.pushNamed(context, '/shopping-list/create', arguments: {'type': SHOPPING_LIST_TYPE.BLANK}),
-          icon: Icon(Icons.insert_drive_file),
-        ),
+        //ActionButton(
+        //  onPressed: () => Navigator.pushNamed(context, '/shopping-list/create', arguments: {'type': SHOPPING_LIST_TYPE.BLANK}),
+        //  icon: Icon(Icons.insert_drive_file),
+        //),
         ActionButton(
           onPressed: () => Navigator.pushNamed(context, '/shopping-list/create', arguments: {'type': SHOPPING_LIST_TYPE.SHEET}),
           icon: Icon(Icons.description),
@@ -181,10 +181,15 @@ class CreateShoppingListsPage extends AbstractPage with DispatchesCommands, Disp
         child: Icon(Icons.check),
         onPressed: () async {
           if (this._formKey.currentState!.validate()) {
-            dismissKeyboard(context);
-            final model = this._formKey.currentState!.submit();
-            showLoading(context);
-            await dispatch(new CreateShoppingListCommand(model));
+            try {
+              dismissKeyboard(context);
+              final model = this._formKey.currentState!.submit();
+              showLoading(context);
+              await dispatch(new CreateShoppingListCommand(model));
+              showSuccess(context, message: "Lista de compras criada!", onClose: () => Navigator.popAndPushNamed(context, '/shopping-list'));
+            } catch (error) {
+              displayError(error, context: context);
+            }
           }
         }
       )

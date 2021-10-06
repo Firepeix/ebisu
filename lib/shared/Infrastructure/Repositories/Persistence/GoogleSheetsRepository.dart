@@ -43,6 +43,23 @@ abstract class GoogleSheetsRepository {
     throw Error.safeToString('Por favor preencha o id da planilha nas opções!');
   }
 
+  Future<Worksheet> sheet(String title) async {
+    final credentials = await _getCredentials();
+    final googleSheets = GSheets(credentials!);
+    final spreadSheetId = await getSheetId();
+    if(spreadSheetId != null) {
+      final spreadSheet = await googleSheets.spreadsheet(spreadSheetId);
+      return Future(() {
+        final sheet = spreadSheet.worksheetByTitle(title);
+        if (sheet != null) {
+          return sheet;
+        }
+        throw Error.safeToString('Planilha não encontrada');
+      });
+    }
+    throw Error.safeToString('Por favor preencha o id da planilha nas opções!');
+  }
+
   static Future<bool> isSetup() async {
     final credentials = await _getCredentials();
     return Future(() {

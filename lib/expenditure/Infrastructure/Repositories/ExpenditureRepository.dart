@@ -141,15 +141,21 @@ class GoogleSheetExpenditureRepository extends GoogleSheetsRepository {
     cells.forEach((List<Cell> rows) {
       if (rows.length >= CreditColumns.SINGLE_PURCHASE_TYPE.index) {
         final expenditureCell = rows.sublist(CreditColumns.SINGLE_PURCHASE_LABEL.index - 1, CreditColumns.SINGLE_PURCHASE_TYPE.index);
-        expenditures.add(_fromListCell(expenditureCell, 4, ExpenditureType.UNICA));
+        if (expenditureCell[1].value != "") {
+          expenditures.add(_fromListCell(expenditureCell, 4, ExpenditureType.UNICA));
+        }
       }
       if (rows.length >= CreditColumns.INSTALLMENT_PURCHASE_TOTAL_INSTALLMENT.index) {
         final expenditureCell = rows.sublist(CreditColumns.INSTALLMENT_PURCHASE_LABEL.index - 1, CreditColumns.INSTALLMENT_PURCHASE_TOTAL_INSTALLMENT.index);
-        expenditures.add(_fromListCell(expenditureCell, 4, ExpenditureType.PARCELADA));
+        if (expenditureCell[1].value != "") {
+          expenditures.add(_fromListCell(expenditureCell, 4, ExpenditureType.PARCELADA));
+        }
       }
       if (rows.length >= CreditColumns.SUBSCRIPTION_PURCHASE_TYPE.index) {
         final expenditureCell = rows.sublist(CreditColumns.SUBSCRIPTION_PURCHASE_LABEL.index - 1, CreditColumns.SUBSCRIPTION_PURCHASE_TYPE.index);
-        expenditures.add(_fromListCell(expenditureCell, 2, ExpenditureType.ASSINATURA));
+        if (expenditureCell[1].value != "") {
+          expenditures.add(_fromListCell(expenditureCell, 2, ExpenditureType.ASSINATURA));
+        }
       }
     });
 

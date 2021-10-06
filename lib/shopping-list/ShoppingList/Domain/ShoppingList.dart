@@ -2,12 +2,11 @@ import 'package:ebisu/shared/Domain/ValueObjects.dart';
 import 'package:ebisu/shopping-list/Shared/Domain/Purchases.dart';
 
 class ShoppingList {
-  final ShoppingListId? sheetId;
   final String _name;
   final ShoppingListInputAmount _inputAmount;
   final Purchases _purchases = Purchases();
 
-  ShoppingList(this._name, this._inputAmount, { this.sheetId });
+  ShoppingList(this._name, this._inputAmount);
 
   ShoppingListInputAmount get input => _inputAmount;
   String get name => _name;

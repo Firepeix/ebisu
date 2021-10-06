@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:ebisu/card/Infrastructure/Providers/CardModuleServiceProvider.dart';
 import 'package:ebisu/configuration/Infrastructure/Providers/ConfigurationModuleServiceProvider.dart';
 import 'package:ebisu/expenditure/Infrastructure/Providers/ExpenditureModuleServiceProvider.dart';
@@ -43,14 +45,19 @@ mixin DispatchesCommands {
     messenger.showSnackBar(SnackBar(content: Text(message), behavior: SnackBarBehavior.floating, duration: Duration(milliseconds: 30 * 1000)));
   }
 
-  void showSuccess(BuildContext context, {String message: 'Processando'}) {
+  void showSuccess(BuildContext context, {String message: '', Function? onClose}) {
     ScaffoldMessengerState messenger = ScaffoldMessenger.of(context);
+    final displayFor = Duration(seconds: 4);
+    messenger.hideCurrentSnackBar();
     messenger.showSnackBar(SnackBar(
-      content: Text('Sucesso'),
+      content: Text("Sucesso: $message"),
       backgroundColor: Colors.green,
       behavior: SnackBarBehavior.floating,
-      duration: Duration(milliseconds: 4 * 1000),
+      duration: displayFor,
     ));
+    if (onClose != null) {
+      Timer(displayFor, () => onClose());
+    }
   }
 
   void stopLoading(BuildContext context) {
