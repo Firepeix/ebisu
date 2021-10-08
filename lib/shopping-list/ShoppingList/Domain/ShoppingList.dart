@@ -3,10 +3,11 @@ import 'package:ebisu/shopping-list/Shared/Domain/Purchases.dart';
 
 class ShoppingList {
   final String _name;
+  final dynamic id;
   final ShoppingListInputAmount _inputAmount;
   final Purchases _purchases = Purchases();
 
-  ShoppingList(this._name, this._inputAmount);
+  ShoppingList(this._name, this._inputAmount, {this.id});
 
   ShoppingListInputAmount get input => _inputAmount;
   String get name => _name;

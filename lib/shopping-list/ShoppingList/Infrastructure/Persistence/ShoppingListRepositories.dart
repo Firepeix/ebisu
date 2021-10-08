@@ -1,7 +1,6 @@
 import 'package:ebisu/shared/Domain/ValueObjects.dart';
 import 'package:ebisu/shared/Infrastructure/Repositories/Persistence/GoogleSheetsRepository.dart';
 import 'package:ebisu/shopping-list/Purchase/Domain/Purchase.dart';
-import 'package:ebisu/shopping-list/Purchase/Domain/Repositories/PurchaseRepositoriesInterfaces.dart';
 import 'package:ebisu/shopping-list/ShoppingList/Domain/Repositories/ShoppingListRepositoriesInterfaces.dart';
 import 'package:ebisu/shopping-list/ShoppingList/Domain/ShoppingList.dart';
 import 'package:ebisu/shopping-list/ShoppingList/Infrastructure/Persistence/Models/ShoppingListModels.dart';
@@ -59,115 +58,33 @@ enum ListColumns {
 @Singleton(as: ShoppingListRepositoryInterface)
 class ShoppingListHiveRepository implements ShoppingListRepositoryInterface
 {
-  final PurchaseRepositoryInterface _repository;
-
-  ShoppingListHiveRepository(this._repository);
-
   static const SHOPPING_LIST_BOX = 'shopping-lists';
 
   Future<Box> _getBox() async {
     return await Hive.openBox<ShoppingListHiveModel>(SHOPPING_LIST_BOX);
   }
 
-/*  Future<List<Expenditure>> _getExpendituresFromBox() async {
+  Future<List<ShoppingList>> getShoppingLists() async {
     final box = await _getBox();
-    if (box.isNotEmpty) {
-      final List<Expenditure> expenditures = [];
-      box.values.forEach((expenditure) => expenditures.add(Expenditure(
-        name: ExpenditureName(expenditure.name),
-        type: CardClass.values[expenditure.type],
-        amount: ExpenditureAmount(expenditure.amount),
-        cardType: expenditure.cardType != null ? CardType(expenditure.cardType!) : null,
-        expenditureType: expenditure.expenditureType != null ? ExpenditureType.values[expenditure.expenditureType!] : null,
-        installments: expenditure.currentInstallment != null ? ExpenditureInstallments(currentInstallment: expenditure.currentInstallment!, totalInstallments: expenditure.totalInstallment!) : null,
-      )));
-      return expenditures.reversed.toList();
-    }
-
-    return await queryExpenditures();
-  }*/
+    final List<ShoppingList> lists = [];
+    box.values.forEach((model) {
+      model = model as ShoppingListHiveModel;
+      final list = ShoppingList(model.name, ShoppingListInputAmount(model.amount), id: model.key);
+      list.purchases.populateFromJson(model.serializedPurchases);
+      lists.add(list);
+    });
+    return lists.reversed.toList();
+  }
 
   Future<void> store(ShoppingList list) async {
     final box = await _getBox();
-    final purchases = _repository.bulkStore(list.purchases);
-    await box.add(
-        ShoppingListHiveModel(list.name, list.input.value, HiveList(box))
-    );
+    final model = ShoppingListHiveModel(list.name, list.input.value, list.purchases.toJson());
+    await box.add(model);
+  }
+
+  Future<void> update(ShoppingList list) async {
+    final box = await _getBox();
+    final model = ShoppingListHiveModel(list.name, list.input.value, list.purchases.toJson());
+    await box.put(list.id, model);
   }
 }
-/*
-
-  @override
-  Future<List<ExpenditureSummary>> getCreditExpenditureSummaries (bool cacheLess) async {
-    if (!cacheLess) {
-      return await _getCreditExpenditureSummariesFromBox();
-    }
-    return await queryCreditExpenditureSummaries();
-  }
-
-  Future<List<ExpenditureSummary>> queryCreditExpenditureSummaries() async {
-    final summaries = await super.queryCreditExpenditureSummaries();
-    await _saveSummaryHive(summaries);
-    return summaries;
-  }
-
-  Future<void> _saveSummaryHive(List<ExpenditureSummary> summaries) async {
-    final box = await _getSummaryBox('CREDIT');
-    await box.clear();
-    summaries.forEach((summary) async => await box.add([summary.title, summary.spentAmount, summary.budgetAmount]));
-  }
-
-  Future<List<ExpenditureSummary>> _getCreditExpenditureSummariesFromBox() async {
-    final box = await _getSummaryBox('CREDIT');
-    if (box.isNotEmpty) {
-      final List<ExpenditureSummary> summaries = [];
-      box.values.cast<List<Object?>>().forEach((summary) => summaries.add(
-          ExpenditureSummary(
-              summary[0].toString(),
-              ExpenditureSummaryBudget(int.parse(summary[2].toString())),
-              ExpenditureSummarySpent(int.parse(summary[1].toString()))
-          )));
-      return summaries;
-    }
-
-    return await queryCreditExpenditureSummaries();
-  }
-
-  @override
-  Future<DebitExpenditureSummary> getDebitExpenditureSummary (bool cacheLess) async {
-    if (!cacheLess) {
-      return await _getDebitExpenditureSummaryFromBox();
-    }
-    return await queryDebitExpenditureSummary();
-  }
-
-  Future<DebitExpenditureSummary> queryDebitExpenditureSummary () async {
-    final summary = await super.queryDebitExpenditureSummary();
-    await _saveDebitSummaryHive(summary);
-    return summary;
-  }
-
-  Future<void> _saveDebitSummaryHive(DebitExpenditureSummary summary) async {
-    final box = await _getSummaryBox('DEBIT');
-    await box.clear();
-    await box.put('summary', {
-      'income': summary.income.value,
-      'toPay': summary.toPay.value,
-      'payed': summary.payed.value
-    });
-  }
-
-  Future<DebitExpenditureSummary> _getDebitExpenditureSummaryFromBox() async {
-    final box = await _getSummaryBox('DEBIT');
-    final summaryModel = box.get('summary');
-    if (summaryModel != null) {
-      return DebitExpenditureSummary(
-          ExpenditureIncome(summaryModel['income']),
-          ExpenditureAmountToPay(summaryModel['toPay']),
-          ExpenditureAmountPayed(summaryModel['payed'])
-      );
-    }
-
-    return await queryDebitExpenditureSummary();
-  }
-}*/

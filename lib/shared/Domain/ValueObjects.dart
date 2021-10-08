@@ -42,6 +42,8 @@ class IntValueObject extends Comparable<int> {
 
   IntValueObject operator +(covariant other) => IntValueObject(other.value + value);
   IntValueObject operator -(covariant other) => IntValueObject((value - other.value).toInt());
+
+  int toJson() => value;
 }
 
 abstract class StringValueObject extends Comparable<String> {

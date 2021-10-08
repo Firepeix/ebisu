@@ -47,7 +47,7 @@ mixin DispatchesCommands {
 
   void showSuccess(BuildContext context, {String message: '', Function? onClose}) {
     ScaffoldMessengerState messenger = ScaffoldMessenger.of(context);
-    final displayFor = Duration(seconds: 4);
+    final displayFor = Duration(seconds: 2);
     messenger.hideCurrentSnackBar();
     messenger.showSnackBar(SnackBar(
       content: Text("Sucesso: $message"),

@@ -12,6 +12,15 @@ class Purchase {
     _compute();
   }
 
+  Purchase.fromJson(Map<String, dynamic> json) :
+        _name = json['name'],
+        _amount = Amount.fromJson(json['amount']) {
+    _compute();
+    if (json['purchase'] != null) {
+      _purchase = Purchase.fromJson(json['purchase']);
+    }
+  }
+
   Purchase? get purchased => _purchase;
 
   PurchaseTotal get total => _total;
@@ -53,6 +62,12 @@ class Purchase {
     }
     return result;
   }
+
+  Map<String, dynamic> toJson () => {
+    "name": _name,
+    "amount": _amount.toJson(),
+    "purchase": wasBought ? _purchase!.toJson() : null
+  };
 }
 
 class PurchaseTotal extends IntValueObject{
@@ -72,6 +87,12 @@ class Amount {
 
   Amount(this._value, this._quantity, this._type);
 
+  Amount.fromJson(Map<String, dynamic> json) :
+        _value = json['value'],
+        _quantity = json['quantity'],
+        _type = AmountType.values[json['type']]
+  ;
+
   PurchaseTotal calculate() => _type == AmountType.UNIT ? _calculateUnitValue() : _calculateWeightValue();
 
   PurchaseTotal _calculateUnitValue () => PurchaseTotal(_quantity * _value);
@@ -85,6 +106,12 @@ class Amount {
   IntValueObject get quantity => IntValueObject(_quantity);
 
   AmountType get type => type;
+
+  Map<String, dynamic> toJson () => {
+    "value": _value,
+    "quantity": _quantity,
+    "type": _type.index
+  };
 }
 
 enum AmountType {

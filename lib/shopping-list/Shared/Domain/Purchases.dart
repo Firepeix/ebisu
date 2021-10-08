@@ -1,7 +1,7 @@
+import 'dart:convert';
 
 import 'package:ebisu/shared/Domain/ValueObjects.dart';
 import 'package:ebisu/shopping-list/Purchase/Domain/Purchase.dart';
-import 'package:ebisu/shopping-list/Purchase/Infrastructure/Persistence/Models/PurchaseModel.dart';
 
 class Purchases {
   List<Purchase> _value = [];
@@ -59,14 +59,14 @@ class Purchases {
     return filtered;
   }
 
-  List<PurchaseHiveModel> toListModel () {
-    return _value.map((p) {
-      PurchaseHiveModel? boughtPurchase;
-      if (p.wasBought) {
-        final purchased = p.purchased;
-        boughtPurchase = PurchaseHiveModel(purchased!.name, purchased.total.value, null, purchased.amount.value.value, purchased.amount.quantity.value, purchased.amount.type.index);
-      }
-      return PurchaseHiveModel(p.name, p.total.value, boughtPurchase, p.amount.value.value, p.amount.quantity.value, p.amount.type.index);
-    }).toList();
+  String toJson() => jsonEncode(_value.map((e) => e.toJson()).toList());
+
+  void populateFromJson(String json) {
+    final list = jsonDecode(json) as List;
+    list.forEach((element) {
+      element = element as Map<String, dynamic>;
+      _value.add(Purchase.fromJson(element));
+    });
+    commit();
   }
 }

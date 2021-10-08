@@ -66,7 +66,7 @@ class _ShoppingListsContent extends StatefulWidget {
   State<StatefulWidget> createState() => _ShoppingListsContentState();
 }
 
-class _ShoppingListsContentState extends State<_ShoppingListsContent> {
+class _ShoppingListsContentState extends State<_ShoppingListsContent> with DispatchesCommands, DisplaysErrors  {
   List<ShoppingList> lists = [];
   bool loaded = false;
 
@@ -77,14 +77,21 @@ class _ShoppingListsContentState extends State<_ShoppingListsContent> {
   }
 
   void _setInitialState () async {
-    setShoppingLists();
+    final _lists = await getShoppingLists();
     setState(() {
+      lists = _lists;
       loaded = true;
     });
   }
 
-  Future<void> setShoppingLists () async {
-
+  Future<List<ShoppingList>> getShoppingLists () async {
+    try {
+      final lists = await dispatch(new GetShoppingListCommand());
+      return Future.value(lists);
+    } catch (error) {
+      displayError(error, context: context);
+      return Future.value([]);
+    }
   }
 
   @override
@@ -159,7 +166,7 @@ class ShoppingListActions extends StatelessWidget {
   );
 }
 
-class CreateShoppingListsPage extends AbstractPage with DispatchesCommands, DisplaysErrors  {
+class CreateShoppingListsPage extends AbstractPage with DispatchesCommands, DisplaysErrors {
   final GlobalKey<ShoppingListFormState> _formKey = GlobalKey<ShoppingListFormState>();
 
   @override

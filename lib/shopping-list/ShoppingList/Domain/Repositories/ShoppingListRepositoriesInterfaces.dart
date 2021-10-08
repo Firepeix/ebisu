@@ -6,4 +6,5 @@ abstract class ShoppingListColdStorageRepositoryInterface {
 
 abstract class ShoppingListRepositoryInterface {
   Future<void> store(ShoppingList list);
+  Future<List<ShoppingList>> getShoppingLists();
 }

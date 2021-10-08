@@ -22,7 +22,23 @@ class CreateShoppingListCommandHandler implements CommandHandler<CreateShoppingL
     if (command.builder.type == SHOPPING_LIST_TYPE.SHEET.index) {
         list = await _coldShoppingList.getShoppingList(command.builder.name);
         await _repository.store(list);
+        return;
     }
     Future.error("Metodo não implementado");
+  }
+}
+
+class GetShoppingListCommand implements Command {
+}
+
+@injectable
+class GetShoppingListCommandHandler implements CommandHandler<GetShoppingListCommand> {
+  final ShoppingListRepositoryInterface _repository;
+  GetShoppingListCommandHandler(this._repository);
+
+  @override
+  Future<void> handle(GetShoppingListCommand command) async {
+    final lists = await _repository.getShoppingLists();
+    return Future.value(lists);
   }
 }

@@ -7,17 +7,6 @@ import 'package:ebisu/shopping-list/ShoppingList/Infrastructure/Persistence/Mode
 import 'package:ebisu/shopping-list/ShoppingList/UI/Pages/ShoppingListsPage.dart';
 import 'package:hive/hive.dart';
 
-/*class ModelServiceProvider extends ServiceProvider {
-  static List<ModelServiceProviderInterface> services = [
-    ExpenditureModuleServiceProvider()
-  ];
-
-  @override
-  void register() {
-    services.forEach((ModelServiceProviderInterface service) => service.registerModels());
-  }
-}*/
-
 class ShoppingListPageServiceProvider extends PageServiceProvider {
   Map<String, AbstractPage> pages = {
     '/shopping-list': ShoppingListsPage(),
@@ -29,6 +18,7 @@ class ShoppingListPageServiceProvider extends PageServiceProvider {
 class ShoppingListBindServiceProvider implements BusServiceProviderInterface {
   static Map<String, Function> bus = {
     (CreateShoppingListCommand).toString(): () => getIt<CreateShoppingListCommandHandler>(),
+    (GetShoppingListCommand).toString(): () => getIt<GetShoppingListCommandHandler>(),
   };
 }
 
