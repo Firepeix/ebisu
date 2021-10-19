@@ -77,3 +77,10 @@ class PurchaseViewModel extends StatelessWidget {
       ]
   );
 }
+
+abstract class PurchaseBuilder {
+  String get name;
+  int get quantity;
+  AmountType get type;
+  int get amount;
+}

@@ -7,4 +7,10 @@ abstract class ShoppingListColdStorageRepositoryInterface {
 abstract class ShoppingListRepositoryInterface {
   Future<void> store(ShoppingList list);
   Future<List<ShoppingList>> getShoppingLists();
+  Future<void> update(ShoppingList list);
+}
+
+enum ShoppingListSyncType {
+  pull,
+  push
 }

@@ -42,3 +42,32 @@ class GetShoppingListCommandHandler implements CommandHandler<GetShoppingListCom
     return Future.value(lists);
   }
 }
+
+class SyncShoppingListCommand implements Command {
+  final dynamic listId;
+  final String name;
+  final ShoppingListSyncType type;
+  SyncShoppingListCommand(this.listId, this.name, this.type);
+}
+
+@injectable
+class SyncShoppingListCommandHandler implements CommandHandler<SyncShoppingListCommand> {
+  final ShoppingListColdStorageRepositoryInterface _coldShoppingList;
+  final ShoppingListRepositoryInterface _repository;
+  SyncShoppingListCommandHandler(this._coldShoppingList, this._repository);
+
+  @override
+  Future<ShoppingList> handle(SyncShoppingListCommand command) async {
+    if (command.type == ShoppingListSyncType.pull) {
+      return await handlePull(command);
+    }
+    return Future.error("Metodo não implementado");
+  }
+
+  Future<ShoppingList> handlePull(SyncShoppingListCommand command) async {
+    final list = await _coldShoppingList.getShoppingList(command.name);
+    list.id = command.listId;
+    await _repository.update(list);
+    return list;
+  }
+}

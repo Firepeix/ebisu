@@ -2,8 +2,8 @@ import 'package:ebisu/shared/Domain/ValueObjects.dart';
 import 'package:ebisu/shopping-list/Shared/Domain/Purchases.dart';
 
 class ShoppingList {
+  dynamic id;
   final String _name;
-  final dynamic id;
   final ShoppingListInputAmount _inputAmount;
   final Purchases _purchases = Purchases();
 
@@ -23,10 +23,6 @@ class ShoppingList {
 
 class ShoppingListInputAmount extends IntValueObject {
   ShoppingListInputAmount(int value) : super(value);
-}
-
-class ShoppingListId extends IdValueObject {
-  ShoppingListId(String value) : super(value);
 }
 
 enum SHOPPING_LIST_TYPE {

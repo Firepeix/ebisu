@@ -6,7 +6,8 @@ import 'package:hive/hive.dart';
 
 class PurchasePageServiceProvider extends PageServiceProvider {
   Map<String, AbstractPage> pages = {
-    '/shopping-list/purchases/purchase': PurchasePage()
+    '/shopping-list/purchases/purchase': PurchasePage(),
+    '/shopping-list/purchases/purchase/create': CreatePurchasePage(),
   };
 }
 

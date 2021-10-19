@@ -3,6 +3,7 @@ import 'package:ebisu/shared/Domain/ExceptionHandler/ExceptionHandler.dart';
 import 'package:ebisu/shared/Domain/Pages/AbstractPage.dart';
 import 'package:ebisu/shared/UI/Components/Buttons.dart';
 import 'package:ebisu/shopping-list/Application/ShoppingListCommands.dart';
+import 'package:ebisu/shopping-list/ShoppingList/Domain/Repositories/ShoppingListRepositoriesInterfaces.dart';
 import 'package:ebisu/shopping-list/ShoppingList/Domain/ShoppingList.dart';
 import 'package:ebisu/shopping-list/ShoppingList/UI/Components/ShoppingListForm.dart';
 import 'package:ebisu/shopping-list/ShoppingList/UI/Components/ShoppingListViewModel.dart';
@@ -66,7 +67,7 @@ class _ShoppingListsContent extends StatefulWidget {
   State<StatefulWidget> createState() => _ShoppingListsContentState();
 }
 
-class _ShoppingListsContentState extends State<_ShoppingListsContent> with DispatchesCommands, DisplaysErrors  {
+class _ShoppingListsContentState extends State<_ShoppingListsContent> with DispatchesCommands, DisplaysErrors {
   List<ShoppingList> lists = [];
   bool loaded = false;
 
@@ -105,13 +106,13 @@ class ShoppingListPage extends AbstractPage {
   Widget _mount (BuildContext context) {
     ShoppingList? list = arguments['list'] ?? null;
     if (list != null) {
-      return _page(context, ShoppingListViewModel(list, scroll));
+      return _page(context, ShoppingListViewModel(list, scroll), list);
     }
 
     return Column();
   }
 
-  Widget _page (BuildContext context, ShoppingListViewModel list) => SingleChildScrollView(
+  Widget _page (BuildContext context, ShoppingListViewModel model, ShoppingList list) => SingleChildScrollView(
     physics: NeverScrollableScrollPhysics(),
     child: Container(
       height: MediaQuery.of(context).size.height,
@@ -122,8 +123,8 @@ class ShoppingListPage extends AbstractPage {
           autoScroll: true,
           child: Column(
             children: [
-              ShoppingListActions(),
-              list
+              ShoppingListActions(list.id, list.name),
+              model
             ],
           )
       ),
@@ -145,18 +146,32 @@ class ShoppingListPage extends AbstractPage {
   );
 }
 
-class ShoppingListActions extends StatelessWidget {
+class ShoppingListActions extends StatelessWidget with DispatchesCommands, DisplaysErrors {
+  final dynamic listId;
+  final String name;
+
+  ShoppingListActions(this.listId, this.name);
+
   Widget build(BuildContext context) => Padding(
     padding: EdgeInsets.symmetric(horizontal: 3),
     child: Row(
       mainAxisAlignment: MainAxisAlignment.end,
       children: [
         ElevatedButton(
-            onPressed: () => print(123),
+            onPressed: () async {
+              try {
+                final list = await dispatch(new SyncShoppingListCommand(listId, name, ShoppingListSyncType.pull));
+                Navigator.popUntil(context, ModalRoute.withName('/'));
+                Navigator.pushNamed(context, '/shopping-list');
+                Navigator.pushNamed(context, '/shopping-list/purchases', arguments: {'list': list});
+              } catch (error) {
+                displayError(error, context: context);
+              }
+            },
             style: ElevatedButton.styleFrom(primary: Colors.green),
             child: Row(
               children: [
-                Padding(padding: EdgeInsets.only(right: 8), child: Icon(Icons.refresh),),
+                Padding(padding: EdgeInsets.only(right: 8), child: Icon(Icons.arrow_downward),),
                 Text('Sincronizar Planilha')
               ],
             )
