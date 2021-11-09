@@ -59,13 +59,32 @@ class Purchases {
     return filtered;
   }
 
+  void updatePurchase (Purchase purchase) {
+    final index = indexOf((element) => element.name == purchase.name);
+    if (index != null) {
+      _value[index] = purchase;
+      commit();
+    }
+  }
+
+  void applyListId (dynamic id) {
+    _value.forEach((element) => element.shoppingListId = id);
+  }
+
+  int? indexOf (Function f) {
+    final index = _value.indexWhere((element) => f(element));
+    return index == -1 ? null : index;
+  }
+
   String toJson() => jsonEncode(_value.map((e) => e.toJson()).toList());
 
-  void populateFromJson(String json) {
+  void populateFromJson(String json, dynamic shoppingListId) {
     final list = jsonDecode(json) as List;
     list.forEach((element) {
       element = element as Map<String, dynamic>;
-      _value.add(Purchase.fromJson(element));
+      final purchase = Purchase.fromJson(element);
+      purchase.shoppingListId = shoppingListId;
+      _value.add(purchase);
     });
     commit();
   }

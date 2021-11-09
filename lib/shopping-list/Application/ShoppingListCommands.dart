@@ -1,4 +1,5 @@
 import 'package:ebisu/shared/Domain/Bus/Command.dart';
+import 'package:ebisu/shopping-list/Purchase/Domain/Purchase.dart';
 import 'package:ebisu/shopping-list/ShoppingList/Domain/Repositories/ShoppingListRepositoriesInterfaces.dart';
 import 'package:ebisu/shopping-list/ShoppingList/Domain/ShoppingList.dart';
 import 'package:injectable/injectable.dart';
@@ -67,7 +68,29 @@ class SyncShoppingListCommandHandler implements CommandHandler<SyncShoppingListC
   Future<ShoppingList> handlePull(SyncShoppingListCommand command) async {
     final list = await _coldShoppingList.getShoppingList(command.name);
     list.id = command.listId;
+    list.purchases.applyListId(list.id);
     await _repository.update(list);
     return list;
+  }
+}
+
+class UpdatePurchaseOnListCommand implements Command {
+  final Purchase _purchase;
+
+  Purchase get purchase => _purchase;
+
+  UpdatePurchaseOnListCommand(this._purchase);
+}
+
+@injectable
+class UpdatePurchaseOnListCommandHandler implements CommandHandler<UpdatePurchaseOnListCommand> {
+  final ShoppingListRepositoryInterface _repository;
+  UpdatePurchaseOnListCommandHandler(this._repository);
+
+  @override
+  Future<ShoppingList> handle(UpdatePurchaseOnListCommand command) async {
+    final list = await _repository.find(command._purchase.shoppingListId);
+    _repository.updatePurchase(command.purchase, list);
+    return Future.value(list);
   }
 }

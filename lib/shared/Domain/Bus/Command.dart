@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:ebisu/card/Infrastructure/Providers/CardModuleServiceProvider.dart';
 import 'package:ebisu/configuration/Infrastructure/Providers/ConfigurationModuleServiceProvider.dart';
 import 'package:ebisu/expenditure/Infrastructure/Providers/ExpenditureModuleServiceProvider.dart';
+import 'package:ebisu/shopping-list/Purchase/Infrastructure/Providers/ServicesProvider.dart';
 import 'package:ebisu/shopping-list/ShoppingList/Infrastructure/Providers/ServicesProvider.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -13,7 +14,8 @@ class BusCommandServiceProvider {
     ...CardModuleServiceProvider.bus,
     ...ConfigurationModuleServiceProvider.bus,
     ...ExpenditureModuleServiceProvider.bus,
-    ...ShoppingListBindServiceProvider.bus
+    ...ShoppingListBindServiceProvider.bus,
+    ...PurchaseBindServiceProvider.bus
   };
 
 

@@ -3,12 +3,16 @@ import 'package:ebisu/shared/Domain/ExceptionHandler/ExceptionHandler.dart';
 import 'package:ebisu/shared/Domain/Pages/AbstractPage.dart';
 import 'package:ebisu/shared/UI/Components/Buttons.dart';
 import 'package:ebisu/shared/UI/Components/Title.dart';
+import 'package:ebisu/shopping-list/Application/ShoppingListCommands.dart';
+import 'package:ebisu/shopping-list/Purchase/Application/PurchaseCommands.dart';
 import 'package:ebisu/shopping-list/Purchase/Domain/Purchase.dart';
 import 'package:ebisu/shopping-list/Purchase/UI/Components/Purchase.dart';
 import 'package:ebisu/shopping-list/Purchase/UI/Components/PurchaseForm.dart';
 import 'package:flutter/material.dart';
 
-class PurchasePage extends AbstractPage {
+class PurchasePage extends AbstractPage with DispatchesCommands, DisplaysErrors  {
+  late final Purchase purchase;
+
   String get _title {
     String title = 'Compra';
     if (arguments['purchase'] != null) {
@@ -27,9 +31,20 @@ class PurchasePage extends AbstractPage {
     return Column();
   }
 
-  void onSubmitPurchased(BuildContext context, PurchaseModel model) {
-    //Navigator.popUntil(context, ModalRoute.withName('/shopping-list/purchases'));
-    //Navigator.pushNamed(context, '/shopping-list/purchases/purchase', arguments: {'purchase': _purchase})
+  void onSubmitPurchased(BuildContext context, PurchaseModel model) async {
+    Purchase? purchase = arguments['purchase'] ?? null;
+    if (purchase != null) {
+      try {
+        dismissKeyboard(context);
+        await dispatch(new CommitPurchaseCommand(purchase, model));
+        final list = await dispatch(new UpdatePurchaseOnListCommand(purchase));
+        Navigator.popUntil(context, ModalRoute.withName('/'));
+        Navigator.pushNamed(context, '/shopping-list');
+        Navigator.pushNamed(context, '/shopping-list/purchases', arguments: {'list': list});
+      } catch (error) {
+        displayError(error, context: context);
+      }
+    }
   }
 
   Widget _page (BuildContext context, Purchase purchase) => Column(
@@ -68,7 +83,7 @@ class PurchasePage extends AbstractPage {
         //),
         ActionButton(
           onPressed: () {
-            Navigator.pushNamed(context, '/shopping-list/purchases/purchase/create', arguments: {'onSubmit': (PurchaseModel model) => onSubmitPurchased(context, model)});
+            Navigator.pushNamed(context, '/shopping-list/purchases/purchase/create', arguments: {'onSubmit': (PurchaseModel model) => onSubmitPurchased(context, model), 'name': arguments['purchase'].name});
           },
           icon: Icon(Icons.add),
         )
@@ -99,6 +114,7 @@ class CreatePurchasePage extends AbstractPage with DispatchesCommands, DisplaysE
             padding: EdgeInsets.only(top: 20),
             child: PurchaseForm(
               formKey: _formKey,
+              defaultName: arguments['name'],
             ),
           )
       ),

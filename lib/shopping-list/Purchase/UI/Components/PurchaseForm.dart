@@ -9,9 +9,10 @@ import 'package:flutter/material.dart';
 class PurchaseForm extends StatefulWidget {
   final PurchaseFormValidator validator = PurchaseFormValidator();
   final InputFormDecorator decorator = InputFormDecorator();
+  final String defaultName;
   final GlobalKey<FormState> _internalFormKey = GlobalKey<FormState>();
 
-  PurchaseForm({Key? formKey}) : super(key: formKey);
+  PurchaseForm({Key? formKey, this.defaultName: 'Compra'}) : super(key: formKey);
 
   @override
   State<StatefulWidget> createState() =>  PurchaseFormState(formKey: _internalFormKey);
@@ -24,7 +25,7 @@ class PurchaseForm extends StatefulWidget {
           TextFormField(
             onSaved: (value) => state.model.name = value!,
             decoration: decorator.textForm('Nome', 'Adicione o nome da compra.'),
-            initialValue: "Compra",
+            initialValue: defaultName,
           ),
           Padding(
             padding: EdgeInsets.only(top: 16),

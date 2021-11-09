@@ -4,6 +4,7 @@ class Purchase {
   PurchaseTotal _total = PurchaseTotal(0);
   final String _name;
   final Amount _amount;
+  dynamic shoppingListId;
 
   Purchase? _purchase;
 

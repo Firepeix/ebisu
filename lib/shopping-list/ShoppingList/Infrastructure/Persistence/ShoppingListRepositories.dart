@@ -70,7 +70,7 @@ class ShoppingListHiveRepository implements ShoppingListRepositoryInterface
     box.values.forEach((model) {
       model = model as ShoppingListHiveModel;
       final list = ShoppingList(model.name, ShoppingListInputAmount(model.amount), id: model.key);
-      list.purchases.populateFromJson(model.serializedPurchases);
+      list.purchases.populateFromJson(model.serializedPurchases, list.id);
       lists.add(list);
     });
     return lists.reversed.toList();
@@ -86,5 +86,20 @@ class ShoppingListHiveRepository implements ShoppingListRepositoryInterface
     final box = await _getBox();
     final model = ShoppingListHiveModel(list.name, list.input.value, list.purchases.toJson());
     await box.put(list.id, model);
+  }
+
+  @override
+  Future<void> updatePurchase(Purchase purchase, ShoppingList list) async {
+    list.purchases.updatePurchase(purchase);
+    update(list);
+  }
+
+  @override
+  Future<ShoppingList> find(dynamic id) async {
+    final box = await _getBox();
+    final model = box.get(id) as ShoppingListHiveModel;
+    final list = ShoppingList(model.name, ShoppingListInputAmount(model.amount), id: model.key);
+    list.purchases.populateFromJson(model.serializedPurchases, list.id);
+    return list;
   }
 }

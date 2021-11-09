@@ -41,15 +41,6 @@ class _ShoppingListsContent extends StatefulWidget {
     );
   }
 
-  Widget _getExpenditureSkeletonView () {
-    return ListView.builder(
-        itemCount: 5,
-        itemBuilder: (BuildContext context, int index) => Padding(
-          padding: EdgeInsets.only(top: index == 0 ? 0 : 10),
-        )
-    );
-  }
-
   Widget build (_ShoppingListsContentState state) {
     return Padding(
         padding: EdgeInsets.symmetric(horizontal: 10),
@@ -160,7 +151,9 @@ class ShoppingListActions extends StatelessWidget with DispatchesCommands, Displ
         ElevatedButton(
             onPressed: () async {
               try {
+                showLoading(context);
                 final list = await dispatch(new SyncShoppingListCommand(listId, name, ShoppingListSyncType.pull));
+                stopLoading(context);
                 Navigator.popUntil(context, ModalRoute.withName('/'));
                 Navigator.pushNamed(context, '/shopping-list');
                 Navigator.pushNamed(context, '/shopping-list/purchases', arguments: {'list': list});

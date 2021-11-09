@@ -20,6 +20,8 @@ class ShoppingListBindServiceProvider implements BusServiceProviderInterface {
     (CreateShoppingListCommand).toString(): () => getIt<CreateShoppingListCommandHandler>(),
     (GetShoppingListCommand).toString(): () => getIt<GetShoppingListCommandHandler>(),
     (SyncShoppingListCommand).toString(): () => getIt<SyncShoppingListCommandHandler>(),
+    (UpdatePurchaseOnListCommand).toString(): () => getIt<UpdatePurchaseOnListCommandHandler>(),
+
   };
 }
 
