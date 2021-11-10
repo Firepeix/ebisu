@@ -52,6 +52,7 @@ class _KeyboardAvoiderState extends State<KeyboardAvoider> with WidgetsBindingOb
   final _animationKey = GlobalKey<ImplicitlyAnimatedWidgetState>();
   Function(AnimationStatus)? _animationListener;
   ScrollController? _scrollController;
+  bool skip = false;
 
   double _overlap = 0.0;
 
@@ -68,6 +69,7 @@ class _KeyboardAvoiderState extends State<KeyboardAvoider> with WidgetsBindingOb
       _animationKey.currentState?.animation.removeStatusListener(_animationListener!);
     }
     super.dispose();
+    skip = true;
   }
 
   @override
@@ -144,7 +146,7 @@ class _KeyboardAvoiderState extends State<KeyboardAvoider> with WidgetsBindingOb
   }
 
   void _resize() {
-    if (context == null) {
+    if (skip) {
       return;
     }
 
