@@ -66,7 +66,8 @@ class SyncShoppingListCommandHandler implements CommandHandler<SyncShoppingListC
   }
 
   Future<ShoppingList> handlePull(SyncShoppingListCommand command) async {
-    final list = await _coldShoppingList.getShoppingList(command.name);
+    final localList = await _repository.find(command.listId);
+    final list = await _coldShoppingList.getShoppingList(command.name, mergeWith: localList);
     list.id = command.listId;
     list.purchases.applyListId(list.id);
     await _repository.update(list);

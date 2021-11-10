@@ -102,6 +102,8 @@ class Amount {
 
   String get description => _type == AmountType.UNIT ? '$_quantity Unidade${_quantity > 1 ? 's': ''}' : '${_quantity}g';
 
+  String get simple => _type == AmountType.UNIT ? '$_quantity' : '${_quantity}g';
+
   IntValueObject get value => IntValueObject(_value);
 
   IntValueObject get quantity => IntValueObject(_quantity);

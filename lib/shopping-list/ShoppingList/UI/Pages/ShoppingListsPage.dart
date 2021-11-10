@@ -164,7 +164,7 @@ class ShoppingListActions extends StatelessWidget with DispatchesCommands, Displ
             style: ElevatedButton.styleFrom(primary: Colors.green),
             child: Row(
               children: [
-                Padding(padding: EdgeInsets.only(right: 8), child: Icon(Icons.arrow_downward),),
+                Padding(padding: EdgeInsets.only(right: 8), child: Icon(Icons.sync),),
                 Text('Sincronizar Planilha')
               ],
             )

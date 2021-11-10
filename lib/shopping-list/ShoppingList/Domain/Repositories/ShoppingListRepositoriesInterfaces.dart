@@ -2,7 +2,7 @@ import 'package:ebisu/shopping-list/Purchase/Domain/Purchase.dart';
 import 'package:ebisu/shopping-list/ShoppingList/Domain/ShoppingList.dart';
 
 abstract class ShoppingListColdStorageRepositoryInterface {
-  Future<ShoppingList> getShoppingList(String sheetName);
+  Future<ShoppingList> getShoppingList(String sheetName, {ShoppingList? mergeWith});
 }
 
 abstract class ShoppingListRepositoryInterface {

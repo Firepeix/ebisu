@@ -76,6 +76,11 @@ class Purchases {
     return index == -1 ? null : index;
   }
 
+  Purchase? find (String name) {
+    final index = indexOf((element) => element.name == name);
+    return index == null ? null : _value[index];
+  }
+
   String toJson() => jsonEncode(_value.map((e) => e.toJson()).toList());
 
   void populateFromJson(String json, dynamic shoppingListId) {
