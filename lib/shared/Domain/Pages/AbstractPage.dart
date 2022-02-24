@@ -1,4 +1,5 @@
-import 'package:ebisu/shared/UI/Components/EbisuDrawer.dart';
+import 'package:ebisu/modules/core/core.dart';
+import 'package:ebisu/shared/dependency/dependency_container.dart';
 import 'package:flutter/material.dart';
 
 abstract class AbstractPage extends StatelessWidget  {
@@ -43,6 +44,10 @@ abstract class AbstractPage extends StatelessWidget  {
         });
   }
 
+  Widget getDrawer() {
+    return DependencyManager.get<CoreInterface>().getDrawer();
+  }
+
   @protected
   Widget scaffold(BuildContext context, {
     String title: '',
@@ -54,7 +59,7 @@ abstract class AbstractPage extends StatelessWidget  {
       appBar: AppBar(
         title: Text(title),
       ),
-      drawer: hasDrawer ? EbisuDrawer() : null,
+      drawer: hasDrawer ? getDrawer() : null,
       body: body,
       floatingActionButton: actionButton,
     );

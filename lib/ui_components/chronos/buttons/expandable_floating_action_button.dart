@@ -180,12 +180,12 @@ class ActionButton extends StatelessWidget {
     Key? key,
     this.onPressed,
     required this.icon,
-    this.tooltip,
+    this.text,
   }) : super(key: key);
 
   final VoidCallback? onPressed;
-  final Icon icon;
-  final String? tooltip;
+  final Widget icon;
+  final Text? text;
 
   @override
   Widget build(BuildContext context) {
@@ -193,12 +193,14 @@ class ActionButton extends StatelessWidget {
     return Material(
       shape: const CircleBorder(),
       clipBehavior: Clip.antiAlias,
-      color: theme.colorScheme.secondary,
+      color: theme.accentColor,
       elevation: 4.0,
-      child: IconButton(
-        tooltip: tooltip,
-        onPressed: onPressed,
-        icon: icon,
+      child: IconTheme.merge(
+        data: theme.accentIconTheme,
+        child: IconButton(
+          onPressed: onPressed,
+          icon: icon,
+        ),
       ),
     );
   }

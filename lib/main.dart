@@ -1,5 +1,7 @@
 import 'package:ebisu/configuration/UI/Pages/Configuration.dart';
+import 'package:ebisu/modules/core/interactor.dart';
 import 'package:ebisu/shared/Infrastructure/Ebisu.dart';
+import 'package:ebisu/shared/navigator/navigator_interface.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:hive/hive.dart';
@@ -25,11 +27,11 @@ void main() {
   Hive.initFlutter().then((value) {
     configureDependencies();
     runApp(MyApp(getIt<PageContainer>()));
-  });
-}
+  });}
 
 class MyApp extends StatelessWidget {
   final PageContainer _pageContainer;
+  final CoreInteractorInterface _interactor = getIt<CoreInteractorInterface>();
 
   MyApp(this._pageContainer);
 
@@ -44,6 +46,7 @@ class MyApp extends StatelessWidget {
       routes: {
         '/': (context) => MyHomePage(title: 'Home'),
       },
+      navigatorKey: _interactor.navigatorKey(),
       onGenerateRoute: (settings) {
         if (settings.name == "/configuration") {
           return ConfigurationPage().getRoute();
@@ -52,6 +55,15 @@ class MyApp extends StatelessWidget {
         if (_pageContainer.hasPage(settings.name ?? '')) {
           Map<String, dynamic> arguments = settings.arguments != null ? settings.arguments as Map<String, dynamic> : {};
           return _pageContainer.getPage(settings.name ?? '').getRoute(arguments);
+        }
+
+        if (settings.name != null && settings.name != "/") {
+          final Map<String, dynamic> arguments = settings.arguments != null ? settings.arguments as Map<String, dynamic> : {};
+          if (arguments.containsKey('navigator')) {
+            final navigator = arguments['navigator'] as NavigatorInterface;
+            arguments.remove('navigator');
+            return navigator.route(settings.name!, arguments);
+          }
         }
 
 

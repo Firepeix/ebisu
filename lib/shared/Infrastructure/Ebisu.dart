@@ -1,14 +1,20 @@
 import 'package:ebisu/expenditure/UI/Pages/CreateExpenditure.dart';
 import 'package:ebisu/expenditure/UI/Pages/ListExpenditures.dart';
-import 'package:ebisu/shared/UI/Components/EbisuDrawer.dart';
+import 'package:ebisu/modules/core/core.dart';
+import 'package:ebisu/shared/dependency/dependency_container.dart';
 import 'package:ebisu/src/Domain/Pages/AbstractPage.dart';
 import 'package:ebisu/src/UI/Components/Nav/BottomNavBar.dart';
 import 'package:ebisu/src/UI/Components/Nav/MainButtonPage.dart';
 import 'package:ebisu/src/UI/General/HomePage.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class EbisuMainView extends StatefulWidget {
+
+
+  Widget getDrawer() {
+    return DependencyManager.get<CoreInterface>().getDrawer();
+  }
+
   @override
   _EbisuMainViewState createState() => _EbisuMainViewState();
 
@@ -29,9 +35,7 @@ class EbisuMainView extends StatefulWidget {
           )
         ],
       ),
-      drawer: Drawer (
-        child: EbisuDrawer(),
-      ),
+      drawer: getDrawer(),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       floatingActionButton: Visibility(
         visible: !keyboardIsOpen,
