@@ -11,4 +11,8 @@ class DependencyManager {
   static NavigatorState? getNavigator() {
     return getIt<NavigatorService>().navigatorKey.currentState;
   }
+
+  static BuildContext? getContext() {
+    return getIt<NavigatorService>().navigatorKey.currentContext;
+  }
 }

@@ -1,5 +1,6 @@
 import 'package:ebisu/configuration/UI/Pages/Configuration.dart';
 import 'package:ebisu/modules/core/interactor.dart';
+import 'package:ebisu/modules/scout/book/book.dart';
 import 'package:ebisu/shared/Infrastructure/Ebisu.dart';
 import 'package:ebisu/shared/navigator/navigator_interface.dart';
 import 'package:flutter/material.dart';
@@ -21,6 +22,11 @@ final getIt = GetIt.instance;
 void configureDependencies() {
   $initGetIt(getIt);
   ServiceContainer.register();
+  register();
+}
+
+void register() {
+  getIt<BookInterface>().register();
 }
 
 void main() {

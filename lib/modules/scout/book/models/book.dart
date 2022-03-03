@@ -16,7 +16,9 @@ enum BookAction {
 class BookViewModel extends StatelessWidget {
   final String id;
   final String _name;
+  String get name => _name;
   final BookChapter _chapter;
+  BookChapter get chapter => _chapter;
   final Moment? ignoreUntil;
   final OnTap<BookActionCallback> onTap = OnTap<BookActionCallback>();
 
@@ -46,6 +48,7 @@ class BookViewModel extends StatelessWidget {
       ]
     ),
   );
+
 }
 
 class BookChapter {

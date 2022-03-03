@@ -46,24 +46,17 @@ class _BookListState extends State<BookList> {
   @override
   void initState() {
     super.initState();
-    getBooks();
+    getBooks(cacheLess: false);
   }
 
-  void getBooks() {
-    final books = widget._interactor.getBooks();
+  Future<void> getBooks({required bool cacheLess}) async {
+    _books = [];
+    final books = await widget._interactor.getBooks(cacheLess: cacheLess);
     books.forEach((element) {
       element.onTap.action = onBookTap;
       _books.add(element);
     });
-    return;
-    /*final books = [
-      BookViewModel("Nozomanu Fushi no Boukensha", BookChapter("41"), id: "1",),
-      BookViewModel("Nozomanu Fushi no Boukensha", BookChapter("44"), id: "2", ignoreUntil: Moment.now(),)
-    ];
-    books.forEach((element) {
-      element.onTap.action = onBookTap;
-      _books.add(element);
-    });*/
+    setState(() { });
   }
 
   void onBookTap(String id, BookAction action) {
@@ -76,7 +69,9 @@ class _BookListState extends State<BookList> {
           itemCount: _books.length,
           itemBuilder: (BuildContext context, int index) => _books[index]
       ),
-      onRefresh: () async {}
+      onRefresh: () async {
+        await getBooks(cacheLess: true);
+      }
   );
 }
 

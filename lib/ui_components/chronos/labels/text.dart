@@ -12,5 +12,7 @@ class NormalText extends StatelessWidget {
     style: const TextStyle(
         color: EColor.black
     ),
+    maxLines: 1,
+    overflow: TextOverflow.ellipsis,
   );
 }

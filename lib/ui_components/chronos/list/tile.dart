@@ -15,7 +15,7 @@ class Tile extends StatelessWidget {
   Widget get _fullTitle {
     if (accent != null) {
       return Row(
-        children: [NormalText(text: title), Label.main(text: accent!)],
+        children: [Expanded(child: NormalText(text: title)), Label.main(text: accent!)],
       );
     }
 

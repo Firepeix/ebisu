@@ -1,14 +1,14 @@
 import 'dart:convert';
 
-import 'package:ebisu/shared/http/Response.dart';
 import 'package:ebisu/shared/http/request.dart';
+import 'package:ebisu/shared/http/response.dart';
 import 'package:gsheets/gsheets.dart';
 import 'package:injectable/injectable.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:uuid/uuid.dart';
 
 abstract class CommandCentralInterface {
-  Future<CommandResponse<Res>> execute<Req extends CommandCentralRequest, Res>(String name, Req body);
+  Future<Res> execute<Res extends CommandCentralResponse>(String name, CommandCentralRequest<Res> body);
 }
 
 @Injectable(as: CommandCentralInterface)
@@ -18,11 +18,12 @@ class SheetCommandCentral implements CommandCentralInterface {
   static const COMMAND_SHEET = 'Scout';
 
   @override
-  Future<CommandResponse<Res>> execute<Req extends CommandCentralRequest, Res>(String name, Req body) async {
+  Future<Res> execute<Res extends CommandCentralResponse>(String name, CommandCentralRequest<Res> body) async {
     final sheet = await getSheet();
     final requestId = Uuid().v4().toString();
     await _insert(requestId, name, body, sheet);
-    return await _getResponse(requestId, sheet);
+    final response = await _getResponse(requestId, sheet);
+    return Future.value(body.createResponse(response));
   }
 
   Future<void> _insert<Req extends CommandCentralRequest, Res>(String requestId, String name, Req body, Worksheet sheet) async {
@@ -40,31 +41,32 @@ class SheetCommandCentral implements CommandCentralInterface {
     return Future.value();
   }
 
-  Future<CommandResponse<Res>> _getResponse<Req extends CommandCentralRequest, Res>(String requestId, Worksheet sheet) async {
-    final rawResponse = await _checkForResponse(requestId, sheet);
-    print(rawResponse);
-    throw Error.safeToString('aaaaaaaaaaaaa');
+  Future<CommandResponse> _getResponse<Req extends CommandCentralRequest, Res>(String requestId, Worksheet sheet) async {
+    final response = await _checkForResponse(requestId, sheet);
+    return CommandResponse(response.commandCode, response.response);
   }
 
-  Future<List<Cell>> _checkForResponse<Req extends CommandCentralRequest, Res>(String requestId, Worksheet sheet) async {
+  Future<BaseResponse> _checkForResponse<Req extends CommandCentralRequest, Res>(String requestId, Worksheet sheet) async {
     List<Cell>? foundResponse;
-    final maxAttempts = 10;
+    final maxAttempts = 30;
     int attempts = 0;
     while(foundResponse == null && attempts < maxAttempts) {
       final rows = await sheet.cells.allRows(fromRow: 2, fromColumn: 1, length: 10);
       rows.forEach((row) {
         final rowRequestId = row[CENTRAL_COMMAND_INDEX.REQUEST_ID.index].value;
-        final responseCode = row[CENTRAL_COMMAND_INDEX.RESPONSE_BODY.index].value;
+        final responseCode = row[CENTRAL_COMMAND_INDEX.RESPONSE_CODE.index].value;
         if(rowRequestId == requestId && responseCode != "100" && responseCode != "") {
           foundResponse = row;
         }
       });
       attempts++;
-      await Future.delayed(const Duration(milliseconds: 1000));
+      await Future.delayed(const Duration(seconds: 1));
     }
 
     if(foundResponse != null) {
-      return Future.value(foundResponse);
+      final responseCode = foundResponse![CENTRAL_COMMAND_INDEX.RESPONSE_CODE.index].value;
+      final responseBody = foundResponse![CENTRAL_COMMAND_INDEX.RESPONSE_BODY.index].value;
+      return Future.value(BaseResponse(int.parse(responseCode), responseBody));
     }
 
     throw Error.safeToString('Timeout no comando: $requestId');
@@ -98,4 +100,19 @@ enum CENTRAL_COMMAND_INDEX {
   RESPONSE_BODY,
   CREATED_AT,
   REQUEST_ID
+}
+
+class BaseResponse {
+  final int code;
+  final String response;
+
+  BaseResponse(this.code, this.response);
+
+  CommandCentralCode get commandCode {
+    return {
+      100: CommandCentralCode.in_progress,
+      200: CommandCentralCode.success,
+      500: CommandCentralCode.error
+    }[code] ?? CommandCentralCode.error;
+  }
 }

@@ -12,4 +12,9 @@ class Moment {
   static Moment now () {
     return Moment(DateTime.now());
   }
+
+  static Moment parse (String from) {
+    final dates = from.split("/").reversed.join("-");
+    return Moment(DateTime.parse(dates));
+  }
 }
