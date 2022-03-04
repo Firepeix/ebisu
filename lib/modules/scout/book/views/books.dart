@@ -6,8 +6,6 @@ import 'package:flutter/material.dart';
 
 class BooksView extends StatelessWidget {
   final BookInteractorInterface _interactor;
-
-
   const BooksView(this._interactor, {Key? key}) : super(key: key);
 
   @override
@@ -37,40 +35,29 @@ class BookList extends StatefulWidget {
   const BookList(this._interactor, {Key? key}) : super(key: key);
 
   @override
-  _BookListState createState() => _BookListState();
+  BookListState createState() => BookListState();
 }
 
-class _BookListState extends State<BookList> {
-  List<BookViewModel> _books = [];
+class BookListState extends State<BookList> {
+  List<BookViewModel> books = [];
 
   @override
   void initState() {
     super.initState();
-    getBooks(cacheLess: false);
-  }
-
-  Future<void> getBooks({required bool cacheLess}) async {
-    _books = [];
-    final books = await widget._interactor.getBooks(cacheLess: cacheLess);
-    books.forEach((element) {
-      element.onTap.action = onBookTap;
-      _books.add(element);
+    widget._interactor.onLoad(this, onDone: () {
+      setState(() => null);
     });
-    setState(() { });
-  }
-
-  void onBookTap(String id, BookAction action) {
-    print([id, action]);
   }
 
   @override
   Widget build(BuildContext context) => RefreshIndicator(
       child: ListView.builder(
-          itemCount: _books.length,
-          itemBuilder: (BuildContext context, int index) => _books[index]
+          itemCount: books.length,
+          itemBuilder: (BuildContext context, int index) => books[index]
       ),
       onRefresh: () async {
-        await getBooks(cacheLess: true);
+        await widget._interactor.onRefresh(this);
+        setState(() => {});
       }
   );
 }

@@ -5,7 +5,7 @@ import 'package:ebisu/ui_components/chronos/menus/simple_menu.dart';
 import 'package:ebisu/ui_components/chronos/time/moment.dart';
 import 'package:flutter/material.dart';
 
-typedef BookActionCallback = void Function(String id, BookAction action);
+typedef BookActionCallback = void Function(BookViewModel id, BookAction action);
 
 enum BookAction {
   MARK_AS_READ,
@@ -19,14 +19,22 @@ class BookViewModel extends StatelessWidget {
   String get name => _name;
   final BookChapter _chapter;
   BookChapter get chapter => _chapter;
-  final Moment? ignoreUntil;
+  final _BookStatus _status = _BookStatus();
   final OnTap<BookActionCallback> onTap = OnTap<BookActionCallback>();
 
-  BookViewModel(this._name, this._chapter, {Key? key, required this.id, this.ignoreUntil}) : super(key: key);
+  Moment? get ignoreUntil => _status.ignoredUntil;
+
+  set ignoreUntil(Moment? value) {
+    _status.ignoredUntil = value;
+  }
+
+  BookViewModel(this._name, this._chapter, {Key? key, required this.id, Moment? ignoreUntil}) : super(key: key) {
+    _status.ignoredUntil = ignoreUntil;
+  }
 
 
   MenuItem<BookAction> get stateItem {
-    if(ignoreUntil == null) {
+    if(_status.ignoredUntil == null) {
       return MenuItem(BookAction.POSTPONE, Row(children: [Icon(Icons.calendar_today, color: EColor.accent,), Text("     Adiar para depois")],));
 
   }
@@ -38,10 +46,10 @@ class BookViewModel extends StatelessWidget {
   Widget build(BuildContext context) => Tile(
     title: "$_name:  ",
     accent: _chapter.value,
-    subtitle: ignoreUntil != null ? "Desativado até $ignoreUntil" : "Ativo",
+    subtitle: _status.ignoredUntil != null ? "Desativado até ${_status.ignoredUntil}" : "Ativo",
     trailing: SimpleMenu<BookAction>(
       icon:  Icons.more_vert,
-      onSelected: (action) => onTap.action?.call(id, action),
+      onSelected: (action) => onTap.action?.call(this, action),
       children: [
         MenuItem(BookAction.MARK_AS_READ, Row(children: [Icon(Icons.check, color: EColor.success,), Text("     Marcar como lido")],)),
         stateItem,
@@ -58,7 +66,7 @@ class BookChapter {
 
   String get value => _value;
 }
-/*EbisuIconButton(
-      icon: Icons.more_vert,
-      onPressed: () {  },
-    )*/
+
+class _BookStatus {
+  Moment? ignoredUntil;
+}
