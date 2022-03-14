@@ -17,10 +17,15 @@ class BookPresenter {
 
   void setBooks(BookListState list, List<BookViewModel> books, {BookActionCallback? onBookTap}) {
     final List<BookViewModel> _books = [];
+    books.sort((a, b) => int.parse(a.id).compareTo(int.parse(b.id)));
     books.forEach((element) {
       element.onTap.action = onBookTap;
       _books.add(element);
     });
     list.books = _books;
+  }
+
+  void update(BookViewModel book) {
+    book.save();
   }
 }

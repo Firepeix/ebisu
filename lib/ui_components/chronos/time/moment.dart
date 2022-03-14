@@ -9,6 +9,11 @@ class Moment {
     return "${_enforceDoubleDigits(_value.day)}/${_enforceDoubleDigits(_value.month)}/${_value.year}";
   }
 
+  Moment add(Duration duration) {
+    this._value.add(duration);
+    return this;
+  }
+
   static Moment now () {
     return Moment(DateTime.now());
   }

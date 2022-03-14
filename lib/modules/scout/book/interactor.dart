@@ -4,6 +4,8 @@ import 'package:ebisu/modules/scout/book/services/repository.dart';
 import 'package:ebisu/modules/scout/book/services/service.dart';
 import 'package:ebisu/modules/scout/book/views/books.dart';
 import 'package:ebisu/shared/Domain/Services/ExpcetionHandlerService.dart';
+import 'package:ebisu/shared/Domain/Services/LoadingHandlerService.dart';
+import 'package:ebisu/shared/utils/matcher.dart';
 import 'package:flutter/material.dart';
 import 'package:injectable/injectable.dart';
 
@@ -46,12 +48,35 @@ class BookInteractor implements BookInteractorInterface {
     _presenter.setBooks(state,  await getBooks(cacheLess: true), onBookTap: onBookTap);
   }
 
-  void onBookTap(BookViewModel book, BookAction action) async{
-    print([book, action]);
+  void onBookTap(BookViewModel book, BookAction action) async {
+    Matcher.when(action).matchAsync({
+      BookAction.ACTIVATE: () async => await _activateBook(book),
+      BookAction.MARK_AS_READ: () async => await _readChapter(book),
+      BookAction.POSTPONE: () async => await _postpone(book)
+    });
   }
 
-  Future<void> activateBook(String id) async {
-    //await _exceptionHandler.wrapAsync(() async => await _repository.getBooks(true, cacheLess: cacheLess));
+  Future<void> _activateBook(BookViewModel book) async {
+    LoadingHandlerService.displayLoading();
+    _service.activate(book);
+    await _exceptionHandler.wrapAsync(() async => await _repository.expedite(book, earlyReturn: true));
+    _presenter.update(book);
+    LoadingHandlerService.displaySuccess();
+  }
 
+  Future<void> _readChapter(BookViewModel book) async {
+    LoadingHandlerService.displayLoading();
+    _service.readChapter(book);
+    await _exceptionHandler.wrapAsync(() async => await _repository.readChapter(book, earlyReturn: true));
+    _presenter.update(book);
+    LoadingHandlerService.displaySuccess();
+  }
+
+  Future<void> _postpone(BookViewModel book) async {
+    LoadingHandlerService.displayLoading();
+    _service.postpone(book);
+    await _exceptionHandler.wrapAsync(() async => await _repository.postpone(book, earlyReturn: true));
+    _presenter.update(book);
+    LoadingHandlerService.displaySuccess();
   }
 }
