@@ -14,6 +14,7 @@ abstract class BookInteractorInterface {
   Widget getDrawer();
   void onLoad(BookListState state, { VoidCallback? onDone });
   Future<void> onRefresh(BookListState state);
+  Future<void> onCleanLogsTap();
 }
 
 @Injectable(as: BookInteractorInterface)
@@ -46,6 +47,10 @@ class BookInteractor implements BookInteractorInterface {
   @override
   Future<void> onRefresh(BookListState state) async {
     _presenter.setBooks(state,  await getBooks(cacheLess: true), onBookTap: onBookTap);
+  }
+  @override
+  Future<void> onCleanLogsTap() async {
+    await _exceptionHandler.wrapAsync(() async => await _repository.cleanLogs(earlyReturn: true));
   }
 
   void onBookTap(BookViewModel book, BookAction action) async {

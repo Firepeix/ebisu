@@ -19,7 +19,8 @@ class BooksView extends StatelessWidget {
           children: [
             ActionButton(
               tooltip: "Limpar Logs",
-                icon: Icon(Icons.delete, color: Colors.white,)
+              icon: Icon(Icons.delete, color: Colors.white,),
+              onPressed: () => _interactor.onCleanLogsTap(),
             )
           ],
         ),
