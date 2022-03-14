@@ -27,7 +27,7 @@ class PurchaseViewModelList extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.end,
       children: [
         Padding(padding: EdgeInsets.only(top: 7), child: Text(_purchase.boughtTotal.real, style: TextStyle(fontWeight: FontWeight.w600, fontSize: 16),),),
-        Text(_purchase.amount.value.real, style: TextStyle(color: Colors.grey, fontSize: 14),)
+        Text(_purchase.total.real, style: TextStyle(color: Colors.grey, fontSize: 14),)
       ],
     ),
   );
