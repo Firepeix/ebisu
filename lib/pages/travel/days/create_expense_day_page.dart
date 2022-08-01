@@ -86,6 +86,7 @@ class _CreateExpenseDayFormState extends State<_CreateExpenseDayForm> {
     return Form(key: _formKey, child: Column(
       children: [
         Input(
+          keyboardType: TextInputType.number,
           label: "Dia de Viagem",
           controller: controller,
           validator: (value) => widget.validator.date(controller.date()),
