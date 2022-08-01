@@ -3,7 +3,6 @@ import 'package:ebisu/domain/travel/models/travel_day_model.dart';
 import 'package:ebisu/domain/travel/models/travel_expense_model.dart';
 import 'package:ebisu/modules/core/interactor.dart';
 import 'package:ebisu/modules/scout/book/book.dart';
-import 'package:ebisu/pages/travel/days/travel_expense_page.dart';
 import 'package:ebisu/shared/Infrastructure/Ebisu.dart';
 import 'package:ebisu/shared/navigator/navigator_interface.dart';
 import 'package:flutter/material.dart';
@@ -55,7 +54,7 @@ class MyApp extends StatelessWidget {
       ),
       initialRoute: '/',
       routes: {
-        '/': (context) => TravelExpensePage(),
+        '/': (context) => MyHomePage(title: 'Home'),
       },
       navigatorKey: _interactor.navigatorKey(),
       onGenerateRoute: (settings) {

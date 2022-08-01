@@ -15,7 +15,26 @@ class EbisuDrawer extends StatelessWidget {
     child: ListView(
       padding: EdgeInsets.zero,
       children: [
-        E.DrawerHeader(username: "Wendy Artiaga", email: "wendy.artiaga@gmail.com"),
+        E.DrawerHeader(username: "Arthur Fernandes", email: "arthurhmf@gmail.com"),
+        E.DrawerItem(
+          icon: Icon(Icons.home),
+          title: "Despesas",
+          onTap: () {
+            Navigator.pushNamed(context, '/');
+          }
+        ),
+        E.DrawerItem(
+          icon: Icon(Icons.shopping_cart),
+          title:"Listas de Compra",
+          onTap: () {
+            Navigator.pushNamed(context, '/shopping-list');
+          }
+        ),
+        E.DrawerItem(
+            icon: Icon(Icons.book),
+            title:"Livros",
+            onTap: () => _interactor.initScoutBookModule()
+        ),
         E.DrawerItem(
             icon: Icon(Icons.airplanemode_active),
             title:"Viagens",
