@@ -16,6 +16,10 @@ class TravelDay {
     return '${date.day} de $month de ${date.year}';
   }
 
+  String format() {
+    return '${date.day}/${date.month}/${date.year}';
+  }
+
   String get month {
     return {
       1: "Janeiro",

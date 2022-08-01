@@ -1,8 +1,15 @@
 import 'package:ebisu/card/Domain/Card.dart';
 import 'package:gsheets/gsheets.dart';
+import 'package:injectable/injectable.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-abstract class GoogleSheetsRepository {
+enum AppendType {
+  batch,
+  single
+}
+
+@singleton
+class GoogleSheetsRepository {
   static const CREDENTIALS_KEY = 'credentials-key';
   static const SPREADSHEET_ID_KEY = 'spread-sheet-id-key';
   static const ACTIVE_SHEET_CACHE = 'active-sheet-cache';
@@ -43,10 +50,10 @@ abstract class GoogleSheetsRepository {
     throw Error.safeToString('Por favor preencha o id da planilha nas opções!');
   }
 
-  Future<Worksheet> sheet(String title) async {
+  Future<Worksheet> sheet(String title, { String? sheetId }) async {
     final credentials = await _getCredentials();
     final googleSheets = GSheets(credentials!);
-    final spreadSheetId = await getSheetId();
+    final spreadSheetId = sheetId ?? await getSheetId();
     if(spreadSheetId != null) {
       final spreadSheet = await googleSheets.spreadsheet(spreadSheetId);
       return Future(() {
@@ -65,5 +72,13 @@ abstract class GoogleSheetsRepository {
     return Future(() {
       return credentials != null ? true : false;
     });
+  }
+
+  Future<void> append(List<dynamic> row, Worksheet sheet, {AppendType type = AppendType.single}) async {
+    if (type == AppendType.single) {
+      await sheet.values.appendRow(row);
+      return;
+    }
+    await sheet.values.appendRows(row as List<List<dynamic>>);
   }
 }

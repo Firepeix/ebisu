@@ -32,11 +32,13 @@ class AppConfiguration {
   AppTheme theme;
   _User user;
   List<_Feature> features;
+  String travelSheetId;
 
   AppConfiguration._init({
     required this.theme,
     required this.user,
-    required this.features
+    required this.features,
+    required this.travelSheetId,
   });
 
   factory AppConfiguration() {
@@ -47,10 +49,10 @@ class AppConfiguration {
     final features = (const String.fromEnvironment("FEATURES", defaultValue: "")).split(",").map((e) => _Feature(e)).toList();
     final userId = const String.fromEnvironment("USER", defaultValue: "tutu");
 
-
     return AppConfiguration._init(
         user: _User.fromId(userId),
         theme: const String.fromEnvironment("THEME", defaultValue: "wewe") == AppTheme.tutu.name ? AppTheme.tutu : AppTheme.wewe,
+        travelSheetId: const String.fromEnvironment("TRAVEL_SHEET_ID", defaultValue: ""),
         features: features
     );
   }

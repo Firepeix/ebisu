@@ -1,6 +1,7 @@
 import 'package:ebisu/domain/travel/entities/travel_day.dart';
 import 'package:ebisu/domain/travel/entities/travel_expense.dart';
 import 'package:ebisu/domain/travel/travel_expense_repository.dart';
+import 'package:ebisu/shared/Domain/Services/ExpcetionHandlerService.dart';
 import 'package:ebisu/ui_components/chronos/labels/money.dart';
 import 'package:injectable/injectable.dart';
 
@@ -8,6 +9,7 @@ abstract class TravelExpenseServiceInterface {
   Future<void> createTravelExpenseDay(DateTime date, Money budget);
   Future<List<TravelDay>> getDays();
   Future<void> removeDay(TravelDay day);
+  Future<void> saveSheet(TravelDay day);
 
   Future<void> createTravelExpense(TravelDay day, String description, Money amount);
   Future<List<TravelExpense>> getExpenses(TravelDay day);
@@ -18,8 +20,9 @@ abstract class TravelExpenseServiceInterface {
 @Injectable(as: TravelExpenseServiceInterface)
 class TravelExpenseService implements TravelExpenseServiceInterface {
   final TravelExpenseRepositoryInterface _repository;
+  final ExceptionHandlerServiceInterface _exceptionHandler;
 
-  TravelExpenseService(this._repository);
+  TravelExpenseService(this._repository, this._exceptionHandler);
 
   @override
   Future<void> createTravelExpenseDay(DateTime date, Money budget) async {
@@ -49,5 +52,10 @@ class TravelExpenseService implements TravelExpenseServiceInterface {
   @override
   Future<void> removeExpense(TravelExpense expense) async {
     return await _repository.removeExpense(expense);
+  }
+
+  @override
+  Future<void> saveSheet(TravelDay day)  async {
+    await _exceptionHandler.wrapAsync(() async => await _repository.saveSheet(day));
   }
 }

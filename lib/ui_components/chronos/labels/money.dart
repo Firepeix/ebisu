@@ -26,6 +26,10 @@ class Money extends StatelessWidget {
     return "${value < 0 ? "- ": ""}R\$ ${_addSeparators(money[0], '.')},${money[1]}";
   }
 
+  double toDouble() {
+    return value / 100;
+  }
+
   String _addSeparators(String src, String divider) {
     List<String> newStr = [];
     int step = 3;

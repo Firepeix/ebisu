@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 
 import 'abstract_button.dart';
 
-class AccentButton extends AbstractButton {
+class AccentButton extends StatelessAbstractButton {
   final String? text;
   final IconData? icon;
 

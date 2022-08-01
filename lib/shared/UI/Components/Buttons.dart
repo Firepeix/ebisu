@@ -1,6 +1,7 @@
+import 'package:ebisu/ui_components/chronos/buttons/abstract_button.dart';
 import 'package:flutter/material.dart';
 
-class ExpandableFab extends StatefulWidget {
+class ExpandableFab extends StatefulAbstractButton {
   const ExpandableFab({
     Key? key,
     this.initialOpen,
@@ -86,7 +87,7 @@ class _ExpandableFabState extends State<ExpandableFab>
               padding: const EdgeInsets.all(8.0),
               child: Icon(
                 Icons.close,
-                color: Theme.of(context).primaryColor,
+                color: Theme.of(context).colorScheme.secondary,
               ),
             ),
           ),

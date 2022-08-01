@@ -1,7 +1,7 @@
 import 'package:ebisu/ui_components/chronos/buttons/abstract_button.dart';
 import 'package:flutter/material.dart';
 
-class SimpleFAB extends AbstractButton {
+class SimpleFAB extends StatelessAbstractButton {
   final IconData? icon;
 
   const SimpleFAB(onPressed, {Key? key, this.icon}) : super(key: key, onPressed: onPressed);
