@@ -59,12 +59,12 @@ class _KeyboardAvoiderState extends State<KeyboardAvoider> with WidgetsBindingOb
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance?.addObserver(this);
+    WidgetsBinding.instance.addObserver(this);
   }
 
   @override
   void dispose() {
-    WidgetsBinding.instance?.removeObserver(this);
+    WidgetsBinding.instance.removeObserver(this);
     if (_animationListener != null) {
       _animationKey.currentState?.animation.removeStatusListener(_animationListener!);
     }
@@ -77,7 +77,7 @@ class _KeyboardAvoiderState extends State<KeyboardAvoider> with WidgetsBindingOb
     // Add a status listener to the animation after the initial build.
     // Wait a frame so that _animationKey.currentState is not null.
     if (_animationListener == null) {
-      WidgetsBinding.instance?.addPostFrameCallback((_) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
         _animationListener = _animationStatusChanged;
         _animationKey.currentState?.animation.addStatusListener(_animationListener!);
       });
@@ -118,7 +118,7 @@ class _KeyboardAvoiderState extends State<KeyboardAvoider> with WidgetsBindingOb
   @override
   void didChangeMetrics() {
     //Need to wait a frame to get the new size
-    WidgetsBinding.instance?.addPostFrameCallback((_) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
       _resize();
     });
   }
@@ -126,7 +126,7 @@ class _KeyboardAvoiderState extends State<KeyboardAvoider> with WidgetsBindingOb
   /// AnimationStatus
   void _animationStatusChanged(AnimationStatus status) {
     if (status == AnimationStatus.completed) {
-      final viewInsets = EdgeInsets.fromWindowPadding(WidgetsBinding.instance!.window.viewInsets,WidgetsBinding.instance!.window.devicePixelRatio);
+      final viewInsets = EdgeInsets.fromWindowPadding(WidgetsBinding.instance.window.viewInsets,WidgetsBinding.instance.window.devicePixelRatio);
       final keyboardVisible = viewInsets.bottom > 0.0;
       if (keyboardVisible) {
         _keyboardShown();
@@ -164,7 +164,7 @@ class _KeyboardAvoiderState extends State<KeyboardAvoider> with WidgetsBindingOb
     // Calculate top of keyboard
     final mediaQuery = MediaQuery.of(context);
     final screenSize = mediaQuery.size;
-    final viewInsets = EdgeInsets.fromWindowPadding(WidgetsBinding.instance!.window.viewInsets,WidgetsBinding.instance!.window.devicePixelRatio);
+    final viewInsets = EdgeInsets.fromWindowPadding(WidgetsBinding.instance.window.viewInsets,WidgetsBinding.instance.window.devicePixelRatio);
     final keyboardTop = screenSize.height - viewInsets.bottom;
 
     // If widget is entirely covered by keyboard, do nothing
@@ -187,7 +187,7 @@ class _KeyboardAvoiderState extends State<KeyboardAvoider> with WidgetsBindingOb
       return;
     }
     // Need to wait a frame to get the new size
-    WidgetsBinding.instance?.addPostFrameCallback((_) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
       _scrollToFocusedObject();
     });
   }

@@ -1,4 +1,6 @@
+import 'package:ebisu/main.dart';
 import 'package:ebisu/modules/core/interactor.dart';
+import 'package:ebisu/pages/travel/days/travel_expense_page.dart';
 import 'package:ebisu/ui_components/chronos/drawer/header.dart' as E;
 import 'package:flutter/material.dart';
 
@@ -32,6 +34,11 @@ class EbisuDrawer extends StatelessWidget {
             icon: Icon(Icons.book),
             title:"Livros",
             onTap: () => _interactor.initScoutBookModule()
+        ),
+        E.DrawerItem(
+            icon: Icon(Icons.airplanemode_active),
+            title:"Viagens",
+            onTap: () => routeTo(context, TravelExpensePage())
         )
       ],
     ),

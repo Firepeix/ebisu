@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 
 class SimpleMenu<T> extends StatefulWidget {
   final IconData icon;
-  final List<MenuItem<T>> children;
+  final List<EbisuMenuItem<T>> children;
   final PopupMenuItemSelected? onSelected;
   const SimpleMenu({Key? key,required this.icon,required this.children, this.onSelected}) : super(key: key);
 
@@ -33,9 +33,9 @@ class _SimpleMenuState<T> extends State<SimpleMenu> {
   );
 }
 
-class MenuItem<T> {
+class EbisuMenuItem<T> {
   final T value;
   final Widget child;
 
-  MenuItem(this.value, this.child);
+  EbisuMenuItem(this.value, this.child);
 }

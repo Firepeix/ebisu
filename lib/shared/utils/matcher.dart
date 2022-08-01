@@ -10,6 +10,18 @@ class Matcher<T, R> {
 
   static Matcher when<V>(V value) => Matcher(value);
 
+  static P matchWhen<T, P> (T value, Map<T, P> patterns, {P? base}) {
+    final found = patterns[value];
+    if (found == null) {
+      if(base != null) {
+        return base;
+      }
+      throw Exception("Padrão não exaustivo para o valor $value");
+    }
+
+    return found;
+  }
+
   Matcher or(MatchFunction<R> or) {
     _else = or;
     return this;

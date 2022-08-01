@@ -1,4 +1,6 @@
 import 'package:ebisu/configuration/UI/Pages/Configuration.dart';
+import 'package:ebisu/domain/travel/models/travel_day_model.dart';
+import 'package:ebisu/domain/travel/models/travel_expense_model.dart';
 import 'package:ebisu/modules/core/interactor.dart';
 import 'package:ebisu/modules/scout/book/book.dart';
 import 'package:ebisu/shared/Infrastructure/Ebisu.dart';
@@ -27,6 +29,8 @@ void configureDependencies() {
 
 void register() {
   getIt<BookInterface>().register();
+  Hive.registerAdapter(TravelDayModelAdapter());
+  Hive.registerAdapter(TravelExpenseModelAdapter());
 }
 
 void main() {
@@ -46,7 +50,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Ebisu',
       theme: ThemeData(
-        primarySwatch: Colors.red,
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.lightBlue, primary: Colors.lightBlue, secondary: Colors.orangeAccent),
       ),
       initialRoute: '/',
       routes: {
@@ -92,4 +96,16 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     return EbisuMainView();
   }
+}
+
+void routeTo(BuildContext context, Widget view, { IntoViewAnimation? animation }) {
+  getIt<NavigatorService>().routeTo(context, view, animation: animation);
+}
+
+void routeToPop(BuildContext context, Widget view, int times) {
+  for(int i = 0; i < times;i++) {
+    Navigator.pop(context);
+  }
+
+  routeTo(context, view);
 }

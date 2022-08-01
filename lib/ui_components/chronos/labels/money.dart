@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 
-import '../colors/colors.dart';
-
 class Money extends StatelessWidget {
   final int value;
   const Money(this.value, {Key? key}) : super(key: key);
@@ -9,10 +7,10 @@ class Money extends StatelessWidget {
   @override
   Widget build(BuildContext context) => Text(
     toReal(),
-    style: const TextStyle(
+    style: TextStyle(
         fontWeight: FontWeight.w700,
         fontSize: 19,
-        color: EColor.main
+        color: Theme.of(context).colorScheme.secondary
     ),
   );
 
