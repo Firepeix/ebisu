@@ -1,16 +1,25 @@
 import 'package:ebisu/domain/travel/entities/travel_day.dart';
 import 'package:ebisu/domain/travel/travel_expense_service.dart';
 import 'package:ebisu/main.dart';
+import 'package:ebisu/shared/navigator/navigator_interface.dart';
+import 'package:ebisu/ui_components/chronos/list/decorated_list_box.dart';
+import 'package:ebisu/ui_components/chronos/list/dismissable_tile.dart';
 import 'package:flutter/material.dart';
 
 import 'travel_day_list_item.dart';
 
 class TravelDaysExpenseList extends StatefulWidget {
   final _service = getIt<TravelExpenseServiceInterface>();
-  TravelDaysExpenseList({Key? key}) : super(key: key);
+  final OnReturnCallback? onReturn;
+  final VoidCallback? onChange;
+  TravelDaysExpenseList({Key? key, this.onReturn, this.onChange}) : super(key: key);
 
   Future<List<TravelDay>> getDays() async {
     return await _service.getDays();
+  }
+
+  Future<void> removeDay(TravelDay day) async {
+    return await _service.removeDay(day);
   }
 
   @override
@@ -34,20 +43,28 @@ class _TravelDaysExpenseListState extends State<TravelDaysExpenseList> {
     });
   }
 
-  TravelDayListItem _buildDay(BuildContext context, int index) {
-    return TravelDayListItem(days[index]);
+  void _handleDismissDay(int index) async {
+    final day = days[index];
+    await widget.removeDay(day);
+    setState(() {
+      days.removeAt(index);
+      widget.onChange?.call();
+    });
+  }
+
+  DismissibleTile _buildDay(BuildContext context, int index) {
+    return DismissibleTile(
+      child: DecoratedListTileBox(TravelDayListItem(days[index], onReturn: widget.onReturn,), index),
+      onDismissed: (_) => _handleDismissDay(index),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        ListView.builder(
-            shrinkWrap: true,
-            itemCount: days.length,
-            itemBuilder: _buildDay
-        )
-      ],
+    return ListView.builder(
+        shrinkWrap: true,
+        itemCount: days.length,
+        itemBuilder: _buildDay
     );
   }
 }

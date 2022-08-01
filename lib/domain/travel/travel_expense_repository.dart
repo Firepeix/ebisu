@@ -9,9 +9,11 @@ import 'package:injectable/injectable.dart';
 abstract class TravelExpenseRepositoryInterface {
   Future<void> insert(TravelDay travelDay);
   Future<List<TravelDay>> getDays();
+  Future<void> removeDay(TravelDay day);
 
   Future<void> insertExpense(TravelExpense expense);
   Future<List<TravelExpense>> getExpenses(TravelDay day);
+  Future<void> removeExpense(TravelExpense expense);
 }
 
 @Injectable(as: TravelExpenseRepositoryInterface)
@@ -59,5 +61,24 @@ class TravelExpenseRepository implements TravelExpenseRepositoryInterface {
         .map((e) => _mapper.toTravelExpense(e))
         .where((element) => element.travelDayId == day.id)
         .toList();
+  }
+
+  @override
+  Future<void> removeDay(TravelDay day) async {
+    final box = await _getBox<TravelDayModel>(DAY_BOX);
+    await _removeExpensesFromDay(day);
+    await box.delete(day.id);
+  }
+
+  @override
+  Future<void> removeExpense(TravelExpense expense) async {
+    final box = await _getBox<TravelExpenseModel>(EXPENSE_BOX);
+    await box.delete(expense.id);
+  }
+
+  Future<void> _removeExpensesFromDay(TravelDay day) async {
+    final box = await _getBox<TravelExpenseModel>(EXPENSE_BOX);
+    final expenses =  box.values.where((element) => element.travelDayId == day.id).map((e) => e.id);
+    await box.deleteAll(expenses);
   }
 }

@@ -64,9 +64,9 @@ class _BookState extends State<BookViewModel> {
 
   @override
   Widget build(BuildContext context) => Tile(
-    title: "${widget._name}:  ",
+    titleText: "${widget._name}:  ",
     accent: widget._chapter.value,
-    subtitle: ignoredUntil != null ? "Desativado" : "Ativo",
+    subtitleText: ignoredUntil != null ? "Desativado" : "Ativo",
     trailing: SimpleMenu<BookAction>(
         icon:  Icons.more_vert,
         onSelected: (action) {

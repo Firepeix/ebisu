@@ -7,9 +7,12 @@ import 'package:injectable/injectable.dart';
 abstract class TravelExpenseServiceInterface {
   Future<void> createTravelExpenseDay(DateTime date, Money budget);
   Future<List<TravelDay>> getDays();
+  Future<void> removeDay(TravelDay day);
 
   Future<void> createTravelExpense(TravelDay day, String description, Money amount);
   Future<List<TravelExpense>> getExpenses(TravelDay day);
+  Future<void> removeExpense(TravelExpense expense);
+
 }
 
 @Injectable(as: TravelExpenseServiceInterface)
@@ -38,4 +41,13 @@ class TravelExpenseService implements TravelExpenseServiceInterface {
     return await _repository.getExpenses(day);
   }
 
+  @override
+  Future<void> removeDay(TravelDay day) async {
+    return await _repository.removeDay(day);
+  }
+
+  @override
+  Future<void> removeExpense(TravelExpense expense) async {
+    return await _repository.removeExpense(expense);
+  }
 }

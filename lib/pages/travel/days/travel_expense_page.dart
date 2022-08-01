@@ -10,7 +10,12 @@ import 'package:flutter/material.dart';
 import 'create_expense_day_page.dart';
 
 class TravelExpensePage extends StatelessWidget {
-  const TravelExpensePage({Key? key}) : super(key: key);
+  final _summaryKey = GlobalKey<TravelDaySummaryState>();
+  TravelExpensePage({Key? key}) : super(key: key);
+
+  void onReturn<T>(T? _) {
+    _summaryKey.currentState?.setInitialState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -18,12 +23,13 @@ class TravelExpensePage extends StatelessWidget {
       title: "Gastos de Viagens",
       child: Column(
         children: [
-          TravelDaySummary(),
+          TravelDaySummary(key: _summaryKey,),
           Padding(padding: EdgeInsets.symmetric(vertical: 20), child: EbisuDivider(),),
-          TravelDaysExpenseList(),
+          Expanded(child: TravelDaysExpenseList(onReturn: onReturn, onChange: () => onReturn(null),)),
         ],
       ),
-      fab: CFloatActionButton(button: SimpleFAB(() => routeTo(context, CreateExpenseDayPage()), icon: Icons.add,)),
+      fab: CFloatActionButton(button: SimpleFAB(() => routeTo(context, CreateExpenseDayPage(), onReturn: onReturn), icon: Icons.add,)),
     );
   }
+
 }

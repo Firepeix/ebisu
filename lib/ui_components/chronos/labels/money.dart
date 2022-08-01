@@ -17,8 +17,7 @@ class Money extends StatelessWidget {
   String toReal() {
     final amount = value >= 0 ? value / 100 : (value / 100) * -1;
     final money = amount.toStringAsFixed(2).split('.');
-    final isNegative = value >= 0 ? '' : '-';
-    return "$isNegative R\$ ${_addSeparators(money[0], '.')},${money[1]}";
+    return "${value < 0 ? "- ": ""}R\$ ${_addSeparators(money[0], '.')},${money[1]}";
   }
 
   String _addSeparators(String src, String divider) {

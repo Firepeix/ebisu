@@ -22,6 +22,10 @@ class TravelExpensesPage extends StatefulWidget {
     return await _service.getExpenses(day);
   }
 
+  Future<void> removeExpense(TravelExpense expense) async {
+    return await _service.removeExpense(expense);
+  }
+
   @override
   State<TravelExpensesPage> createState() => _TravelExpensesPageState();
 }
@@ -49,6 +53,14 @@ class _TravelExpensesPageState extends State<TravelExpensesPage> {
     return Money(0);
   }
 
+  void _handleOnExpenseDismiss(int index) async {
+    final expense = expenses[index];
+    await widget.removeExpense(expense);
+    setState(() {
+      expenses.removeAt(index);
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return ViewBody(
@@ -57,7 +69,7 @@ class _TravelExpensesPageState extends State<TravelExpensesPage> {
         children: [
           TravelExpenseSummary(widget.day.budget, _totalAmount()),
           Padding(padding: EdgeInsets.symmetric(vertical: 20), child: EbisuDivider(),),
-          TravelExpensesList(expenses),
+          Expanded(child: TravelExpensesList(expenses, onDismissed: _handleOnExpenseDismiss,),),
         ],
       ),
       fab: CFloatActionButton(button: SimpleFAB(() => routeTo(context, CreateTravelExpensePage(widget.day)), icon: Icons.add,)),

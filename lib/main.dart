@@ -4,6 +4,7 @@ import 'package:ebisu/domain/travel/models/travel_expense_model.dart';
 import 'package:ebisu/modules/core/interactor.dart';
 import 'package:ebisu/modules/scout/book/book.dart';
 import 'package:ebisu/shared/Infrastructure/Ebisu.dart';
+import 'package:ebisu/shared/configuration/app_configuration.dart';
 import 'package:ebisu/shared/navigator/navigator_interface.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
@@ -12,6 +13,7 @@ import 'package:hive_flutter/hive_flutter.dart';
 import 'package:injectable/injectable.dart';
 
 import 'main.config.dart';
+import 'pages/travel/days/travel_expense_page.dart';
 import 'shared/Infrastructure/Providers/ServiceProvider.dart';
 
 final getIt = GetIt.instance;
@@ -33,28 +35,27 @@ void register() {
   Hive.registerAdapter(TravelExpenseModelAdapter());
 }
 
-void main() {
-  Hive.initFlutter().then((value) {
-    configureDependencies();
-    runApp(MyApp(getIt<PageContainer>()));
-  });}
+void main() async {
+  await Hive.initFlutter();
+  configureDependencies();
+  runApp(MyApp(getIt<PageContainer>(), AppConfiguration()));
+}
 
 class MyApp extends StatelessWidget {
   final PageContainer _pageContainer;
+  final AppConfiguration _configuration;
   final CoreInteractorInterface _interactor = getIt<CoreInteractorInterface>();
 
-  MyApp(this._pageContainer);
+  MyApp(this._pageContainer, this._configuration);
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Ebisu',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.lightBlue, primary: Colors.lightBlue, secondary: Colors.orangeAccent),
-      ),
+      theme: _configuration.getTheme(),
       initialRoute: '/',
       routes: {
-        '/': (context) => MyHomePage(title: 'Home'),
+        '/': (context) => _configuration.theme == AppTheme.tutu ? MyHomePage(title: 'Home') : TravelExpensePage(),
       },
       navigatorKey: _interactor.navigatorKey(),
       onGenerateRoute: (settings) {
@@ -98,8 +99,8 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 }
 
-void routeTo(BuildContext context, Widget view, { IntoViewAnimation? animation }) {
-  getIt<NavigatorService>().routeTo(context, view, animation: animation);
+void routeTo(BuildContext context, Widget view, { IntoViewAnimation? animation, OnReturnCallback? onReturn }) {
+  getIt<NavigatorService>().routeTo(context, view, animation: animation, onReturn: onReturn);
 }
 
 void routeToPop(BuildContext context, Widget view, int times) {

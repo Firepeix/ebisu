@@ -18,20 +18,20 @@ class TravelDaySummary extends StatefulWidget {
   }
 
   @override
-  State<TravelDaySummary> createState() => _TravelDaySummaryState();
+  State<TravelDaySummary> createState() => TravelDaySummaryState();
 }
 
-class _TravelDaySummaryState extends State<TravelDaySummary> {
+class TravelDaySummaryState extends State<TravelDaySummary> {
   Money totalAmount = Money(0);
 
 
   @override
   void initState() {
     super.initState();
-    _setInitialState();
+    setInitialState();
   }
 
-  void _setInitialState () async {
+  void setInitialState () async {
     final _days = await widget.getDays();
     int _totalAmount = 0;
     for (int i = 0; i < _days.length; i++) {
