@@ -1,5 +1,11 @@
 import 'package:flutter/material.dart';
 
+enum MoneyStrata {
+  positive,
+  zeroed,
+  negative
+}
+
 class Money extends StatelessWidget {
   final int value;
   const Money(this.value, {Key? key}) : super(key: key);
@@ -30,5 +36,21 @@ class Money extends StatelessWidget {
       }
     }
     return newStr.join('');
+  }
+
+  MoneyStrata get strata {
+    if (value == 0) {
+      return MoneyStrata.zeroed;
+    }
+
+    return value > 0 ? MoneyStrata.positive : MoneyStrata.negative;
+  }
+
+  Money operator -(Money? another) {
+    if (another == null) {
+      return this;
+    }
+
+    return Money(value - another.value);
   }
 }
