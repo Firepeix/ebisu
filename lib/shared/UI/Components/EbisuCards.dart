@@ -63,7 +63,7 @@ class SummaryDivider extends StatelessWidget {
   Widget build(BuildContext context) => Container(
     height: 3,
     decoration: BoxDecoration(
-      color: Colors.red,
+      color: Theme.of(context).primaryColor,
       shape: BoxShape.rectangle,
     ),
   );

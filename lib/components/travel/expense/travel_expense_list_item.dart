@@ -7,6 +7,11 @@ class TravelExpenseListItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListTile(title: Text(expense.description), subtitle: expense.amount);
+    return ListTile(
+        title: Text(expense.description,
+          style: TextStyle(fontWeight: FontWeight.bold),
+        ),
+        subtitle: expense.amount,
+    );
   }
 }

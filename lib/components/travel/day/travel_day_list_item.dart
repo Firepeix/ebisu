@@ -9,7 +9,10 @@ class TravelDayListItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListTile(title: Text(travelDay.title), subtitle: travelDay.budget, onTap: () => routeTo(context, TravelExpensesPage(travelDay)),);
-
+    return ListTile(
+      title: Text(travelDay.title),
+      subtitle: travelDay.budget,
+      onTap: () => routeTo(context, TravelExpensesPage(travelDay)
+      ),);
   }
 }
