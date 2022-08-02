@@ -21,6 +21,10 @@ class NavigatorService {
       thenReturns.then((value) => onReturn(value));
     }
   }
+
+  BuildContext? getContext() {
+    return navigatorKey.currentContext;
+  }
 }
 
 abstract class NavigatorInterface {

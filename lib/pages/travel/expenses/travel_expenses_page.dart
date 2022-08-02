@@ -6,10 +6,10 @@ import 'package:ebisu/domain/travel/entities/travel_expense.dart';
 import 'package:ebisu/domain/travel/travel_expense_service.dart';
 import 'package:ebisu/main.dart';
 import 'package:ebisu/pages/travel/expenses/create_travel_expense_page.dart';
-import 'package:ebisu/shared/Domain/Services/LoadingHandlerService.dart';
 import 'package:ebisu/shared/Infrastructure/Repositories/Persistence/GoogleSheetsRepository.dart';
 import 'package:ebisu/shared/UI/Components/Buttons.dart';
 import 'package:ebisu/shared/UI/Components/EbisuCards.dart';
+import 'package:ebisu/shared/services/notification_service.dart';
 import 'package:ebisu/ui_components/chronos/buttons/float_action_button.dart';
 import 'package:ebisu/ui_components/chronos/labels/money.dart';
 import 'package:ebisu/ui_components/chronos/layout/view_body.dart';
@@ -18,6 +18,7 @@ import 'package:flutter/material.dart';
 class TravelExpensesPage extends StatefulWidget {
   final TravelDay day;
   final _service = getIt<TravelExpenseServiceInterface>();
+  final notification = getIt<NotificationService>();
 
   TravelExpensesPage(this.day, {Key? key}) : super(key: key);
 
@@ -74,9 +75,9 @@ class _TravelExpensesPageState extends State<TravelExpensesPage> {
       routeTo(context, SetupPage());
       return;
     }
-    LoadingHandlerService.displayLoading();
+    widget.notification.displayLoading(context: context);
     await widget.saveSheet();
-    LoadingHandlerService.displaySuccess(message: "Exportado para planilha com sucesso!");
+    widget.notification.displaySuccess(message: "Exportado para planilha com sucesso!", context: context);
   }
 
   @override

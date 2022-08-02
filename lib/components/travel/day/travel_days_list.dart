@@ -62,14 +62,18 @@ class TravelDaysExpenseListState extends State<TravelDaysExpenseList> {
     });
   }
 
-  void _handleDismissDay(int index) async {
-    final day = days[index];
-    await widget.removeDay(day);
-    setState(() {
-      days.removeAt(index);
-      spentAmount.removeAt(index);
-      widget.onChange?.call();
-    });
+  void _handleDismissDay(bool hasBeenDismissed, int index) async {
+    if (hasBeenDismissed) {
+      final day = days[index];
+      await widget.removeDay(day);
+      setState(() {
+        days.removeAt(index);
+        spentAmount.removeAt(index);
+        widget.onChange?.call();
+      });
+      return;
+    }
+    setState(() {});
   }
 
   Visibility _buildDay(BuildContext context, int index) {
@@ -80,8 +84,9 @@ class TravelDaysExpenseListState extends State<TravelDaysExpenseList> {
         maintainSize: true,
         visible: !shouldNotAppear,
         child: !shouldNotAppear ? DismissibleTile(
+          confirmOnDismissed: true,
           child: DecoratedListTileBox(TravelDayListItem(days[index], spentAmount[index], onReturn: widget.onReturn,), index),
-          onDismissed: (_) => _handleDismissDay(index),
+          onDismissed: (hasBeenDismissed) => _handleDismissDay(hasBeenDismissed, index),
         ) : DecoratedListTileBox(TravelDayListItem(TravelDay(DateTime.now(), Money(0)), Money(0), showBottomBorder: false,), index - 1,)
     );
   }
