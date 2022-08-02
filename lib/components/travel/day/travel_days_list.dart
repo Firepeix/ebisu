@@ -72,10 +72,17 @@ class TravelDaysExpenseListState extends State<TravelDaysExpenseList> {
     });
   }
 
-  DismissibleTile _buildDay(BuildContext context, int index) {
-    return DismissibleTile(
-      child: DecoratedListTileBox(TravelDayListItem(days[index], spentAmount[index], onReturn: widget.onReturn,), index),
-      onDismissed: (_) => _handleDismissDay(index),
+  Visibility _buildDay(BuildContext context, int index) {
+    final shouldNotAppear = days.length == index;
+    return Visibility(
+        maintainAnimation: true,
+        maintainState: true,
+        maintainSize: true,
+        visible: !shouldNotAppear,
+        child: !shouldNotAppear ? DismissibleTile(
+          child: DecoratedListTileBox(TravelDayListItem(days[index], spentAmount[index], onReturn: widget.onReturn,), index),
+          onDismissed: (_) => _handleDismissDay(index),
+        ) : DecoratedListTileBox(TravelDayListItem(TravelDay(DateTime.now(), Money(0)), Money(0), showBottomBorder: false,), index - 1,)
     );
   }
 
@@ -83,7 +90,7 @@ class TravelDaysExpenseListState extends State<TravelDaysExpenseList> {
   Widget build(BuildContext context) {
     return ListView.builder(
         shrinkWrap: true,
-        itemCount: days.length,
+        itemCount: days.length + 1,
         itemBuilder: _buildDay
     );
   }

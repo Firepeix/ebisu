@@ -12,7 +12,8 @@ class TravelDayListItem extends StatelessWidget implements DecoratedTile {
   final TravelDay travelDay;
   final Money spent;
   final OnReturnCallback? onReturn;
-  const TravelDayListItem(this.travelDay, this.spent, {Key? key, this.onReturn}) : super(key: key);
+  final bool showBottomBorder;
+  const TravelDayListItem(this.travelDay, this.spent, {Key? key, this.onReturn, this.showBottomBorder = true}) : super(key: key);
 
   Color color() {
     final difference = travelDay.budget - spent;
@@ -29,7 +30,9 @@ class TravelDayListItem extends StatelessWidget implements DecoratedTile {
       title: Text(travelDay.title),
       subtitle: travelDay.budget,
       trailing: Money(spent.value, color: Theme.of(context).colorScheme.primary,),
-      onTap: () => routeTo(context, TravelExpensesPage(travelDay), onReturn: onReturn),);
+      onTap: () => routeTo(context, TravelExpensesPage(travelDay), onReturn: onReturn),
+      showBottomBorder: showBottomBorder
+    );
   }
 
   @override

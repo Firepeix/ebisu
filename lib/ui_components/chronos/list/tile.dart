@@ -10,9 +10,10 @@ class Tile extends StatelessWidget {
   final Widget? title;
   final Widget? subtitle;
   final Widget? trailing;
+  final bool showBottomBorder;
   final GestureTapCallback? onTap;
 
-  Tile({Key? key, this.title, this.accent, this.subtitle, this.trailing, this.titleText, this.subtitleText, this.onTap}) : super(key: key) {
+  Tile({Key? key, this.title, this.accent, this.subtitle, this.trailing, this.titleText, this.subtitleText, this.onTap, this.showBottomBorder = true}) : super(key: key) {
     assert(title != null || titleText != null);
   }
 
@@ -31,7 +32,7 @@ class Tile extends StatelessWidget {
     title: title ?? _fullTitle,
     subtitle: subtitleText != null ? Subtitle(text: subtitleText!) : subtitle,
     trailing: trailing,
-    shape: Border(bottom: BorderSide(color: Theme.of(context).dividerColor)),
+    shape: Border(bottom: showBottomBorder ? BorderSide(color: Theme.of(context).dividerColor) : BorderSide.none),
     onTap: this.onTap,
   );
 }
