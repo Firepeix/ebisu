@@ -25,7 +25,10 @@ class TravelExpenseSummary extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Expanded(child: Card(
-              elevation: 3,
+              shape: RoundedRectangleBorder(
+                  side: BorderSide(color: Colors.grey.shade400, width: 0.5),
+                  borderRadius: BorderRadius.all(Radius.circular(5))),
+              elevation: 0,
               child: Column(
                 children: [
                   Padding(
@@ -34,7 +37,7 @@ class TravelExpenseSummary extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         Text("Planejado", style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold,),),
-                        Padding(padding: EdgeInsets.only(top: 15), child: Text(budget.toReal(), style: TextStyle( fontSize: 22, fontWeight: FontWeight.bold),),),
+                        Padding(padding: EdgeInsets.only(top: 5), child: Text(budget.toReal(), style: TextStyle( fontSize: 22, fontWeight: FontWeight.bold),),),
                       ],
                     ),
                   ),
@@ -42,7 +45,10 @@ class TravelExpenseSummary extends StatelessWidget {
               ),
             )),
             Expanded(child: Card(
-              elevation: 3,
+              shape: RoundedRectangleBorder(
+                  side: BorderSide(color: Colors.grey.shade400, width: 0.5),
+                  borderRadius: BorderRadius.all(Radius.circular(5))),
+              elevation: 0,
               child: Column(
                 children: [
                   Padding(
@@ -51,7 +57,7 @@ class TravelExpenseSummary extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         Text("Gasto", style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold,),),
-                        Padding(padding: EdgeInsets.only(top: 15), child: Text(spent.toReal(), style: TextStyle( fontSize: 22, fontWeight: FontWeight.bold),),),
+                        Padding(padding: EdgeInsets.only(top: 5), child: Text(spent.toReal(), style: TextStyle( fontSize: 22, fontWeight: FontWeight.bold),),),
                       ],
                     ),
                   ),
@@ -62,7 +68,10 @@ class TravelExpenseSummary extends StatelessWidget {
         ),
         Row(
           children: [Expanded(child: Card(
-            elevation: 3,
+            shape: RoundedRectangleBorder(
+                side: BorderSide(color: Colors.grey.shade400, width: 0.5),
+                borderRadius: BorderRadius.all(Radius.circular(5))),
+            elevation: 0,
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [

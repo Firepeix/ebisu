@@ -82,7 +82,7 @@ class _TravelExpensesPageState extends State<TravelExpensesPage> {
   @override
   Widget build(BuildContext context) {
     return ViewBody(
-      title: "Gastos de ${widget.day.title}",
+      title: "Gastos de ${widget.day.format()}",
       child: Column(
         children: [
           TravelExpenseSummary(widget.day.budget, _totalAmount()),

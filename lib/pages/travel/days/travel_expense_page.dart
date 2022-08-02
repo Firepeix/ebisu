@@ -11,10 +11,12 @@ import 'create_expense_day_page.dart';
 
 class TravelExpensePage extends StatelessWidget {
   final _summaryKey = GlobalKey<TravelDaySummaryState>();
+  final _listKey = GlobalKey<TravelDaysExpenseListState>();
   TravelExpensePage({Key? key}) : super(key: key);
 
   void onReturn<T>(T? _) {
     _summaryKey.currentState?.setInitialState();
+    _listKey.currentState?.setInitialState();
   }
 
   @override
@@ -25,7 +27,7 @@ class TravelExpensePage extends StatelessWidget {
         children: [
           TravelDaySummary(key: _summaryKey,),
           Padding(padding: EdgeInsets.symmetric(vertical: 20), child: EbisuDivider(),),
-          Expanded(child: TravelDaysExpenseList(onReturn: onReturn, onChange: () => onReturn(null),)),
+          Expanded(child: TravelDaysExpenseList(key: _listKey, onReturn: onReturn, onChange: () => onReturn(null),)),
         ],
       ),
       fab: CFloatActionButton(button: SimpleFAB(() => routeTo(context, CreateExpenseDayPage(), onReturn: onReturn), icon: Icons.add,)),

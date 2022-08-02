@@ -18,14 +18,17 @@ class DrawerHeader extends StatelessWidget{
   }
 
   @override
-  Widget build(BuildContext context) => UserAccountsDrawerHeader(
-    accountName: Text(username),
-    accountEmail: Text(email),
-    currentAccountPicture: CircleAvatar(
-      backgroundColor: Theme.of(context).platform == TargetPlatform.iOS  ? Colors.red: Colors.white,
-      child: Text(initials(), style: const TextStyle(fontSize: 36.0),),
-    ),
-  );
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return UserAccountsDrawerHeader(
+      accountName: Text(username),
+      accountEmail: Text(email),
+      currentAccountPicture: CircleAvatar(
+        backgroundColor: theme.platform == TargetPlatform.iOS  ? theme.colorScheme.primary : Colors.white,
+        child: Text(initials(), style: TextStyle(fontSize: 36.0, color: theme.colorScheme.primary),),
+      ),
+    );
+  }
 }
 
 class DrawerItem extends StatelessWidget {

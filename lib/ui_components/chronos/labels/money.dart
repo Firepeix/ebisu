@@ -8,7 +8,8 @@ enum MoneyStrata {
 
 class Money extends StatelessWidget {
   final int value;
-  const Money(this.value, {Key? key}) : super(key: key);
+  final Color? color;
+  const Money(this.value, {Key? key, this.color}) : super(key: key);
 
   @override
   Widget build(BuildContext context) => Text(
@@ -16,7 +17,7 @@ class Money extends StatelessWidget {
     style: TextStyle(
         fontWeight: FontWeight.w700,
         fontSize: 19,
-        color: Theme.of(context).colorScheme.secondary
+        color: color ?? Theme.of(context).colorScheme.secondary
     ),
   );
 

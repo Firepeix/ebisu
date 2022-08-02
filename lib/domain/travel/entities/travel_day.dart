@@ -17,7 +17,7 @@ class TravelDay {
   }
 
   String format() {
-    return '${date.day}/${date.month}/${date.year}';
+    return '${date.day}/${date.month.toString().padLeft(2, "0")}/${date.year}';
   }
 
   String get month {

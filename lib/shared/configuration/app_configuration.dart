@@ -63,6 +63,7 @@ class AppConfiguration {
 
   ThemeData _tutuTheme() {
     return ThemeData(
+      primaryColor: Colors.red,
       colorScheme: ColorScheme.fromSeed(seedColor: Colors.red, primary: Colors.red, secondary: Colors.redAccent),
     );
   }

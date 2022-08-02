@@ -76,8 +76,6 @@ class MyApp extends StatelessWidget {
             return navigator.route(settings.name!, arguments);
           }
         }
-
-
         // Unknown route
         return MaterialPageRoute(builder: (_) => MyHomePage(title: 'Home'));
       },

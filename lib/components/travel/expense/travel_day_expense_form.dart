@@ -22,6 +22,7 @@ class TravelExpenseForm extends StatefulWidget {
       child: Column(
         children: <Widget>[
           TextFormField(
+            textCapitalization: TextCapitalization.sentences,
             onSaved: (value) => state.name = value!,
             validator: (value) => validator.name(value),
             decoration: decorator.textForm('Descrição', 'Adicione a descrição da despesa.'),
