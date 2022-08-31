@@ -1,8 +1,7 @@
-import 'package:ebisu/expenditure/Domain/Repositories/ExpenditureRepositoryInterface.dart';
-import 'package:ebisu/expenditure/Domain/Services/ExpenditureService.dart';
-import 'package:ebisu/expenditure/Domain/Services/ExpenditureServiceInterface.dart';
 import 'package:ebisu/expenditure/Infrastructure/Persistence/ExpenditureModel.dart';
 import 'package:ebisu/expenditure/Infrastructure/Repositories/ExpenditureHiveRepository.dart';
+import 'package:ebisu/expenditure/domain/repositories/ExpenditureRepositoryInterface.dart';
+import 'package:ebisu/expenditure/domain/services/ExpenditureService.dart';
 import 'package:ebisu/shared/Infrastructure/Providers/ServiceProvider.dart';
 import 'package:hive/hive.dart';
 

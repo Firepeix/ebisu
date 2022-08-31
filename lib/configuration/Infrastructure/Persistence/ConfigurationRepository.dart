@@ -33,4 +33,9 @@ class ConfigurationRepository extends GoogleSheetsRepository implements Configur
     sheetsNames[type.index] = sheetName;
     prefs.setStringList(GoogleSheetsRepository.ACTIVE_SHEET_CACHE, sheetsNames);
   }
+
+  @override
+  Future<String> ebisuUrl() {
+    return Future.value("http://localhost:3001");
+  }
 }

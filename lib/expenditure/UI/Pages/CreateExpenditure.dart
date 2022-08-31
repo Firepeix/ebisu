@@ -1,7 +1,7 @@
 import 'package:ebisu/card/Application/GetTypes/GetCardTypesCommand.dart';
-import 'package:ebisu/expenditure/Domain/Repositories/ExpenditureRepositoryInterface.dart';
-import 'package:ebisu/expenditure/Domain/Services/ExpenditureServiceInterface.dart';
 import 'package:ebisu/expenditure/Infrastructure/ExpenditureModuleServiceProvider.dart';
+import 'package:ebisu/expenditure/domain/repositories/ExpenditureRepositoryInterface.dart';
+import 'package:ebisu/expenditure/domain/services/ExpenditureService.dart';
 import 'package:ebisu/shared/Domain/Bus/Command.dart';
 import 'package:ebisu/shared/Domain/ExceptionHandler/ExceptionHandler.dart';
 import 'package:ebisu/src/Domain/Pages/AbstractPage.dart';

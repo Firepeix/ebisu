@@ -1,5 +1,5 @@
-import 'package:ebisu/expenditure/Domain/Expenditure.dart';
-import 'package:ebisu/expenditure/Domain/ExpenditureSummary.dart';
+import 'package:ebisu/expenditure/domain/Expenditure.dart';
+import 'package:ebisu/expenditure/domain/ExpenditureSummary.dart';
 
 abstract class ExpenditureRepositoryInterface {
   Future<void> insert(Expenditure expenditure);

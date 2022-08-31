@@ -1,5 +1,5 @@
 import 'package:ebisu/card/Domain/Card.dart' as CardModel;
-import 'package:ebisu/expenditure/Domain/Expenditure.dart';
+import 'package:ebisu/expenditure/domain/Expenditure.dart';
 import 'package:ebisu/shared/UI/Components/Shimmer.dart';
 import 'package:flutter/material.dart';
 

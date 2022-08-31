@@ -1,6 +1,6 @@
 import 'package:ebisu/card/Domain/Card.dart';
-import 'package:ebisu/expenditure/Domain/Expenditure.dart';
-import 'package:ebisu/expenditure/Domain/ExpenditureSummary.dart';
+import 'package:ebisu/expenditure/domain/Expenditure.dart';
+import 'package:ebisu/expenditure/domain/ExpenditureSummary.dart';
 import 'package:ebisu/shared/Domain/ValueObjects.dart';
 import 'package:ebisu/shared/Infrastructure/Repositories/Persistence/GoogleSheetsRepository.dart';
 import 'package:flutter/cupertino.dart';

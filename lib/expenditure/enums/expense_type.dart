@@ -1,0 +1,4 @@
+enum ExpenseType {
+  CREDIT,
+  DEBIT
+}

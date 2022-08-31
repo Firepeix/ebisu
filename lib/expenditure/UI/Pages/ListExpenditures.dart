@@ -1,6 +1,6 @@
 import 'package:ebisu/expenditure/Application/ExpenditureCommands.dart';
-import 'package:ebisu/expenditure/Domain/Expenditure.dart';
 import 'package:ebisu/expenditure/UI/Components/Expenditure.dart';
+import 'package:ebisu/expenditure/domain/Expenditure.dart';
 import 'package:ebisu/shared/Domain/Bus/Command.dart';
 import 'package:ebisu/shared/Domain/ExceptionHandler/ExceptionHandler.dart';
 import 'package:ebisu/src/Domain/Pages/AbstractPage.dart';

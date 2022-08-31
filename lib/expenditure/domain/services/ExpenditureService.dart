@@ -1,7 +1,20 @@
 import 'package:ebisu/card/Domain/Card.dart';
 
 import '../Expenditure.dart';
-import 'ExpenditureServiceInterface.dart';
+
+abstract class ExpenditureServiceInterface {
+  Expenditure createExpenditure(ExpenditureBuilder builder);
+}
+
+abstract class ExpenditureBuilder {
+  String get name;
+  int  get type;
+  int  get amount;
+  String? get cardType;
+  int? get expenditureType;
+  int? get currentInstallment;
+  int? get installmentTotal;
+}
 
 class ExpenditureService implements ExpenditureServiceInterface {
   Expenditure createExpenditure(ExpenditureBuilder builder) {

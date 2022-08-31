@@ -1,6 +1,6 @@
-import 'package:ebisu/expenditure/Domain/Expenditure.dart';
-import 'package:ebisu/expenditure/Domain/ExpenditureSummary.dart';
-import 'package:ebisu/expenditure/Domain/Repositories/ExpenditureRepositoryInterface.dart';
+import 'package:ebisu/expenditure/domain/Expenditure.dart';
+import 'package:ebisu/expenditure/domain/ExpenditureSummary.dart';
+import 'package:ebisu/expenditure/domain/repositories/ExpenditureRepositoryInterface.dart';
 import 'package:ebisu/shared/Domain/Bus/Command.dart';
 import 'package:injectable/injectable.dart';
 

@@ -1,13 +1,14 @@
-import 'package:ebisu/card/Domain/Card.dart' as CardModel;
-import 'package:ebisu/expenditure/Domain/ExpenditureSummary.dart';
+import 'package:ebisu/expenditure/models/purchase/credit_expense_purchase_summary.dart';
+import 'package:ebisu/shared/UI/Components/EbisuCards.dart';
+import 'package:ebisu/ui_components/chronos/labels/money.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-import 'Grids.dart';
-import 'Shimmer.dart';
+import '../../../shared/UI/Components/Grids.dart';
+import '../../../shared/UI/Components/Shimmer.dart';
 
 class CreditSummaries extends StatelessWidget {
-  final List<ExpenditureSummary> summaries;
+  final List<CreditExpensePurchaseSummaryModel> summaries;
 
   const CreditSummaries({required this.summaries});
 
@@ -23,16 +24,18 @@ class CreditSummaries extends StatelessWidget {
               crossAxisCount: 2,
               mainAxisSpacing: 0,
               crossAxisSpacing: 2,
-              itemCount: summaries.where((element) => element.isActive).length
+              itemCount: summaries.length
             ),
-            itemCount: summaries.where((element) => element.isActive).length,
-            itemBuilder: (BuildContext context, int index) => _CreditSummary(summary: summaries.where((element) => element.isActive).toList()[index],),
+            itemCount: summaries.length,
+            itemBuilder: (BuildContext context, int index) {
+                return _CreditSummary(summary: summaries[index],);
+            },
         ),
   );
 }
 
 class _CreditSummary extends StatelessWidget {
-  final ExpenditureSummary summary;
+  final CreditExpensePurchaseSummaryModel summary;
 
   const _CreditSummary({required this.summary});
 
@@ -47,41 +50,33 @@ class _CreditSummary extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  Text(summary.title!, style: TextStyle(fontSize: 22,
+                  Text(summary.card.name,
+                    style: TextStyle(
+                      fontSize: 22,
                       fontWeight: FontWeight.bold,
-                      color: CardModel
-                          .CardType(summary.title!)
-                          .color),),
-                  Padding(padding: EdgeInsets.only(top: 4),
-                    child: Text('Planejado', style: TextStyle(
-                        fontSize: 14, fontWeight: FontWeight.w400),),),
-                  Text(summary.budget.real, style: TextStyle(
-                      fontSize: 22, fontWeight: FontWeight.bold),),
-                  Padding(padding: EdgeInsets.only(top: 4),
-                    child: Text('Gasto', style: TextStyle(
-                        fontSize: 14, fontWeight: FontWeight.w400),),),
-                  Text(summary.spent.real, style: TextStyle(
-                      fontSize: 22, fontWeight: FontWeight.bold),)
+                      color:  summary.card.color
+                    ),
+                  ),
+                  Padding(child: Text('Planejado', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w400),), padding: EdgeInsets.only(top: 4)),
+                  //Text(summary.budget.real, style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),),
+                  Money(summary.planned),
+                  Padding(child: Text('Gasto', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w400),), padding: EdgeInsets.only(top: 4),),
+                  Money(summary.spent),
                 ],
               ),
             ),
-            Container(
-              height: 3,
-              decoration: const BoxDecoration(
-                color: Colors.red,
-                shape: BoxShape.rectangle,
-              ),
-            ),
+            EbisuDivider(),
             Padding(
               padding: EdgeInsets.all(5),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  Text(summary.result.real, style: TextStyle(fontSize: 22,
-                      fontWeight: FontWeight.bold,
-                      color: summary.result.value > 0
-                          ? Colors.green.shade800
-                          : Colors.red.shade800),),
+                  Money(summary.difference)
+                  //Text(summary.result.real, style: TextStyle(fontSize: 22,
+                  //    fontWeight: FontWeight.bold,
+                  //    color: summary.result.value > 0
+                  //        ? Colors.green.shade800
+                  //        : Colors.red.shade800),),
                 ],
               ),
             )

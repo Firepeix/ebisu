@@ -1,9 +1,9 @@
 import 'package:ebisu/card/Domain/Card.dart';
-import 'package:ebisu/expenditure/Domain/Expenditure.dart';
-import 'package:ebisu/expenditure/Domain/ExpenditureSummary.dart';
-import 'package:ebisu/expenditure/Domain/Repositories/ExpenditureRepositoryInterface.dart';
 import 'package:ebisu/expenditure/Infrastructure/Persistence/ExpenditureModel.dart';
 import 'package:ebisu/expenditure/Infrastructure/Repositories/ExpenditureRepository.dart';
+import 'package:ebisu/expenditure/domain/Expenditure.dart';
+import 'package:ebisu/expenditure/domain/ExpenditureSummary.dart';
+import 'package:ebisu/expenditure/domain/repositories/ExpenditureRepositoryInterface.dart';
 import 'package:hive/hive.dart';
 import 'package:injectable/injectable.dart';
 

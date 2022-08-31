@@ -7,4 +7,5 @@ abstract class ConfigurationRepositoryInterface {
   Future<String?> getActiveSheetName(CardClass type);
   Future<void> saveActiveSheetName(String sheetName, CardClass type);
   Future<void> saveSheetId(String sheetId);
+  Future<String> ebisuUrl();
 }
