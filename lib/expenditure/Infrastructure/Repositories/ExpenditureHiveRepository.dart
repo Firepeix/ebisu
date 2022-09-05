@@ -71,42 +71,6 @@ class ExpenditureHiveRepository extends GoogleSheetExpenditureRepository impleme
 
 
   @override
-  Future<List<ExpenditureSummary>> getCreditExpenditureSummaries (bool cacheLess) async {
-    if (!cacheLess) {
-      return await _getCreditExpenditureSummariesFromBox();
-    }
-    return await queryCreditExpenditureSummaries();
-  }
-
-  Future<List<ExpenditureSummary>> queryCreditExpenditureSummaries() async {
-    final summaries = await super.queryCreditExpenditureSummaries();
-    await _saveSummaryHive(summaries);
-    return summaries;
-  }
-
-  Future<void> _saveSummaryHive(List<ExpenditureSummary> summaries) async {
-    final box = await _getSummaryBox('CREDIT');
-    await box.clear();
-    summaries.forEach((summary) async => await box.add([summary.title, summary.spentAmount, summary.budgetAmount]));
-  }
-
-  Future<List<ExpenditureSummary>> _getCreditExpenditureSummariesFromBox() async {
-    final box = await _getSummaryBox('CREDIT');
-    if (box.isNotEmpty) {
-      final List<ExpenditureSummary> summaries = [];
-      box.values.cast<List<Object?>>().forEach((summary) => summaries.add(
-          ExpenditureSummary(
-              summary[0].toString(),
-              ExpenditureSummaryBudget(int.parse(summary[2].toString())),
-              ExpenditureSummarySpent(int.parse(summary[1].toString()))
-      )));
-      return summaries;
-    }
-
-    return await queryCreditExpenditureSummaries();
-  }
-
-  @override
   Future<DebitExpenditureSummary> getDebitExpenditureSummary (bool cacheLess) async {
     if (!cacheLess) {
       return await _getDebitExpenditureSummaryFromBox();

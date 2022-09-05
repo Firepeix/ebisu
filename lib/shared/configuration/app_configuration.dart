@@ -33,12 +33,14 @@ class AppConfiguration {
   _User user;
   List<_Feature> features;
   String travelSheetId;
+  String ebisuEndpoint;
 
   AppConfiguration._init({
     required this.theme,
     required this.user,
     required this.features,
     required this.travelSheetId,
+    required this.ebisuEndpoint,
   });
 
   factory AppConfiguration() {
@@ -48,12 +50,14 @@ class AppConfiguration {
   factory AppConfiguration._internal() {
     final features = (const String.fromEnvironment("FEATURES", defaultValue: "")).split(",").map((e) => _Feature(e)).toList();
     final userId = const String.fromEnvironment("USER", defaultValue: "tutu");
+    final ebisuEndpoint = const String.fromEnvironment("EBISU_ENDPOINT", defaultValue: "http://localhost");
 
     return AppConfiguration._init(
         user: _User.fromId(userId),
         theme: const String.fromEnvironment("THEME", defaultValue: "wewe") == AppTheme.tutu.name ? AppTheme.tutu : AppTheme.wewe,
         travelSheetId: const String.fromEnvironment("TRAVEL_SHEET_ID", defaultValue: ""),
-        features: features
+        features: features,
+        ebisuEndpoint: ebisuEndpoint
     );
   }
   

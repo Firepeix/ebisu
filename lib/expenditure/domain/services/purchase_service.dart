@@ -3,16 +3,16 @@ import 'package:ebisu/expenditure/models/purchase/credit_expense_purchase_summar
 import 'package:ebisu/shared/Domain/Services/ExpcetionHandlerService.dart';
 import 'package:injectable/injectable.dart';
 
-abstract class PurchaseServiceInterface {
+abstract class ExpensePurchaseServiceInterface {
   Future<List<CreditExpensePurchaseSummaryModel>> getPurchaseCreditSummary();
 }
 
-@Injectable(as: PurchaseServiceInterface)
-class PurchaseService implements PurchaseServiceInterface {
+@Injectable(as: ExpensePurchaseServiceInterface)
+class ExpensePurchaseService implements ExpensePurchaseServiceInterface {
   final PurchaseRepositoryInterface _repository;
   final ExceptionHandlerServiceInterface _exceptionHandler;
 
-  PurchaseService(this._repository, this._exceptionHandler);
+  ExpensePurchaseService(this._repository, this._exceptionHandler);
 
   @override
   Future<List<CreditExpensePurchaseSummaryModel>> getPurchaseCreditSummary() async {

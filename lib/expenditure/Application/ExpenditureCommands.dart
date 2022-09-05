@@ -22,23 +22,6 @@ class GetExpendituresCommandHandler implements CommandHandler<GetExpendituresCom
   }
 }
 
-class GetCreditExpendituresSummariesCommand implements Command {
-  final bool cacheLess;
-
-  GetCreditExpendituresSummariesCommand(this.cacheLess);
-}
-
-@injectable
-class GetCreditExpendituresSummariesCommandHandler implements CommandHandler<GetCreditExpendituresSummariesCommand> {
-  final ExpenditureRepositoryInterface _repository;
-  GetCreditExpendituresSummariesCommandHandler(this._repository);
-
-  @override
-  Future<List<ExpenditureSummary>> handle(GetCreditExpendituresSummariesCommand command) async {
-    return await _repository.getCreditExpenditureSummaries(command.cacheLess);
-  }
-}
-
 class GetDebitExpenditureSummaryCommand implements Command {
   final bool cacheLess;
 

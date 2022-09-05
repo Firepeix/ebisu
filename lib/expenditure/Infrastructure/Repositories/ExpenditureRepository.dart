@@ -82,17 +82,6 @@ class GoogleSheetExpenditureRepository extends GoogleSheetsRepository {
   }
 
   @protected
-  Future<List<ExpenditureSummary>> queryCreditExpenditureSummaries() async {
-    final sheet = await getSheet(CardClass.CREDIT);
-    final cells = await sheet.values.allRows(fromRow: 3, fromColumn: 1, length: 4);
-    return cells.map((values) => ExpenditureSummary(
-            values[0].toString(),
-            ExpenditureSummaryBudget(IntValueObject.integer(values[2])),
-            ExpenditureSummarySpent(IntValueObject.integer(values[1])))
-    ).toList();
-  }
-
-  @protected
   Future<DebitExpenditureSummary> queryDebitExpenditureSummary() async {
     final sheet = await getSheet(CardClass.DEBIT);
     final cells = await sheet.values.allRows(fromRow: 2, fromColumn: DebitColumns.SUMMARY_LABEL.index, length: 2);

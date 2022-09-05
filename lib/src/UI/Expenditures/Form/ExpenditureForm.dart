@@ -1,6 +1,6 @@
 import 'package:ebisu/card/Domain/Card.dart';
-import 'package:ebisu/expenditure/Domain/Services/ExpenditureServiceInterface.dart';
 import 'package:ebisu/expenditure/domain/Expenditure.dart';
+import 'package:ebisu/expenditure/domain/services/ExpenditureService.dart';
 import 'package:ebisu/shared/UI/Components/Shimmer.dart';
 import 'package:ebisu/src/UI/Components/Form/InputDecorator.dart';
 import 'package:ebisu/src/UI/Components/Form/InputFactory.dart';

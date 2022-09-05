@@ -46,7 +46,7 @@ class _CreditSummary extends StatelessWidget {
         child: Column(
           children: [
             Padding(
-              padding: EdgeInsets.only(top: 10, left: 10, right: 10, bottom: 2),
+              padding: EdgeInsets.only(top: 10, left: 10, right: 10, bottom: 12),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
@@ -59,24 +59,19 @@ class _CreditSummary extends StatelessWidget {
                   ),
                   Padding(child: Text('Planejado', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w400),), padding: EdgeInsets.only(top: 4)),
                   //Text(summary.budget.real, style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),),
-                  Money(summary.planned),
+                  Money(summary.planned, color: Colors.black, size: 22),
                   Padding(child: Text('Gasto', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w400),), padding: EdgeInsets.only(top: 4),),
-                  Money(summary.spent),
+                  Money(summary.spent, color: Colors.black, size: 22,),
                 ],
               ),
             ),
             EbisuDivider(),
             Padding(
-              padding: EdgeInsets.all(5),
+              padding: EdgeInsets.all(8),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  Money(summary.difference)
-                  //Text(summary.result.real, style: TextStyle(fontSize: 22,
-                  //    fontWeight: FontWeight.bold,
-                  //    color: summary.result.value > 0
-                  //        ? Colors.green.shade800
-                  //        : Colors.red.shade800),),
+                  Money(summary.difference, size: 22, valueBasedColor: true,)
                 ],
               ),
             )
