@@ -1,9 +1,9 @@
 import 'package:ebisu/card/Domain/Card.dart';
+import 'package:ebisu/expenditure/models/expense/expenditure_model.dart';
 
-import '../Expenditure.dart';
-
-abstract class ExpenditureServiceInterface {
-  Expenditure createExpenditure(ExpenditureBuilder builder);
+abstract class ExpenseServiceInterface {
+  ExpenseModel createExpenditure(ExpenditureBuilder builder);
+  Future<List<ExpenseModel>> getCurrentExpenses();
 }
 
 abstract class ExpenditureBuilder {
@@ -16,8 +16,12 @@ abstract class ExpenditureBuilder {
   int? get installmentTotal;
 }
 
-class ExpenditureService implements ExpenditureServiceInterface {
-  Expenditure createExpenditure(ExpenditureBuilder builder) {
+class ExpenseService implements ExpenseServiceInterface {
+  final ExceptionHandlerServiceInterface _exceptionHandler;
+  ExpensePurchaseService(this._repository, this._exceptionHandler);
+
+  @override
+  ExpenseModel createExpenditure(ExpenditureBuilder builder) {
     return Expenditure(
       name: ExpenditureName(builder.name),
       amount: ExpenditureAmount(builder.amount),
@@ -26,5 +30,10 @@ class ExpenditureService implements ExpenditureServiceInterface {
       expenditureType: builder.expenditureType != null ? ExpenditureType.values[builder.expenditureType!] : null,
       installments: builder.currentInstallment != null ? ExpenditureInstallments(currentInstallment: builder.currentInstallment!, totalInstallments: builder.installmentTotal!) : null,
     );
+  }
+
+  @override
+  Future<List<ExpenseModel>> getCurrentExpenses() async {
+    return await _exceptionHandler.wrapAsync(() async => await _repository.getPurchaseCreditSummary());
   }
 }

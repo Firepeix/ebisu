@@ -1,14 +1,11 @@
+import 'package:ebisu/expenditure/components/purchases/credit_summaries.dart';
 import 'package:ebisu/expenditure/domain/ExpenditureSummary.dart';
 import 'package:ebisu/expenditure/domain/services/purchase_service.dart';
 import 'package:ebisu/expenditure/models/purchase/credit_expense_purchase_summary.dart';
 import 'package:ebisu/main.dart';
-import 'package:ebisu/shared/Domain/Bus/Command.dart';
-import 'package:ebisu/shared/Domain/ExceptionHandler/ExceptionHandler.dart';
 import 'package:ebisu/shared/UI/Components/Title.dart';
 import 'package:ebisu/src/Domain/Pages/AbstractPage.dart';
 import 'package:flutter/material.dart';
-
-import '../../components/purchases/credit_summaries.dart';
 
 class ExpenditureHomePage extends AbstractPage {
   final _service = getIt<ExpensePurchaseServiceInterface>();
@@ -47,7 +44,7 @@ class _Content extends StatefulWidget {
   State<StatefulWidget> createState() => _ContentState();
 }
 
-class _ContentState extends State<_Content> with DispatchesCommands, DisplaysErrors {
+class _ContentState extends State<_Content> {
   bool loaded = false;
   List<CreditExpensePurchaseSummaryModel> creditSummaries = [];
   DebitExpenditureSummary? debitSummary;
@@ -59,14 +56,10 @@ class _ContentState extends State<_Content> with DispatchesCommands, DisplaysErr
   }
 
   Future<void> updateHomeState ({cacheLess: false}) async {
-    try {
-      await Future.wait([
-        _setCreditExpendituresSummary(),
-        _setDebitExpendituresSummary(cacheLess)
-      ]);
-    } catch (error) {
-      displayError(error, context: context);
-    }
+    await Future.wait([
+      _setCreditExpendituresSummary(),
+      _setDebitExpendituresSummary(cacheLess)
+    ]);
     setState(() {
       loaded = true;
     });

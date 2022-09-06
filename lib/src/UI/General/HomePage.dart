@@ -1,4 +1,4 @@
-import 'package:ebisu/expenditure/UI/Pages/Home.dart';
+import 'package:ebisu/expenditure/Pages/Home.dart';
 import 'package:ebisu/shared/Infrastructure/Repositories/Persistence/GoogleSheetsRepository.dart';
 import 'package:ebisu/src/Domain/Pages/AbstractPage.dart';
 import 'package:ebisu/src/UI/General/SetupApp.dart';

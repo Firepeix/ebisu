@@ -1,5 +1,5 @@
-import 'package:ebisu/expenditure/UI/Pages/CreateExpenditure.dart';
-import 'package:ebisu/expenditure/UI/Pages/ListExpenditures.dart';
+import 'package:ebisu/expenditure/pages/create_expenses.dart';
+import 'package:ebisu/expenditure/pages/list_expenses.dart';
 import 'package:ebisu/modules/core/core.dart';
 import 'package:ebisu/shared/dependency/dependency_container.dart';
 import 'package:ebisu/src/Domain/Pages/AbstractPage.dart';

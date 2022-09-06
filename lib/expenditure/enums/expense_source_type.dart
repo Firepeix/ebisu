@@ -1,0 +1,4 @@
+enum ExpenseSourceType {
+  USER,
+  ESTABLISHMENT
+}
