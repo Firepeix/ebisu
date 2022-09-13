@@ -1,5 +1,5 @@
-import 'package:ebisu/expenditure/domain/expense_source.dart';
-import 'package:ebisu/expenditure/enums/expense_source_type.dart';
+import 'package:ebisu/modules/expenditure/domain/expense_source.dart';
+import 'package:ebisu/modules/expenditure/enums/expense_source_type.dart';
 
 class UserModel implements ExpenseSource {
   @override
