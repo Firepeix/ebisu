@@ -13,7 +13,7 @@ class ExpenseMapper {
 
   ExpenseModel fromJson(Map<dynamic, dynamic> json) {
     return ExpenseModel(
-      id: json["id"],
+      id: json["id"].toString(),
       name: json["name"],
       type: ExpenseType.UNKNOWN.from(json["type"]),
       amount: json["amount"],
@@ -30,7 +30,7 @@ class ExpenseMapper {
   }
 
   ExpenseSource _mapSource(Map<dynamic, dynamic> json) {
-    return ExpenseSource(json["id"], json["name"], ExpenseSourceType.UNKNOWN.from(json["type"]));
+    return ExpenseSource(json["id"].toString(), json["name"], ExpenseSourceType.UNKNOWN.from(json["type"]));
   }
 
   ExpenseInstallments _mapInstallments(Map<dynamic, dynamic> json) {

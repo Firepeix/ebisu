@@ -9,9 +9,9 @@ class ExpenseListCard extends StatelessWidget {
   ExpenseListCard(this.model);
 
   Widget _getViewModel () {
-    //if (model.type == CardModel.CardClass.DEBIT) {
-    //  return _DebitExpenditureViewModel(model);
-    //}
+    if (model.type.isDebit()) {
+      return _DebitExpenditureViewModel(model);
+    }
 
     if (model.isInstallmentBased()) {
       return _InstallmentPurchaseExpenditureViewModel(model);

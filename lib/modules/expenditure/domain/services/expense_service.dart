@@ -1,6 +1,8 @@
 import 'package:ebisu/modules/expenditure/domain/repositories/expense_repository.dart';
 import 'package:ebisu/modules/expenditure/models/expense/expenditure_model.dart';
 import 'package:ebisu/shared/exceptions/handler.dart';
+import 'package:injectable/injectable.dart';
+
 
 abstract class ExpenseServiceInterface {
   ExpenseModel? createExpenditure(ExpenditureBuilder builder);
@@ -17,6 +19,7 @@ abstract class ExpenditureBuilder {
   int? get installmentTotal;
 }
 
+@Injectable(as: ExpenseServiceInterface)
 class ExpenseService implements ExpenseServiceInterface {
   final ExpenseRepositoryInterface _repository;
   final ExceptionHandlerInterface _exceptionHandler;

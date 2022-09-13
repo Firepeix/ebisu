@@ -34,7 +34,12 @@ class ExpenseInstallments {
   int currentInstallment;
   int? totalInstallments;
 
-  String get summary => '$currentInstallment/$totalInstallments';
+  String get summary {
+    if (totalInstallments == null) {
+      return "$currentInstallment";
+    }
+    return '$currentInstallment/$totalInstallments';
+  }
 
   ExpenseInstallments(this.currentInstallment, this.totalInstallments);
 }

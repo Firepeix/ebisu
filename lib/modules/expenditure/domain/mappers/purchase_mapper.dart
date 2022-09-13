@@ -1,4 +1,4 @@
-import 'package:ebisu/modules/card/Domain/mappers/card_mapper.dart';
+import 'package:ebisu/modules/card/domain/mappers/card_mapper.dart';
 import 'package:ebisu/modules/expenditure/models/purchase/credit_expense_purchase_summary.dart';
 import 'package:injectable/injectable.dart';
 
