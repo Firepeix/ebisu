@@ -1,19 +1,19 @@
-import 'package:ebisu/card/Domain/Card.dart' as CardModel;
-import 'package:ebisu/expenditure/domain/Expenditure.dart';
+import 'package:ebisu/expenditure/models/expense/expenditure_model.dart';
 import 'package:ebisu/shared/UI/Components/Shimmer.dart';
+import 'package:ebisu/ui_components/chronos/labels/money.dart';
 import 'package:flutter/material.dart';
 
-class ExpenditureViewModel extends StatelessWidget {
-  final Expenditure model;
+class ExpenseListCard extends StatelessWidget {
+  final ExpenseModel model;
 
-  ExpenditureViewModel(this.model);
+  ExpenseListCard(this.model);
 
   Widget _getViewModel () {
-    if (model.type == CardModel.CardClass.DEBIT) {
-      return _DebitExpenditureViewModel(model);
-    }
+    //if (model.type == CardModel.CardClass.DEBIT) {
+    //  return _DebitExpenditureViewModel(model);
+    //}
 
-    if (model.expenditureType == ExpenditureType.PARCELADA) {
+    if (model.isInstallmentBased()) {
       return _InstallmentPurchaseExpenditureViewModel(model);
     }
 
@@ -35,7 +35,7 @@ class ExpenditureViewModel extends StatelessWidget {
   }
 }
 
-class ExpenditureSkeletonView extends StatelessWidget {
+class ExpenseCardSkeleton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Shimmer(
@@ -57,7 +57,7 @@ class ExpenditureSkeletonView extends StatelessWidget {
 }
 
 abstract class _BaseExpenditureViewModel extends StatelessWidget {
-  final Expenditure model;
+  final ExpenseModel model;
 
   _BaseExpenditureViewModel(this.model);
 
@@ -101,7 +101,7 @@ abstract class _BaseExpenditureViewModel extends StatelessWidget {
                               mainAxisAlignment: MainAxisAlignment.center,
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Padding(padding: EdgeInsets.only(top: 1), child: Text(model.name.value, overflow: TextOverflow.ellipsis, style: TextStyle(fontSize: 22, height: 0.93, fontWeight: FontWeight.w500),),),
+                                Padding(padding: EdgeInsets.only(top: 1), child: Text(model.name, overflow: TextOverflow.ellipsis, style: TextStyle(fontSize: 22, height: 0.93, fontWeight: FontWeight.w500),),),
                                 Padding(padding: EdgeInsets.only(top: 4), child: Text(_getSubtitle(), style: TextStyle(fontSize: 16),),),
                               ],
                             ),),
@@ -113,7 +113,8 @@ abstract class _BaseExpenditureViewModel extends StatelessWidget {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             bottomLeftComponent ?? Container(),
-                            Text(model.amount.real, style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500, color: Colors.red),)
+                            //Text(model.amount.real, style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500, color: Colors.red),)
+                            Money(model.amount)
                           ],
                         )
                       ],
@@ -129,7 +130,7 @@ abstract class _BaseExpenditureViewModel extends StatelessWidget {
 }
 
 class _DebitExpenditureViewModel extends _BaseExpenditureViewModel {
-  _DebitExpenditureViewModel(Expenditure model) : super(model);
+  _DebitExpenditureViewModel(ExpenseModel model) : super(model);
 
   @override
   String _getSubtitle() => 'Débito';
@@ -147,7 +148,7 @@ class _DebitExpenditureViewModel extends _BaseExpenditureViewModel {
 }
 
 class _CreditPurchaseExpenditureViewModel extends _BaseExpenditureViewModel {
-  _CreditPurchaseExpenditureViewModel(Expenditure model) : super(model);
+  _CreditPurchaseExpenditureViewModel(ExpenseModel model) : super(model);
 
   @override
   String _getSubtitle() => 'Credito';
@@ -164,11 +165,11 @@ class _CreditPurchaseExpenditureViewModel extends _BaseExpenditureViewModel {
   );
 
   @override
-  Widget? get bottomLeftComponent => Text(model.cardType!.title, style: TextStyle(fontSize: 16, color: model.cardType!.color, height: 1, fontWeight: FontWeight.w500));
+  Widget? get bottomLeftComponent => Text(model.card!.name, style: TextStyle(fontSize: 16, color: model.card!.color, height: 1, fontWeight: FontWeight.w500));
 }
 
 class _InstallmentPurchaseExpenditureViewModel extends _CreditPurchaseExpenditureViewModel {
-  _InstallmentPurchaseExpenditureViewModel(Expenditure model) : super(model);
+  _InstallmentPurchaseExpenditureViewModel(ExpenseModel model) : super(model);
 
   Widget getIcon() => Container(
       width: 71,

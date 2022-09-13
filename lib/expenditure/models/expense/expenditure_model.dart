@@ -24,6 +24,10 @@ class ExpenseModel {
     this.beneficiary,
     this.installments,
   });
+
+  bool isInstallmentBased() {
+    return installments != null;
+  }
 }
 
 class ExpenseInstallments {
@@ -32,5 +36,5 @@ class ExpenseInstallments {
 
   String get summary => '$currentInstallment/$totalInstallments';
 
-  ExpenseInstallments({required this.currentInstallment, this.totalInstallments});
+  ExpenseInstallments(this.currentInstallment, this.totalInstallments);
 }

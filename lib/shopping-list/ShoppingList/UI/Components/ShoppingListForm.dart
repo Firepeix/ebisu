@@ -1,6 +1,5 @@
 import 'package:ebisu/shared/UI/Components/Shimmer.dart';
 import 'package:ebisu/shopping-list/ShoppingList/Domain/ShoppingList.dart';
-import 'package:ebisu/shopping-list/ShoppingList/Domain/ShoppingListService.dart';
 import 'package:ebisu/src/UI/Components/Form/InputDecorator.dart';
 import 'package:ebisu/src/UI/Components/Form/InputFactory.dart';
 import 'package:ebisu/src/UI/Components/Form/InputValidator.dart';

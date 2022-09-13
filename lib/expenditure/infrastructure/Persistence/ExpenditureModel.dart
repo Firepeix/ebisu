@@ -1,7 +1,5 @@
 import 'package:hive/hive.dart';
 
-part 'ExpenditureModel.g.dart';
-
 @HiveType(typeId : 1)
 class ExpenditureHiveModel extends HiveObject {
   @HiveField(0)

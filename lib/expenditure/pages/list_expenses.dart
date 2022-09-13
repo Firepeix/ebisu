@@ -1,10 +1,7 @@
-import 'package:ebisu/expenditure/Application/ExpenditureCommands.dart';
-import 'package:ebisu/expenditure/components/expense/Expenditure.dart';
-import 'package:ebisu/expenditure/domain/Expenditure.dart';
+import 'package:ebisu/expenditure/components/expense/expense_card.dart';
 import 'package:ebisu/expenditure/domain/services/expense_service.dart';
+import 'package:ebisu/expenditure/models/expense/expenditure_model.dart';
 import 'package:ebisu/main.dart';
-import 'package:ebisu/shared/Domain/Bus/Command.dart';
-import 'package:ebisu/shared/Domain/ExceptionHandler/ExceptionHandler.dart';
 import 'package:ebisu/src/Domain/Pages/AbstractPage.dart';
 import 'package:flutter/material.dart';
 
@@ -29,7 +26,7 @@ class Content extends StatefulWidget {
 }
 
 class _ContentState extends State<Content> {
-  List<Expenditure> expenditures = [];
+  List<ExpenseModel> expenditures = [];
   bool loaded = false;
 
   @override
@@ -46,7 +43,7 @@ class _ContentState extends State<Content> {
   }
 
   Future<void> setExpenditures() async {
-    final expenditures = await dispatch(new GetExpendituresCommand(cacheLess));
+    final expenditures = await widget._service.getCurrentExpenses();
     setState(() {
       this.expenditures = expenditures;
     });
@@ -57,7 +54,7 @@ class _ContentState extends State<Content> {
         itemCount: expenditures.length,
         itemBuilder: (BuildContext context, int index) => Padding(
           padding: EdgeInsets.only(top: index == 0 ? 0 : 10),
-          child: ExpenditureViewModel(expenditures[index]),
+          child: ExpenseListCard(expenditures[index]),
         )
     );
   }
@@ -67,7 +64,7 @@ class _ContentState extends State<Content> {
         itemCount: 5,
         itemBuilder: (BuildContext context, int index) => Padding(
           padding: EdgeInsets.only(top: index == 0 ? 0 : 10),
-          child: ExpenditureSkeletonView(),
+          child: ExpenseCardSkeleton(),
         )
     );
   }

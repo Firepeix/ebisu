@@ -1,6 +1,3 @@
-import 'package:ebisu/card/Domain/Card.dart';
-import 'package:ebisu/expenditure/domain/Expenditure.dart';
-import 'package:ebisu/expenditure/domain/services/ExpenditureService.dart';
 import 'package:ebisu/shared/UI/Components/Shimmer.dart';
 import 'package:ebisu/src/UI/Components/Form/InputDecorator.dart';
 import 'package:ebisu/src/UI/Components/Form/InputFactory.dart';
@@ -38,8 +35,8 @@ class ExpenditureForm extends StatefulWidget {
                 onSaved: (value) => state.model.type = state._type!,
                 validator: (value) => validator.type(state._type),
                 children: [
-                  RadioInput(label: 'Credito', value: CardClass.CREDIT.index, groupValue: state._type, onChanged: state.handleTypeChange),
-                  RadioInput(label: 'Debito', value: CardClass.DEBIT.index, groupValue: state._type, onChanged: state.handleTypeChange)
+                 //RadioInput(label: 'Credito', value: CardClass.CREDIT.index, groupValue: state._type, onChanged: state.handleTypeChange),
+                 //RadioInput(label: 'Debito', value: CardClass.DEBIT.index, groupValue: state._type, onChanged: state.handleTypeChange)
                 ],
               ),
             ),
@@ -56,21 +53,21 @@ class ExpenditureForm extends StatefulWidget {
                     child: SelectInput(
                       onSaved: (value) => state.model.cardType = cardTypes[value] ?? null,
                       onChanged: (value) => state._cardType = value,
-                      validator: (value) => validator.card(value, state._type == CardClass.CREDIT.index),
+                      //validator: (value) => validator.card(value, state._type == CardClass.CREDIT.index),
                       decoration: decorator.selectForm('Cartão', 'Selecione o cartão'),
                       items: cardTypes,
                     ),
                   ),
-                  Padding(
-                    padding: EdgeInsets.only(top: 16),
-                    child: SelectInput(
-                      onSaved: (value) => state.model.expenditureType = value,
-                      validator: (value) => validator.expenditureType(value, state._type == CardClass.CREDIT.index),
-                      onChanged: state.handleExpenditureTypeChange,
-                      decoration: decorator.selectForm('Tipo', 'Selecione o tipo da despesa'),
-                      items: Map.fromIterable(ExpenditureType.values, key: (e) => e.index, value: (e) => e.toString().split('.').elementAt(1)),
-                    ),
-                  ),
+                  //Padding(
+                  //  padding: EdgeInsets.only(top: 16),
+                  //  child: SelectInput(
+                  //    onSaved: (value) => state.model.expenditureType = value,
+                  //    validator: (value) => validator.expenditureType(value, state._type == CardClass.CREDIT.index),
+                  //    onChanged: state.handleExpenditureTypeChange,
+                  //    decoration: decorator.selectForm('Tipo', 'Selecione o tipo da despesa'),
+                  //    items: Map.fromIterable(ExpenditureType.values, key: (e) => e.index, value: (e) => e.toString().split('.').elementAt(1)),
+                  //  ),
+                  //),
                 ],
               ),
             ),
@@ -86,13 +83,13 @@ class ExpenditureForm extends StatefulWidget {
                   children: [
                     Expanded(flex: 10,child: NumberInput(
                       onSaved: (value) => state.model.currentInstallment = value,
-                      validator: (value) => validator.activeInstallment(value, state._expenditureType == ExpenditureType.PARCELADA.index),
+                      //validator: (value) => validator.activeInstallment(value, state._expenditureType == ExpenditureType.PARCELADA.index),
                       decoration: decorator.textForm('Parcela Atual', 'Adicione a parcela atual.'),
                     )),
                     Spacer(flex: 1,),
                     Expanded(flex: 10,child: NumberInput(
                       onSaved: (value) => state.model.installmentTotal = value,
-                      validator: (value) => validator.totalInstallments(value, state._expenditureType == ExpenditureType.PARCELADA.index),
+                      //validator: (value) => validator.totalInstallments(value, state._expenditureType == ExpenditureType.PARCELADA.index),
                       decoration: decorator.textForm('Total de Parcelas', 'Adicione o total de parcelas'),
                     )),
                   ],
@@ -150,10 +147,10 @@ class ExpenditureFormState extends State<ExpenditureForm> with TickerProviderSta
   void handleTypeChange(int? value) {
     setState(() {
       _type = value;
-      if(value != null && value == CardClass.CREDIT.index) {
-        creditOptionsController.forward();
-        return;
-      }
+      //if(value != null && value == CardClass.CREDIT.index) {
+      //  creditOptionsController.forward();
+      //  return;
+      //}
       creditOptionsController.reverse();
     });
   }
@@ -161,10 +158,10 @@ class ExpenditureFormState extends State<ExpenditureForm> with TickerProviderSta
   void handleExpenditureTypeChange(int? value) {
     setState(() {
       _expenditureType = value;
-      if(value != null && value == ExpenditureType.PARCELADA.index) {
-        installmentOptionsController.forward();
-        return;
-      }
+      //if(value != null && value == ExpenditureType.PARCELADA.index) {
+      //  installmentOptionsController.forward();
+      //  return;
+      //}
       installmentOptionsController.reverse();
     });
   }
@@ -230,7 +227,7 @@ class ExpenditureFormValidator extends InputValidator{
   }
 }
 
-class ExpenditureModel implements ExpenditureBuilder{
+class ExpenditureModel{
   String? _name;
   int? _type;
   int? _amount;

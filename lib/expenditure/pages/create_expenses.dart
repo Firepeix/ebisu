@@ -1,7 +1,4 @@
 import 'package:ebisu/card/Application/GetTypes/GetCardTypesCommand.dart';
-import 'package:ebisu/expenditure/Infrastructure/ExpenditureModuleServiceProvider.dart';
-import 'package:ebisu/expenditure/domain/repositories/ExpenditureRepositoryInterface.dart';
-import 'package:ebisu/expenditure/domain/services/ExpenditureService.dart';
 import 'package:ebisu/shared/Domain/Bus/Command.dart';
 import 'package:ebisu/shared/Domain/ExceptionHandler/ExceptionHandler.dart';
 import 'package:ebisu/src/Domain/Pages/AbstractPage.dart';
@@ -12,8 +9,6 @@ import 'package:flutter/material.dart';
 
 class CreateExpenditurePage extends AbstractPage implements MainButtonPage {
   static const PAGE_INDEX = 1;
-  final ExpenditureServiceInterface service = ExpenditureModuleServiceProvider.expenditureService();
-  final ExpenditureRepositoryInterface repository = ExpenditureModuleServiceProvider.expenditureRepository();
   final GlobalKey<ExpenditureFormState> _formKey = GlobalKey<ExpenditureFormState>();
 
   CreateExpenditurePage({required onChangePageTo}) : super(onChangeTo: onChangePageTo);
@@ -29,16 +24,16 @@ class CreateExpenditurePage extends AbstractPage implements MainButtonPage {
       onPressed: () {
         if (this._formKey.currentState!.validate()) {
           final model = this._formKey.currentState!.submit();
-          final expenditure = this.service.createExpenditure(model);
+          //final expenditure = this.service.createExpenditure(model);
           ScaffoldMessengerState messenger = ScaffoldMessenger.of(context);
           messenger.showSnackBar(SnackBar(content: Text('Processando'), behavior: SnackBarBehavior.floating));
           this.onChangeTo!(HomePage.PAGE_INDEX);
           messenger.hideCurrentSnackBar();
           messenger.showSnackBar(SnackBar(content: Text('Sucesso'), backgroundColor: Colors.green, behavior: SnackBarBehavior.floating,));
-          this.repository.insert(expenditure).catchError((error) {
-            messenger.hideCurrentSnackBar();
-            messenger.showSnackBar(SnackBar(content: Text('Erro' + error.toString()), backgroundColor: Colors.red, behavior: SnackBarBehavior.floating));
-          });
+          //this.repository.insert(expenditure).catchError((error) {
+          //  messenger.hideCurrentSnackBar();
+          //  messenger.showSnackBar(SnackBar(content: Text('Erro' + error.toString()), backgroundColor: Colors.red, behavior: SnackBarBehavior.floating));
+          //});
     }
       },
       tooltip: "Salvar Despesa",

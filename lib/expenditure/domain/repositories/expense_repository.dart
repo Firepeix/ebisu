@@ -1,12 +1,23 @@
 import 'package:ebisu/expenditure/domain/mappers/expense_mapper.dart';
 import 'package:ebisu/expenditure/infrastructure/transfer_objects/creates_expense.dart';
 import 'package:ebisu/expenditure/models/expense/expenditure_model.dart';
+import 'package:ebisu/shared/exceptions/result.dart';
 import 'package:ebisu/shared/http/client.dart';
 import 'package:injectable/injectable.dart';
 
+enum ExpenseError implements ResultError {
+  GET_EXPENSES_ERROR("Não foi possível buscar despesas", 2);
+
+  final String message;
+  final int code;
+  final dynamic details;
+
+  const ExpenseError(this.message, this.code, { this.details });
+}
+
 abstract class ExpenseRepositoryInterface {
   Future<void> insert(CreatesExpense expenditure);
-  Future<List<ExpenseModel>> getCurrentExpenses();
+  Future<Result<List<ExpenseModel>, ExpenseError>> getCurrentExpenses();
   //Future<DebitExpenditureSummary> getDebitExpenditureSummary (bool cacheLess);
 }
 
@@ -21,8 +32,9 @@ class ExpenseRepository implements ExpenseRepositoryInterface {
   ExpenseRepository(this._caron, this._mapper);
 
   @override
-  Future<List<ExpenseModel>> getCurrentExpenses() async {
-    return await _caron.get(_Endpoint.ExpensesIndex, _mapper.fromJsonList);
+  Future<Result<List<ExpenseModel>, ExpenseError>> getCurrentExpenses() async {
+    final result = await _caron.get(_Endpoint.ExpensesIndex, _mapper.fromJsonList);
+    return result.subError(ExpenseError.GET_EXPENSES_ERROR);
   }
 
   @override

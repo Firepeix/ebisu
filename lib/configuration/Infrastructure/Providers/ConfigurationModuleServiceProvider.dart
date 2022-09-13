@@ -1,4 +1,3 @@
-import 'package:ebisu/configuration/Application/ActiveSheets.dart';
 import 'package:ebisu/configuration/Application/GetSheetId.dart';
 import 'package:ebisu/configuration/Application/GetTypes/CleanCardTypesCacheCommand.dart';
 import 'package:ebisu/configuration/Application/GetTypes/CleanCredentialsCommand.dart';
@@ -16,7 +15,5 @@ class ConfigurationModuleServiceProvider implements BusServiceProviderInterface 
     (CleanCredentialsCommand).toString(): () => getIt<CleanCredentialsCommandHandler>(),
     (GetSheetIdCommand).toString(): () => getIt<GetSheetIdCommandHandler>(),
     (StoreSheetIdCommand).toString(): () => getIt<StoreSheetIdCommandHandler>(),
-    (GetActiveSheetNameCommand).toString(): () => getIt<GetActiveSheetNameCommandHandler>(),
-    (StoreActiveSheetNameCommand).toString(): () => getIt<StoreActiveSheetNameCommandHandler>(),
   };
 }

@@ -1,6 +1,6 @@
 import 'package:ebisu/expenditure/enums/expense_source_type.dart';
 
-abstract class ExpenseSource {
+class ExpenseSource {
   String id;
   String name;
   ExpenseSourceType type;
