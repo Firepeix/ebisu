@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:ebisu/configuration/Infrastructure/Providers/ConfigurationModuleServiceProvider.dart';
-import 'package:ebisu/modules/expenditure/Infrastructure/Providers/ExpenditureModuleServiceProvider.dart';
 import 'package:ebisu/shopping-list/Purchase/Infrastructure/Providers/ServicesProvider.dart';
 import 'package:ebisu/shopping-list/ShoppingList/Infrastructure/Providers/ServicesProvider.dart';
 import 'package:flutter/material.dart';
@@ -10,7 +9,6 @@ class BusCommandServiceProvider {
   static final BusCommandServiceProvider _singleton = BusCommandServiceProvider._internal();
   final Map<String, Function> commands = {
     ...ConfigurationModuleServiceProvider.bus,
-    ...ExpenditureModuleServiceProvider.bus,
     ...ShoppingListBindServiceProvider.bus,
     ...PurchaseBindServiceProvider.bus
   };

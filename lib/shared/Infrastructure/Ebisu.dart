@@ -91,7 +91,8 @@ class _EbisuMainViewState extends State<EbisuMainView> {
 
   void _addPages () {
     this._pages.add(HomePage());
-    this._pages.add(CreateExpenditurePage(onChangePageTo: (value) => this.changePageTo(value),));
+   // this._pages.add(CreateExpenditurePage(/*onChangePageTo: (value) => this.changePageTo(value),)*/);
+    this._pages.add(CreateExpenditurePage());
     this._pages.add(ListExpendituresPage());
   }
 

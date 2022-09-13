@@ -1,8 +1,8 @@
 import 'package:ebisu/shared/UI/Components/Shimmer.dart';
 import 'package:ebisu/shopping-list/ShoppingList/Domain/ShoppingList.dart';
 import 'package:ebisu/src/UI/Components/Form/InputDecorator.dart';
-import 'package:ebisu/src/UI/Components/Form/InputFactory.dart';
 import 'package:ebisu/src/UI/Components/Form/InputValidator.dart';
+import 'package:ebisu/ui_components/chronos/inputs/amount_input.dart';
 import 'package:flutter/material.dart';
 
 class ShoppingListForm extends StatefulWidget {

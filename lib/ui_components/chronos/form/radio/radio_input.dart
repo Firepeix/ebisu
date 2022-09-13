@@ -1,12 +1,16 @@
 import 'package:flutter/material.dart';
 
-class RadioInput extends StatelessWidget {
-  final int? groupValue;
+class RadioInput<T> extends StatelessWidget {
+  final T? groupValue;
   final String label;
-  final int value;
-  final ValueChanged<int?> onChanged;
+  final T value;
+  final ValueChanged<T?>? onChanged;
 
-  RadioInput({required this.groupValue, required this.label, required this.value, required this.onChanged});
+  RadioInput({required this.groupValue, required this.label, required this.value, this.onChanged});
+
+  void _selectValue(T? value) {
+    onChanged?.call(value);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -14,30 +18,40 @@ class RadioInput extends StatelessWidget {
       children: [
         SizedBox(
           height: 20,
-          child: Radio (
+          child: Radio<T>(
+            activeColor: Theme.of(context).colorScheme.primary,
             value: value,
             groupValue: groupValue,
-            onChanged: onChanged,
+            onChanged: _selectValue,
           ),
         ),
         InkWell(
           highlightColor: Colors.transparent,
           splashColor: Colors.transparent,
           child: Text(label, style: TextStyle(fontSize: 16.0)),
-          onTap: () => {
-            onChanged(value)
-          },
+          onTap: () => _selectValue(value),
         )
       ],
     );
   }
 }
 
-class RadioGroup extends FormField  {
+class RadioGroup<T> extends FormField  {
   final List<RadioInput> children;
 
-  RadioGroup({required this.children, FormFieldValidator? validator, FormFieldSetter<int>? onSaved}) :
-        super(builder: (FormFieldState state) => build(children, state), validator: validator, onSaved: (dynamic value) => onSaved!(value));
+  RadioGroup({
+    required this.children,
+    Function? validator,
+    FormFieldSetter<int>? onSaved
+  }) : super(
+      builder: (FormFieldState state) => build(children, state),
+      validator: (value) {
+        if (validator == null) {
+          return null;
+        }
+        return validator();
+      },
+  );
 
   static Widget build(List<RadioInput> children, FormFieldState state) {
     return Column(
@@ -62,4 +76,3 @@ class RadioGroup extends FormField  {
     );
   }
 }
-
