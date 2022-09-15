@@ -11,32 +11,36 @@ import 'package:flutter/material.dart';
 
 class CreateExpenditurePage extends AbstractPage implements MainButtonPage {
   static const PAGE_INDEX = 1;
-  //final GlobalKey<ExpenditureFormState> _formKey = GlobalKey<ExpenditureFormState>();
+  final GlobalKey<FormState> _form = GlobalKey<FormState>();
+  final GlobalKey<ExpenseFormState> _modelState = GlobalKey<ExpenseFormState>();
 
   //CreateExpenditurePage({required onChangePageTo}) : super(onChangeTo: onChangePageTo);
 
   @override
   Widget build(BuildContext context) {
-    return Content();
+    return Form(child: Content(_modelState), key: _form,);
   }
 
   @override
   FloatingActionButton getMainButton(BuildContext context) {
     return FloatingActionButton(
       onPressed: () {
-       //if (this._formKey.currentState!.validate()) {
-       //  final model = this._formKey.currentState!.submit();
-       //  //final expenditure = this.service.createExpenditure(model);
-       //  ScaffoldMessengerState messenger = ScaffoldMessenger.of(context);
-       //  messenger.showSnackBar(SnackBar(content: Text('Processando'), behavior: SnackBarBehavior.floating));
-       //  this.onChangeTo!(HomePage.PAGE_INDEX);
-       //  messenger.hideCurrentSnackBar();
-       //  messenger.showSnackBar(SnackBar(content: Text('Sucesso'), backgroundColor: Colors.green, behavior: SnackBarBehavior.floating,));
-       //  //this.repository.insert(expenditure).catchError((error) {
-       //  //  messenger.hideCurrentSnackBar();
-       //  //  messenger.showSnackBar(SnackBar(content: Text('Erro' + error.toString()), backgroundColor: Colors.red, behavior: SnackBarBehavior.floating));
-       //  //});
-       //}
+       if (_form.currentState != null && _form.currentState!.validate() && _modelState.currentState != null) {
+         _form.currentState?.save();
+         final model = _modelState.currentState!.model;
+         print(model.name);
+         //final model = this._formKey.currentState!.submit();
+         ////final expenditure = this.service.createExpenditure(model);
+         //ScaffoldMessengerState messenger = ScaffoldMessenger.of(context);
+         //messenger.showSnackBar(SnackBar(content: Text('Processando'), behavior: SnackBarBehavior.floating));
+         //this.onChangeTo!(HomePage.PAGE_INDEX);
+         //messenger.hideCurrentSnackBar();
+         //messenger.showSnackBar(SnackBar(content: Text('Sucesso'), backgroundColor: Colors.green, behavior: SnackBarBehavior.floating,));
+         ////this.repository.insert(expenditure).catchError((error) {
+         ////  messenger.hideCurrentSnackBar();
+         ////  messenger.showSnackBar(SnackBar(content: Text('Erro' + error.toString()), backgroundColor: Colors.red, behavior: SnackBarBehavior.floating));
+         ////});
+       }
       },
       tooltip: "Salvar Despesa",
       child: Icon(Icons.check),
@@ -50,6 +54,9 @@ class Content extends StatefulWidget {
   final CardServiceInterface cardService = getIt();
   final UserServiceInterface userServiceInterface = getIt();
   final EstablishmentServiceInterface establishmentServiceInterface = getIt();
+  final GlobalKey<ExpenseFormState> _modelState;
+
+  Content(this._modelState);
 
   @override
   State<StatefulWidget> createState() => _ContentState();
@@ -95,7 +102,7 @@ class _ContentState extends State<Content> {
   Widget build(BuildContext context) {
     return Padding(
       padding: EdgeInsets.symmetric(vertical: 20, horizontal: 10),
-      child: loaded ? ExpenseForm(cards, beneficiaries) : ExpenseFormSkeleton(),
+      child: loaded ? ExpenseForm(cards, beneficiaries, key: widget._modelState,) : ExpenseFormSkeleton(),
     );
   }
 }

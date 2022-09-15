@@ -19,6 +19,7 @@ class SelectInput<V extends CanBePutInSelectBox> extends StatelessWidget  {
   final List<V> items;
   final FormFieldValidator<V>? validator;
   final FormFieldSetter<V>? onSaved;
+  final Key? key;
 
   SelectInput({
     this.label,
@@ -28,7 +29,8 @@ class SelectInput<V extends CanBePutInSelectBox> extends StatelessWidget  {
     this.onChanged,
     this.style,
     this.validator,
-    this.onSaved
+    this.onSaved,
+    this.key
   });
 
   Widget box(V e) {
@@ -49,6 +51,7 @@ class SelectInput<V extends CanBePutInSelectBox> extends StatelessWidget  {
       children: [
         Expanded(
             child: DropdownButtonFormField<V>(
+              key: key,
               onSaved: onSaved,
               validator: validator,
               icon: Icon(Icons.arrow_downward_rounded),

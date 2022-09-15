@@ -18,15 +18,15 @@ class AmountInput extends StatelessWidget  {
     this.onChanged,
     this.onSaved,
     this.enabled,
-  }) {
+  })  : assert(!(onChanged == null && onSaved == null && enabled == true), "Você deve colocar ou quando muda o valor ou quando ele é salvo") {
     this.controller = MoneyMaskedTextController(initialValue: this.value != null ? this.value!.toDouble() / 100 : 0.0);
   }
 
   @override
   Widget build(BuildContext context) {
     return TextFormField(
-        onSaved: (value) => onSaved!((controller.numberValue * 100).toInt()),
-        onChanged: (value) => onChanged!((controller.numberValue * 100).toInt()),
+        onSaved: (value) => onSaved?.call((controller.numberValue * 100).toInt()),
+        onChanged: (value) => onChanged?.call((controller.numberValue * 100).toInt()),
         maxLength: 8,
         textAlign: TextAlign.center,
         controller: controller,
