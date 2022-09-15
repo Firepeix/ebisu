@@ -1,8 +1,13 @@
+import 'package:ebisu/ui_components/chronos/labels/subtitle.dart';
 import 'package:flutter/material.dart';
 
 abstract class CanBePutInSelectBox {
   String selectBoxLabel();
   Color? selectBoxColor();
+}
+
+abstract class HasSubtitlesInSelectBox {
+  String selectBoxSubtitles();
 }
 
 class SelectInput<V extends CanBePutInSelectBox> extends StatelessWidget  {
@@ -26,6 +31,18 @@ class SelectInput<V extends CanBePutInSelectBox> extends StatelessWidget  {
     this.onSaved
   });
 
+  Widget box(V e) {
+    final box = Text(e.selectBoxLabel(), style: TextStyle(color: e.selectBoxColor(), fontWeight: FontWeight.w500),);
+    if(e is HasSubtitlesInSelectBox) {
+      final text = (e as HasSubtitlesInSelectBox).selectBoxSubtitles();
+      return Row(
+        children: [box, Subtitle(text: " - $text")],
+      );
+    }
+
+    return box;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Row(
@@ -48,7 +65,7 @@ class SelectInput<V extends CanBePutInSelectBox> extends StatelessWidget  {
               items: items.map((e) {
                 return DropdownMenuItem(
                     value: e,
-                    child: Text(e.selectBoxLabel(), style: TextStyle(color: e.selectBoxColor(), fontWeight: FontWeight.w500),)
+                    child: box(e)
                 );
               }).toList(),
             )

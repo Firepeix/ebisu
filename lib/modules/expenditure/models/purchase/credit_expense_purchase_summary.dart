@@ -1,7 +1,7 @@
 import 'package:ebisu/modules/card/models/card.dart';
 
 class CreditExpensePurchaseSummaryModel {
-  final ExpenseCard card;
+  final CardModel card;
   final int spent;
   final int planned;
   final int difference;

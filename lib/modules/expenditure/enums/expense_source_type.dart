@@ -1,9 +1,13 @@
 import 'package:ebisu/shared/utils/matcher.dart';
 
 enum ExpenseSourceType {
-  USER,
-  ESTABLISHMENT,
-  UNKNOWN
+  USER("Amigo"),
+  ESTABLISHMENT("Estabelecimento"),
+  UNKNOWN("Desconhecido");
+
+  final String title;
+
+  const ExpenseSourceType(this.title);
 }
 
 extension ExpenseSourceTypeImpl on ExpenseSourceType {

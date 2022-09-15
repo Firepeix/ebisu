@@ -35,7 +35,7 @@ class ExpenseListCard extends StatelessWidget {
   }
 }
 
-class ExpenseCardSkeleton extends StatelessWidget {
+class CardModelSkeleton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Shimmer(

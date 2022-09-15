@@ -8,10 +8,10 @@ import 'package:injectable/injectable.dart';
 typedef DecodeJson<R> = R Function(Map<dynamic, dynamic>);
 
 enum HttpError implements ResultError {
-  UNKNOWN("Error Desconhecido", 1001);
+  UNKNOWN("Error Desconhecido", "U1");
 
   final String message;
-  final int code;
+  final String code;
   final dynamic details;
 
   const HttpError(this.message, this.code, { this.details });

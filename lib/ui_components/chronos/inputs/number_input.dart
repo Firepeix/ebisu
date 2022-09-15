@@ -19,12 +19,12 @@ class NumberInput extends StatelessWidget  {
     this.decoration,
     this.onChanged,
     this.onSaved
-  });
+  }) : assert(!(onChanged == null && onSaved == null), "Você deve colocar ou quando muda o valor ou quando ele é salvo");
 
   @override
   Widget build(BuildContext context) {
     return TextFormField(
-      onSaved: (value) => onSaved!(value != null ? int.tryParse(value) : null),
+      onSaved: (value) => onSaved?.call(value != null ? int.tryParse(value) : null),
       onChanged: (value) => onChanged!(int.tryParse(value)),
       validator: validator,
       maxLength: maxLength,

@@ -5,10 +5,10 @@ import 'package:ebisu/shared/http/client.dart';
 import 'package:injectable/injectable.dart';
 
 enum PurchaseError implements ResultError {
-  GET_CREDIT_SUMMARY_ERROR("Não foi possível buscar sumario de despesas", 3);
+  GET_CREDIT_SUMMARY_ERROR("Não foi possível buscar sumario de despesas", "PCS1");
 
   final String message;
-  final int code;
+  final String code;
   final dynamic details;
 
   const PurchaseError(this.message, this.code, { this.details });

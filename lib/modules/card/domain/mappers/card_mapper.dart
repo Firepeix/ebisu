@@ -4,11 +4,15 @@ import 'package:injectable/injectable.dart';
 
 @injectable
 class CardMapper {
-  ExpenseCard fromJson(Map<dynamic, dynamic> json) {
+  CardModel fromJson(Map<dynamic, dynamic> json) {
     final rgb = json["color"];
-    return ExpenseCard(
+    return CardModel(
         json["name"],
         Color.fromARGB(255, rgb["red"], rgb["green"], rgb["blue"])
     );
+  }
+
+  List<CardModel> fromJsonList(Map<dynamic, dynamic> json) {
+    return (json["data"] as List<dynamic>).map((e) => fromJson(e)).toList();
   }
 }

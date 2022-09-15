@@ -29,8 +29,8 @@ class ExpenseMapper {
     return (json["data"] as List<dynamic>).map((e) => fromJson(e)).toList();
   }
 
-  ExpenseSource _mapSource(Map<dynamic, dynamic> json) {
-    return ExpenseSource(json["id"].toString(), json["name"], ExpenseSourceType.UNKNOWN.from(json["type"]));
+  ExpenseSourceModel _mapSource(Map<dynamic, dynamic> json) {
+    return ExpenseSourceModel(json["id"].toString(), json["name"], ExpenseSourceType.UNKNOWN.from(json["type"]));
   }
 
   ExpenseInstallments _mapInstallments(Map<dynamic, dynamic> json) {

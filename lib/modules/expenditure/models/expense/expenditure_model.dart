@@ -8,9 +8,9 @@ class ExpenseModel {
   final int amount;
   final DateTime date;
   final ExpenseType type;
-  final ExpenseCard? card;
-  final ExpenseSource? source;
-  final ExpenseSource? beneficiary;
+  final CardModel? card;
+  final ExpenseSourceModel? source;
+  final ExpenseSourceModel? beneficiary;
   final ExpenseInstallments? installments;
 
   ExpenseModel({

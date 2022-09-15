@@ -64,7 +64,7 @@ class _ContentState extends State<Content> {
         itemCount: 5,
         itemBuilder: (BuildContext context, int index) => Padding(
           padding: EdgeInsets.only(top: index == 0 ? 0 : 10),
-          child: ExpenseCardSkeleton(),
+          child: CardModelSkeleton(),
         )
     );
   }

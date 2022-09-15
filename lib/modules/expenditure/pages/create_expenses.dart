@@ -1,4 +1,10 @@
+import 'package:ebisu/main.dart';
+import 'package:ebisu/modules/card/domain/services/card_service.dart';
+import 'package:ebisu/modules/card/models/card.dart';
+import 'package:ebisu/modules/establishment/domain/services/establishment_service.dart';
 import 'package:ebisu/modules/expenditure/components/expense/expense_form.dart';
+import 'package:ebisu/modules/expenditure/domain/expense_source.dart';
+import 'package:ebisu/modules/user/domain/services/user_service.dart';
 import 'package:ebisu/src/Domain/Pages/AbstractPage.dart';
 import 'package:ebisu/src/UI/Components/Nav/MainButtonPage.dart';
 import 'package:flutter/material.dart';
@@ -41,12 +47,17 @@ class CreateExpenditurePage extends AbstractPage implements MainButtonPage {
 
 
 class Content extends StatefulWidget {
+  final CardServiceInterface cardService = getIt();
+  final UserServiceInterface userServiceInterface = getIt();
+  final EstablishmentServiceInterface establishmentServiceInterface = getIt();
+
   @override
   State<StatefulWidget> createState() => _ContentState();
 }
 
 class _ContentState extends State<Content> {
-  Map<int, String> cardTypes = {};
+  List<CardModel> cards = [];
+  List<ExpenseSourceModel> beneficiaries = [];
   bool loaded = false;
 
   @override
@@ -57,7 +68,8 @@ class _ContentState extends State<Content> {
 
   void _setInitialState () async {
     await Future.wait([
-      _setCardTypes()
+      _setCards(),
+      _setBeneficiaries()
     ]);
 
     setState(() {
@@ -65,15 +77,25 @@ class _ContentState extends State<Content> {
     });
   }
 
-  Future<void> _setCardTypes () async {
+  Future<void> _setCards () async {
+    cards = await widget.cardService.getCards();
+  }
 
+
+  Future<void> _setBeneficiaries () async {
+    final responses = await Future.wait([
+      widget.userServiceInterface.getFriends(),
+      widget.establishmentServiceInterface.getEstablishments()
+    ]);
+
+    beneficiaries = [...responses[0], ...responses[1]];
   }
 
   @override
   Widget build(BuildContext context) {
     return Padding(
       padding: EdgeInsets.symmetric(vertical: 20, horizontal: 10),
-      child: loaded ? ExpenseForm() : ExpenseFormSkeleton(),
+      child: loaded ? ExpenseForm(cards, beneficiaries) : ExpenseFormSkeleton(),
     );
   }
 }

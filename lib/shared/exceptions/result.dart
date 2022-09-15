@@ -1,6 +1,6 @@
 abstract class ResultError {
   final String message;
-  final int code;
+  final String code;
   final dynamic details;
 
   ResultError(this.message, this.code, this.details);

@@ -1,4 +1,5 @@
 import 'package:ebisu/modules/card/models/card.dart';
+import 'package:ebisu/modules/expenditure/domain/expense_source.dart';
 import 'package:ebisu/modules/expenditure/enums/expense_type.dart';
 import 'package:ebisu/shared/UI/Components/Shimmer.dart';
 import 'package:ebisu/src/UI/Components/Form/InputValidator.dart';
@@ -30,7 +31,9 @@ enum _ExpensePaymentType implements CanBePutInSelectBox{
 
 class ExpenseForm extends StatefulWidget {
   final validator = const _ExpenditureFormValidator();
-  const ExpenseForm ({Key? key}) : super(key: key);
+  final List<CardModel> cards;
+  final List<ExpenseSourceModel> beneficiaries;
+  const ExpenseForm (this.cards, this.beneficiaries, {Key? key}) : super(key: key);
 
   @override
   State<ExpenseForm> createState() => _ExpenseFormState();
@@ -42,7 +45,6 @@ class _ExpenseFormState extends State<ExpenseForm> with TickerProviderStateMixin
   late AnimationController cardOptionsController;
   late AnimationController installmentOptionsController;
 
-
   @override
   void initState() {
     cardOptionsController = AnimationController(vsync: this, duration: Duration(milliseconds: 500));
@@ -53,6 +55,7 @@ class _ExpenseFormState extends State<ExpenseForm> with TickerProviderStateMixin
   void _handleTypeChange(ExpenseType? value) {
     setState(() {
       model.type = value;
+      model.card = null;
       if(value != null && !value.isDebit()) {
         cardOptionsController.forward();
         return;
@@ -76,6 +79,7 @@ class _ExpenseFormState extends State<ExpenseForm> with TickerProviderStateMixin
   @override
   void dispose() {
     cardOptionsController.dispose();
+    installmentOptionsController.dispose();
     super.dispose();
   }
 
@@ -111,15 +115,11 @@ class _ExpenseFormState extends State<ExpenseForm> with TickerProviderStateMixin
                 children: [
                   Padding(
                     padding: EdgeInsets.only(top: 16),
-                    child: SelectInput<ExpenseCard>(
+                    child: SelectInput<CardModel>(
                       onChanged: (c) => model.card = c,
                       label: "Cartão",
                       validator: (value) => widget.validator.card(value, model.type != null && !model.type!.isDebit()),
-                      items: [
-                        ExpenseCard("Nubank", Colors.red),
-                        ExpenseCard("Picpay", Colors.green),
-                        ExpenseCard("Caixa", Colors.blue)
-                      ],
+                      items: widget.cards,
                     ),
                   ),
                 ],
@@ -149,7 +149,7 @@ class _ExpenseFormState extends State<ExpenseForm> with TickerProviderStateMixin
                         flex: 10,
                         child: NumberInput(
                           label: "Parcela Atual",
-                          onSaved: (value) => model.currentInstallment = value,
+                          onChanged: (value) => model.currentInstallment = value,
                           validator: (value) => widget.validator.activeInstallment(value, _paymentType != _ExpensePaymentType.UNIT),
                     )),
                     Visibility(visible: _paymentType == _ExpensePaymentType.INSTALLMENT, child: Spacer(flex: 1,),),
@@ -158,7 +158,7 @@ class _ExpenseFormState extends State<ExpenseForm> with TickerProviderStateMixin
                         child: Expanded(flex: 10,
                             child: NumberInput(
                               label: "Total de Parcelas",
-                              onSaved: (value) => model.installmentTotal = value,
+                              onChanged: (value) => model.installmentTotal = value,
                               validator: (value) => widget.validator.totalInstallments(value, _paymentType == _ExpensePaymentType.INSTALLMENT),
                             )
                         )
@@ -175,6 +175,14 @@ class _ExpenseFormState extends State<ExpenseForm> with TickerProviderStateMixin
                 validator: (value) => widget.validator.amount(value),
               ),
             ),
+            Padding(
+              padding: EdgeInsets.only(top: 16),
+              child: SelectInput<ExpenseSourceModel>(
+                onChanged: (c) => model.beneficiary = c,
+                label: "Beneficiário",
+                items: widget.beneficiaries,
+              ),
+            ),
           ],
         ),
       ),
@@ -186,9 +194,11 @@ class _ExpenseViewModel{
   String? name;
   ExpenseType? type;
   int? amount = 0;
-  ExpenseCard? card;
+  CardModel? card;
   int? currentInstallment;
   int? installmentTotal;
+  ExpenseSourceModel? source;
+  ExpenseSourceModel? beneficiary;
 }
 
 /*class OldExpenseForm extends StatefulWidget {
@@ -378,7 +388,7 @@ class _ExpenditureFormValidator extends InputValidator {
     return null;
   }
 
-  String? card (ExpenseCard? value, bool required) {
+  String? card (CardModel? value, bool required) {
     if (isRequired(value)) {
       return 'Cartão da Despesa é obrigatório';
     }

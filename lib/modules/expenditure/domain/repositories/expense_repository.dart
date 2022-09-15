@@ -6,10 +6,10 @@ import 'package:ebisu/shared/http/client.dart';
 import 'package:injectable/injectable.dart';
 
 enum ExpenseError implements ResultError {
-  GET_EXPENSES_ERROR("Não foi possível buscar despesas", 2);
+  GET_EXPENSES_ERROR("Não foi possível buscar despesas", "E1");
 
   final String message;
-  final int code;
+  final String code;
   final dynamic details;
 
   const ExpenseError(this.message, this.code, { this.details });
