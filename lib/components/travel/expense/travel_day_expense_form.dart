@@ -1,7 +1,7 @@
 import 'package:ebisu/shared/form/BiFormValue.dart';
 import 'package:ebisu/src/UI/Components/Form/InputDecorator.dart';
 import 'package:ebisu/src/UI/Components/Form/InputValidator.dart';
-import 'package:ebisu/ui_components/chronos/inputs/amount_input.dart';
+import 'package:ebisu/ui_components/chronos/form/inputs/amount_input.dart';
 import 'package:ebisu/ui_components/chronos/labels/money.dart';
 import 'package:flutter/material.dart';
 

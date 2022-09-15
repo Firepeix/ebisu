@@ -4,11 +4,12 @@ import 'package:ebisu/modules/expenditure/enums/expense_type.dart';
 import 'package:ebisu/shared/UI/Components/Shimmer.dart';
 import 'package:ebisu/src/UI/Components/Form/InputValidator.dart';
 import 'package:ebisu/src/UI/Components/General/KeyboardAvoider.dart';
+import 'package:ebisu/ui_components/chronos/form/inputs/amount_input.dart';
+import 'package:ebisu/ui_components/chronos/form/inputs/date_input.dart';
+import 'package:ebisu/ui_components/chronos/form/inputs/input.dart';
+import 'package:ebisu/ui_components/chronos/form/inputs/number_input.dart';
+import 'package:ebisu/ui_components/chronos/form/inputs/select_input.dart';
 import 'package:ebisu/ui_components/chronos/form/radio/radio_input.dart';
-import 'package:ebisu/ui_components/chronos/inputs/amount_input.dart';
-import 'package:ebisu/ui_components/chronos/inputs/input.dart';
-import 'package:ebisu/ui_components/chronos/inputs/number_input.dart';
-import 'package:ebisu/ui_components/chronos/inputs/select_input.dart';
 import 'package:flutter/material.dart';
 
 enum _ExpensePaymentType implements CanBePutInSelectBox{
@@ -50,12 +51,22 @@ class ExpenseFormState extends State<ExpenseForm> with TickerProviderStateMixin{
 
   @override
   void initState() {
+    super.initState();
     cardOptionsController = AnimationController(vsync: this, duration: Duration(milliseconds: 500));
     installmentOptionsController = AnimationController(vsync: this, duration: Duration(milliseconds: 500));
     _cardState = GlobalKey<FormFieldState<dynamic>>();
     _currentInstallmentState = GlobalKey<FormFieldState<dynamic>>();
     _totalInstallmentState = GlobalKey<FormFieldState<dynamic>>();
-    super.initState();
+  }
+
+  @override
+  void dispose() {
+    cardOptionsController.dispose();
+    installmentOptionsController.dispose();
+    _cardState = null;
+    _currentInstallmentState = null;
+    _totalInstallmentState = null;
+    super.dispose();
   }
 
   void _handleTypeChange(ExpenseType? value) {
@@ -84,17 +95,6 @@ class ExpenseFormState extends State<ExpenseForm> with TickerProviderStateMixin{
       }
       installmentOptionsController.reverse();
     });
-  }
-
-
-  @override
-  void dispose() {
-    cardOptionsController.dispose();
-    installmentOptionsController.dispose();
-    _cardState = null;
-    _currentInstallmentState = null;
-    _totalInstallmentState = null;
-    super.dispose();
   }
 
   @override
@@ -129,7 +129,7 @@ class ExpenseFormState extends State<ExpenseForm> with TickerProviderStateMixin{
                 Padding(
                   padding: EdgeInsets.only(top: 16),
                   child: SelectInput<CardModel>(
-                    key: _cardState,
+                    inputKey: _cardState,
                     onChanged: (c) => model.card = c,
                     label: "Cartão",
                     validator: (value) => widget.validator.card(value, model.type != null && !model.type!.isDebit()),
@@ -149,6 +149,14 @@ class ExpenseFormState extends State<ExpenseForm> with TickerProviderStateMixin{
               items: _ExpensePaymentType.values,
             ),
           ),
+          Padding(
+            padding: EdgeInsets.only(top: 16),
+            child: DateInput(
+              label: "Data",
+              validator: widget.validator.date,
+              onSaved: (value) => model.date = value!,
+            ),
+          ),
           SizeTransition(
             axisAlignment: 1.0,
             sizeFactor: CurvedAnimation(
@@ -162,7 +170,7 @@ class ExpenseFormState extends State<ExpenseForm> with TickerProviderStateMixin{
                   Expanded(
                       flex: 10,
                       child: NumberInput(
-                        key: _currentInstallmentState,
+                        inputKey: _currentInstallmentState,
                         label: "Parcela Atual",
                         onSaved: (value) => model.currentInstallment = value,
                         validator: (value) => widget.validator.activeInstallment(value, _paymentType != _ExpensePaymentType.UNIT),
@@ -172,7 +180,7 @@ class ExpenseFormState extends State<ExpenseForm> with TickerProviderStateMixin{
                       visible: _paymentType == _ExpensePaymentType.INSTALLMENT,
                       child: Expanded(flex: 10,
                           child: NumberInput(
-                            key: _totalInstallmentState,
+                            inputKey: _totalInstallmentState,
                             label: "Total de Parcelas",
                             onSaved: (value) => model.installmentTotal = value,
                             validator: (value) => widget.validator.totalInstallments(value, _paymentType == _ExpensePaymentType.INSTALLMENT),
@@ -210,6 +218,7 @@ class _ExpenseViewModel{
   ExpenseType? type;
   int? amount = 0;
   CardModel? card;
+  DateTime? date;
   int? currentInstallment;
   int? installmentTotal;
   ExpenseSourceModel? source;
@@ -248,6 +257,13 @@ class _ExpenditureFormValidator extends InputValidator {
 
   String? activeInstallment (String? value, bool required) {
     if (required && this.isRequired(value)) {
+      return 'Obrigatório';
+    }
+    return null;
+  }
+
+  String? date (DateTime? value) {
+    if (isRequired(value)) {
       return 'Obrigatório';
     }
     return null;

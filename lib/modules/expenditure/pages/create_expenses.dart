@@ -29,8 +29,7 @@ class CreateExpenditurePage extends AbstractPage implements MainButtonPage {
          _form.currentState?.save();
          final model = _modelState.currentState!.model;
          print(model.name);
-         //final model = this._formKey.currentState!.submit();
-         ////final expenditure = this.service.createExpenditure(model);
+         //final expenditure = this.service.createExpenditure(model);
          //ScaffoldMessengerState messenger = ScaffoldMessenger.of(context);
          //messenger.showSnackBar(SnackBar(content: Text('Processando'), behavior: SnackBarBehavior.floating));
          //this.onChangeTo!(HomePage.PAGE_INDEX);

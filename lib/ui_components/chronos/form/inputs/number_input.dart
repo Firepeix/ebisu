@@ -10,7 +10,7 @@ class NumberInput extends StatelessWidget  {
   final FormFieldSetter<int>? onSaved;
   final String? label;
   final String? hint;
-  final Key? key;
+  final Key? inputKey;
 
   NumberInput({
     this.label,
@@ -20,13 +20,13 @@ class NumberInput extends StatelessWidget  {
     this.decoration,
     this.onChanged,
     this.onSaved,
-    this.key,
+    this.inputKey,
   }) : assert(!(onChanged == null && onSaved == null), "Você deve colocar ou quando muda o valor ou quando ele é salvo");
 
   @override
   Widget build(BuildContext context) {
     return TextFormField(
-      key: key,
+      key: inputKey,
       onSaved: (value) => onSaved?.call(value != null ? int.tryParse(value) : null),
       onChanged: (value) => onChanged!(int.tryParse(value)),
       validator: validator,
