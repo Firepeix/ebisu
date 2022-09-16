@@ -1,5 +1,5 @@
-import 'package:ebisu/shared/dependency/dependency_container.dart';
 import 'package:ebisu/shared/exceptions/result.dart';
+import 'package:ebisu/shared/services/notification_service.dart';
 import 'package:flutter/material.dart';
 import 'package:injectable/injectable.dart';
 
@@ -12,23 +12,18 @@ abstract class ExceptionHandlerInterface {
 
 @Singleton(as: ExceptionHandlerInterface)
 class ExceptionHandler implements ExceptionHandlerInterface {
+  final NotificationService _notificationService;
 
-  void _displayError (ResultError error, BuildContext? context, {behavior: SnackBarBehavior.fixed}) {
-    if (context != null) {
-      ScaffoldMessengerState messenger = ScaffoldMessenger.of(context);
-      messenger.showSnackBar(SnackBar(
-          content: Text(error.message),
-          duration: Duration(seconds: 4),
-          backgroundColor: Colors.red,
-          behavior: behavior
-      ));
-    }
+  ExceptionHandler(this._notificationService);
+
+  void _displayError (ResultError error, {behavior: SnackBarBehavior.fixed, Details? details}) {
+      _notificationService.displayError(message: "${error.message}${details?.messageAddon ?? ""}");
   }
 
   @override
   V? expect<V, E extends ResultError>(Result<V, E> result) {
     if (result.hasError()) {
-      _displayError(result.error(), DependencyManager.getContext());
+      _displayError(result.error(), details: result.details);
       return null;
     }
 

@@ -2,6 +2,7 @@ import 'package:ebisu/modules/card/domain/mappers/card_mapper.dart';
 import 'package:ebisu/modules/expenditure/domain/expense_source.dart';
 import 'package:ebisu/modules/expenditure/enums/expense_source_type.dart';
 import 'package:ebisu/modules/expenditure/enums/expense_type.dart';
+import 'package:ebisu/modules/expenditure/infrastructure/transfer_objects/creates_expense.dart';
 import 'package:ebisu/modules/expenditure/models/expense/expenditure_model.dart';
 import 'package:injectable/injectable.dart';
 
@@ -23,6 +24,26 @@ class ExpenseMapper {
       beneficiary: json["beneficiary"] == null ? null : _mapSource(json["beneficiary"]),
       installments: json["installments"] == null ? null : _mapInstallments(json["installments"]),
     );
+  }
+
+  Map<dynamic, dynamic> toJson(CreatesExpense createsExpense) {
+    return {
+      "name": createsExpense.getName(),
+      "amount": createsExpense.getAmount(),
+      "date": createsExpense.getDate().toString(),
+      "type": createsExpense.getType().name,
+      "beneficiary": createsExpense.getBeneficiary() != null ? expenseSourceToJson(createsExpense.getBeneficiary()!) : null,
+      "source": createsExpense.getSource() != null ? expenseSourceToJson(createsExpense.getSource()!) : null,
+      "card": createsExpense.getCard() != null ? _cardMapper.toCreateExpenseJson(createsExpense.getCard()!) : null,
+      "installments": createsExpense.getCurrentInstallment() != null ? {
+        "current": createsExpense.getCurrentInstallment(),
+        "max": createsExpense.getTotalInstallments()
+      } : null
+    };
+  }
+
+  Map<dynamic, dynamic> expenseSourceToJson(ExpenseSourceModel expenseSourceModel) {
+    return {"id": expenseSourceModel.id, "type": expenseSourceModel.type.name};
   }
 
   List<ExpenseModel> fromJsonList(Map<dynamic, dynamic> json) {

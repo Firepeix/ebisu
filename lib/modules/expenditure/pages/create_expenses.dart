@@ -4,17 +4,21 @@ import 'package:ebisu/modules/card/models/card.dart';
 import 'package:ebisu/modules/establishment/domain/services/establishment_service.dart';
 import 'package:ebisu/modules/expenditure/components/expense/expense_form.dart';
 import 'package:ebisu/modules/expenditure/domain/expense_source.dart';
+import 'package:ebisu/modules/expenditure/domain/services/expense_service.dart';
 import 'package:ebisu/modules/user/domain/services/user_service.dart';
+import 'package:ebisu/shared/services/notification_service.dart';
 import 'package:ebisu/src/Domain/Pages/AbstractPage.dart';
 import 'package:ebisu/src/UI/Components/Nav/MainButtonPage.dart';
+import 'package:ebisu/src/UI/General/HomePage.dart';
 import 'package:flutter/material.dart';
 
 class CreateExpenditurePage extends AbstractPage implements MainButtonPage {
   static const PAGE_INDEX = 1;
   final GlobalKey<FormState> _form = GlobalKey<FormState>();
   final GlobalKey<ExpenseFormState> _modelState = GlobalKey<ExpenseFormState>();
-
-  //CreateExpenditurePage({required onChangePageTo}) : super(onChangeTo: onChangePageTo);
+  final ExpenseServiceInterface service = getIt();
+  final NotificationService notificationService = getIt();
+  CreateExpenditurePage({required onChangePageTo}) : super(onChangeTo: onChangePageTo);
 
   @override
   Widget build(BuildContext context) {
@@ -24,21 +28,13 @@ class CreateExpenditurePage extends AbstractPage implements MainButtonPage {
   @override
   FloatingActionButton getMainButton(BuildContext context) {
     return FloatingActionButton(
-      onPressed: () {
+      onPressed: () async {
        if (_form.currentState != null && _form.currentState!.validate() && _modelState.currentState != null) {
          _form.currentState?.save();
-         final model = _modelState.currentState!.model;
-         print(model.name);
-         //final expenditure = this.service.createExpenditure(model);
-         //ScaffoldMessengerState messenger = ScaffoldMessenger.of(context);
-         //messenger.showSnackBar(SnackBar(content: Text('Processando'), behavior: SnackBarBehavior.floating));
-         //this.onChangeTo!(HomePage.PAGE_INDEX);
-         //messenger.hideCurrentSnackBar();
-         //messenger.showSnackBar(SnackBar(content: Text('Sucesso'), backgroundColor: Colors.green, behavior: SnackBarBehavior.floating,));
-         ////this.repository.insert(expenditure).catchError((error) {
-         ////  messenger.hideCurrentSnackBar();
-         ////  messenger.showSnackBar(SnackBar(content: Text('Erro' + error.toString()), backgroundColor: Colors.red, behavior: SnackBarBehavior.floating));
-         ////});
+         final result = await service.createExpense(_modelState.currentState!.model);
+         if(result.isSuccessful()) {
+           this.onChangeTo?.call(HomePage.PAGE_INDEX);
+         }
        }
       },
       tooltip: "Salvar Despesa",

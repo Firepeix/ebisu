@@ -7,6 +7,7 @@ class CardMapper {
   CardModel fromJson(Map<dynamic, dynamic> json) {
     final rgb = json["color"];
     return CardModel(
+        json["id"],
         json["name"],
         Color.fromARGB(255, rgb["red"], rgb["green"], rgb["blue"])
     );
@@ -14,5 +15,9 @@ class CardMapper {
 
   List<CardModel> fromJsonList(Map<dynamic, dynamic> json) {
     return (json["data"] as List<dynamic>).map((e) => fromJson(e)).toList();
+  }
+
+  Map<dynamic, dynamic> toCreateExpenseJson(CardModel cardModel) {
+    return { "id": cardModel.id };
   }
 }

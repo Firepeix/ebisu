@@ -40,3 +40,29 @@ abstract class CommandCentralResponse {
     }
   }
 }
+
+abstract class Response {
+
+}
+
+abstract class GenericResponse extends Response {
+  String message;
+
+  GenericResponse(this.message);
+}
+
+class Success extends GenericResponse {
+  Success(super.message);
+}
+
+class ErrorResponse extends GenericResponse {
+  String internalCode;
+  int code;
+  ErrorResponse(this.code, this.internalCode, super.message);
+}
+
+class ListResponse<T> extends Response {
+  List<T> items;
+
+  ListResponse(this.items);
+}

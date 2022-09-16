@@ -1,6 +1,7 @@
 import 'package:ebisu/modules/card/models/card.dart';
 import 'package:ebisu/modules/expenditure/domain/expense_source.dart';
 import 'package:ebisu/modules/expenditure/enums/expense_type.dart';
+import 'package:ebisu/modules/expenditure/infrastructure/transfer_objects/creates_expense.dart';
 import 'package:ebisu/shared/UI/Components/Shimmer.dart';
 import 'package:ebisu/src/UI/Components/Form/InputValidator.dart';
 import 'package:ebisu/src/UI/Components/General/KeyboardAvoider.dart';
@@ -213,16 +214,49 @@ class ExpenseFormState extends State<ExpenseForm> with TickerProviderStateMixin{
   }
 }
 
-class _ExpenseViewModel{
+class _ExpenseViewModel implements CreatesExpense {
   String? name;
+
+  @override
+  String getName() => name!;
+
   ExpenseType? type;
+
+  @override
+  ExpenseType getType() => type!;
+
   int? amount = 0;
+
+  @override
+  int getAmount() => amount!;
+
   CardModel? card;
+
+  @override
+  CardModel? getCard() => card;
+
   DateTime? date;
+
+  @override
+  DateTime getDate() => date!;
+
   int? currentInstallment;
+
+  @override
+  int? getCurrentInstallment() => currentInstallment;
+
   int? installmentTotal;
-  ExpenseSourceModel? source;
+
+  @override
+  int? getTotalInstallments() => installmentTotal;
+
   ExpenseSourceModel? beneficiary;
+
+  @override
+  ExpenseSourceModel? getBeneficiary() => beneficiary;
+
+  @override
+  ExpenseSourceModel? getSource() => null;
 }
 
 class _ExpenditureFormValidator extends InputValidator {

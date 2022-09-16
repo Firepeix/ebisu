@@ -41,6 +41,20 @@ class NotificationService {
     }
   }
 
+  void displayError ({BuildContext? context, String message = "Erro", behavior: SnackBarBehavior.fixed}) {
+    context = context ?? _contextService.getContext();
+    if (context != null) {
+      ScaffoldMessengerState messenger = ScaffoldMessenger.of(context);
+      messenger.hideCurrentSnackBar();
+      messenger.showSnackBar(SnackBar(
+          content: Text(message),
+          duration: Duration(seconds: 4),
+          backgroundColor: Colors.red,
+          behavior: behavior
+      ));
+    }
+  }
+
   Future<ConfirmResult> displayConfirmation({BuildContext? context}) async {
     context = context ?? _contextService.getContext();
     if (context != null) {

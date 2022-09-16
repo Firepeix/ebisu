@@ -3,10 +3,11 @@ import 'package:flutter/material.dart';
 
 @immutable
 class CardModel implements CanBePutInSelectBox{
+  final String id;
   final String name;
   final Color color;
 
-  CardModel(this.name, this.color);
+  CardModel(this.id, this.name, this.color);
 
   @override
   Color? selectBoxColor() {
