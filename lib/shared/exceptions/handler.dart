@@ -16,14 +16,14 @@ class ExceptionHandler implements ExceptionHandlerInterface {
 
   ExceptionHandler(this._notificationService);
 
-  void _displayError (ResultError error, {behavior: SnackBarBehavior.fixed, Details? details}) {
-      _notificationService.displayError(message: "${error.message}${details?.messageAddon ?? ""}");
+  void _displayError (ResultError error, {behavior: SnackBarBehavior.fixed}) {
+      _notificationService.displayError(message: "${error.message}${error.details?.messageAddon ?? ""}");
   }
 
   @override
   V? expect<V, E extends ResultError>(Result<V, E> result) {
     if (result.hasError()) {
-      _displayError(result.error(), details: result.details);
+      _displayError(result.error());
       return null;
     }
 

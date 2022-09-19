@@ -10,16 +10,11 @@ import 'response.dart';
 
 typedef DecodeJson<R> = R Function(Map<dynamic, dynamic>);
 typedef EncodeJson<B> = Map<dynamic, dynamic> Function(B body);
-typedef DecodeError<R> = Result<R, ResultError> Function(ErrorResponse response);
+typedef DecodeError = ResultError Function(ErrorResponse response);
 
-enum HttpError implements ResultError {
-  UNKNOWN("U1", message: "Error Desconhecido"),
-  SERVER_ERROR("U2");
-
-  final String message;
-  final String code;
-
-  const HttpError(this.code, {this.message = ""});
+class HttpError extends ResultError {
+  const HttpError.unknown() : super("Ops! Ocorreu um erro. Tente Novamente mais tarde.", "U1", null) ;
+  const HttpError.server(details) : super(null, "U2", details) ;
 }
 
 @singleton
@@ -39,7 +34,7 @@ class Caron {
     return Uri.https(host[1], endpoint);
   }
 
-  Future<Result<R, ResultError>> get<R>(String endpoint, DecodeJson<R> decoder, {DecodeError<R>? errorDecoder}) async {
+  Future<Result<R, ResultError>> get<R>(String endpoint, DecodeJson<R> decoder, {DecodeError? errorDecoder}) async {
     try {
       final response = await http.get(_url(endpoint));
       if (response.statusCode.toString().startsWith("2")) {
@@ -48,18 +43,15 @@ class Caron {
       // TODO - ADD LOG
       print(response.reasonPhrase);
       final errorResponse = _mapper.fromErrorJson(jsonDecode(response.body), response.statusCode);
-      if (errorDecoder != null) {
-        return errorDecoder(errorResponse);
-      }
-      return Result(null, HttpError.SERVER_ERROR, details: Details(messageAddon: errorResponse.message));
+      return Result(null, errorDecoder?.call(errorResponse) ?? HttpError.server(Details(messageAddon: errorResponse.message)));
     } catch(error) {
       // TODO - ADD LOG
       print(error);
-      return Result(null, HttpError.UNKNOWN);
+      return Result(null, HttpError.unknown());
     }
   }
 
-  Future<Result<R, ResultError>> post<R extends Response, B>(String endpoint, B body, EncodeJson<B> encoder, {DecodeJson<R>? decoder, DecodeError<R>? errorDecoder}) async {
+  Future<Result<R, ResultError>> post<R extends Response, B>(String endpoint, B body, EncodeJson<B> encoder, {DecodeJson<R>? decoder, DecodeError? errorDecoder}) async {
     try {
       final response = await http.post(_url(endpoint), body: jsonEncode(encoder(body)));
       final responseDecode = decoder ?? _mapper.fromSuccessJson;
@@ -70,14 +62,29 @@ class Caron {
       // TODO - ADD LOG
       print(response.reasonPhrase);
       final errorResponse = _mapper.fromErrorJson(jsonDecode(response.body), response.statusCode);
-      if (errorDecoder != null) {
-        return errorDecoder(errorResponse);
-      }
-      return Result(null, HttpError.SERVER_ERROR, details: Details(messageAddon: errorResponse.message));
+      return Result(null, errorDecoder?.call(errorResponse) ?? HttpError.server(Details(messageAddon: errorResponse.message)));
     } catch(error) {
       // TODO - ADD LOG
       print(error);
-      return Result(null, HttpError.UNKNOWN);
+      return Result(null, HttpError.unknown());
+    }
+  }
+
+  Future<Result<R, ResultError>> delete<R extends Response>(String endpoint, {DecodeError? errorDecoder}) async {
+    try {
+      final response = await http.delete(_url(endpoint));
+      final ResultError? error = null;
+      if (response.statusCode.toString().startsWith("2")) {
+        return Result(Success("Elemento deletado com sucesso!"), error).mapTo<R>();
+      }
+      // TODO - ADD LOG
+      print(response.reasonPhrase);
+      final errorResponse = _mapper.fromErrorJson(jsonDecode(response.body), response.statusCode);
+      return Result(null, errorDecoder?.call(errorResponse) ?? HttpError.server(Details(messageAddon: errorResponse.message)));
+    } catch(error) {
+      // TODO - ADD LOG
+      print(error);
+      return Result(null, HttpError.unknown());
     }
   }
 }

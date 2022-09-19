@@ -11,6 +11,9 @@ class HomePage extends AbstractPage {
   Widget build(BuildContext context) {
     return Home();
   }
+
+  @override
+  int pageIndex() => PAGE_INDEX;
 }
 
 class Home extends StatefulWidget {

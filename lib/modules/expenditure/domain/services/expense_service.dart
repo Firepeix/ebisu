@@ -10,6 +10,7 @@ import 'package:injectable/injectable.dart';
 abstract class ExpenseServiceInterface {
   Future<Result<void, ExpenseError>> createExpense(CreatesExpense builder);
   Future<List<ExpenseModel>> getCurrentExpenses();
+  Future<Result<void, ResultError>> deleteExpense(ExpenseModel model);
 }
 
 @Injectable(as: ExpenseServiceInterface)
@@ -25,7 +26,7 @@ class ExpenseService implements ExpenseServiceInterface {
     _notificationService.displayLoading();
     final result = await _repository.insert(builder);
 
-    if(result.isSuccessful()) {
+    if(result.isOk()) {
       _notificationService.displaySuccess(message: result.unwrap().message);
     }
 
@@ -37,5 +38,12 @@ class ExpenseService implements ExpenseServiceInterface {
   Future<List<ExpenseModel>> getCurrentExpenses() async {
     final result = await _repository.getCurrentExpenses();
     return _exceptionHandler.expect(result) ?? [];
+  }
+
+  @override
+  Future<Result<void, ResultError>> deleteExpense(ExpenseModel model) async{
+    final result = await _repository.deleteExpense(model.id);
+    _exceptionHandler.expect(result);
+    return result;
   }
 }

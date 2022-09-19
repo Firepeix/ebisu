@@ -14,12 +14,6 @@ class ConfigurationRepository extends GoogleSheetsRepository implements Configur
   }
 
   @override
-  Future<void> cleanCardTypeCache() async {
-    final prefs = await SharedPreferences.getInstance();
-    prefs.remove(CARD_TYPES_CACHE);
-  }
-
-  @override
   Future<void> saveSheetId(String sheetId) async{
     final prefs = await SharedPreferences.getInstance();
     prefs.setString(GoogleSheetsRepository.SPREADSHEET_ID_KEY, sheetId);

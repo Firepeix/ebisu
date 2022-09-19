@@ -4,7 +4,7 @@ abstract class DecoratedTile implements Widget {
   String id();
 }
 
-class DecoratedListTileBox extends StatelessWidget {
+class DecoratedListTileBox extends StatelessWidget implements DecoratedTile {
   final DecoratedTile tile;
   final int index;
   const DecoratedListTileBox(this.tile, this.index, {Key? key}) : super(key: key);
@@ -21,4 +21,7 @@ class DecoratedListTileBox extends StatelessWidget {
       child: tile,
     );
   }
+
+  @override
+  String id() => tile.id();
 }

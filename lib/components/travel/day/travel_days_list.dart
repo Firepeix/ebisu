@@ -76,6 +76,7 @@ class TravelDaysExpenseListState extends State<TravelDaysExpenseList> {
     setState(() {});
   }
 
+  // Gambiarra para não mostrar o botão em cima de uma lista
   Visibility _buildDay(BuildContext context, int index) {
     final shouldNotAppear = days.length == index;
     return Visibility(

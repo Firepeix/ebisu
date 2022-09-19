@@ -24,4 +24,6 @@ abstract class AbstractPage extends StatelessWidget  {
           );
         });
   }
+
+  int pageIndex();
 }

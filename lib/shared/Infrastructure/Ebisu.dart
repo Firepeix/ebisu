@@ -89,10 +89,18 @@ class _EbisuMainViewState extends State<EbisuMainView> {
     });
   }
 
+  void changeTo(AbstractPage page) {
+    setState(() {
+      _pages.insert(page.pageIndex(), page);
+      currentPageIndex = page.pageIndex();
+      currentPage = _pages[currentPageIndex];
+    });
+  }
+
   void _addPages () {
     this._pages.add(HomePage());
     this._pages.add(CreateExpenditurePage(onChangePageTo: (value) => this.changePageTo(value),));
-    this._pages.add(ListExpendituresPage());
+    this._pages.add(ListExpendituresPage(onClickExpense: (value) => this.changeTo(value),));
   }
 
   Widget build(BuildContext context) => widget.build(this, context);

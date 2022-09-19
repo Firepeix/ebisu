@@ -8,6 +8,9 @@ import 'package:ebisu/src/Domain/Pages/AbstractPage.dart';
 import 'package:flutter/material.dart';
 
 class ExpenditureHomePage extends AbstractPage {
+  @override
+  int pageIndex() => 6;
+
   final _service = getIt<ExpensePurchaseServiceInterface>();
 
 

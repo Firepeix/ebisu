@@ -9,42 +9,41 @@ import 'package:ebisu/modules/user/domain/services/user_service.dart';
 import 'package:ebisu/shared/services/notification_service.dart';
 import 'package:ebisu/src/Domain/Pages/AbstractPage.dart';
 import 'package:ebisu/src/UI/Components/Nav/MainButtonPage.dart';
-import 'package:ebisu/src/UI/General/HomePage.dart';
 import 'package:flutter/material.dart';
 
-class CreateExpenditurePage extends AbstractPage implements MainButtonPage {
-  static const PAGE_INDEX = 1;
+class UpdateExpensePage extends AbstractPage implements MainButtonPage {
+  static const PAGE_INDEX = 3;
+  final String _expenseId;
   final GlobalKey<FormState> _form = GlobalKey<FormState>();
   final GlobalKey<ExpenseFormState> _modelState = GlobalKey<ExpenseFormState>();
-  final ExpenseServiceInterface service = getIt();
   final NotificationService notificationService = getIt();
-  CreateExpenditurePage({required onChangePageTo}) : super(onChangeTo: onChangePageTo);
+  UpdateExpensePage(this._expenseId, {required onChangePageTo}) : super(onChangeTo: onChangePageTo);
 
   @override
   Widget build(BuildContext context) {
-    return Form(child: Content(_modelState), key: _form,);
+    return Form(child: Content(_expenseId, _modelState), key: _form,);
   }
-
-  @override
-  int pageIndex() => PAGE_INDEX;
 
   @override
   FloatingActionButton getMainButton(BuildContext context) {
     return FloatingActionButton(
       onPressed: () async {
-       if (_form.currentState != null && _form.currentState!.validate() && _modelState.currentState != null) {
-         _form.currentState?.save();
-         final result = await service.createExpense(_modelState.currentState!.model);
-         if(result.isOk()) {
-           this.onChangeTo?.call(HomePage.PAGE_INDEX);
-         }
-       }
+       //if (_form.currentState != null && _form.currentState!.validate() && _modelState.currentState != null) {
+       //  _form.currentState?.save();
+       //  final result = await service.createExpense(_modelState.currentState!.model);
+       //  if(result.isOk()) {
+       //    this.onChangeTo?.call(HomePage.PAGE_INDEX);
+       //  }
+       //}
       },
       tooltip: "Salvar Despesa",
       child: Icon(Icons.check),
       elevation: 2.0,
     );
   }
+
+  @override
+  int pageIndex() => PAGE_INDEX;
 }
 
 
@@ -52,9 +51,10 @@ class Content extends StatefulWidget {
   final CardServiceInterface cardService = getIt();
   final UserServiceInterface userServiceInterface = getIt();
   final EstablishmentServiceInterface establishmentServiceInterface = getIt();
+  final ExpenseServiceInterface service = getIt();
   final GlobalKey<ExpenseFormState> _modelState;
-
-  Content(this._modelState);
+  final String expenseId;
+  Content(this.expenseId, this._modelState);
 
   @override
   State<StatefulWidget> createState() => _ContentState();
@@ -78,7 +78,7 @@ class _ContentState extends State<Content> {
     ]);
 
     setState(() {
-      loaded = true;
+      loaded = false;
     });
   }
 

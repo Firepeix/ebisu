@@ -4,14 +4,8 @@ import 'package:ebisu/shared/exceptions/result.dart';
 import 'package:ebisu/shared/http/client.dart';
 import 'package:injectable/injectable.dart';
 
-enum EstablishmentError implements ResultError {
-  GET_ESTABLISHMENT_ERROR("Não foi possível buscar cartões", "ES1");
-
-  final String message;
-  final String code;
-  final dynamic details;
-
-  const EstablishmentError(this.message, this.code, { this.details });
+class EstablishmentError extends ResultError {
+  const EstablishmentError.getEstablishments() : super("Não foi possível buscar cartões", "ES1", null);
 }
 
 abstract class EstablishmentRepositoryInterface {
@@ -31,6 +25,6 @@ class EstablishmentRepository implements EstablishmentRepositoryInterface {
   @override
   Future<Result<List<EstablishmentModel>, EstablishmentError>> getEstablishments() async {
     final result = await _caron.get(_Endpoint.EstablishmentsIndex, _mapper.fromJsonList);
-    return result.subError(EstablishmentError.GET_ESTABLISHMENT_ERROR);
+    return result.subError(EstablishmentError.getEstablishments());
   }
 }

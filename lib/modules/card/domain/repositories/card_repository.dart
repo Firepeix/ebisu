@@ -4,14 +4,8 @@ import 'package:ebisu/shared/exceptions/result.dart';
 import 'package:ebisu/shared/http/client.dart';
 import 'package:injectable/injectable.dart';
 
-enum CardError implements ResultError {
-  GET_CARDS_ERROR("Não foi possível buscar cartões", "C1");
-
-  final String message;
-  final String code;
-  final dynamic details;
-
-  const CardError(this.message, this.code, { this.details });
+class CardError extends ResultError {
+  CardError.getCards() : super("Não foi possível buscar cartões", "C1", null);
 }
 
 abstract class CardRepositoryInterface {
@@ -31,6 +25,6 @@ class CardRepository implements CardRepositoryInterface {
   @override
   Future<Result<List<CardModel>, CardError>> getCards() async {
     final result = await _caron.get(_Endpoint.CardsIndex, _mapper.fromJsonList);
-    return result.subError(CardError.GET_CARDS_ERROR);
+    return result.subError(CardError.getCards());
   }
 }

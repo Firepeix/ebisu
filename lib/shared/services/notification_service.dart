@@ -1,5 +1,5 @@
-import 'package:ebisu/modules/dialogs/confirm_dialog.dart';
 import 'package:ebisu/shared/navigator/navigator_interface.dart';
+import 'package:ebisu/ui_components/chronos/dialogs/confirm_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:injectable/injectable.dart';
 
