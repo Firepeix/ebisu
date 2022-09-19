@@ -8,8 +8,10 @@ class DateInput extends StatelessWidget {
   final bool dense;
   final FormFieldSetter<DateTime>? onSaved;
   final FormFieldValidator<DateTime>? validator;
+  final ValueChanged<DateTime?>? onChanged;
+  final DateTime? initialValue;
 
-  const DateInput({Key? key, this.label, this.hint, this.onSaved, this.validator, this.dense = false}) : super(key: key);
+  const DateInput({Key? key, this.initialValue, this.label, this.hint, this.onSaved, this.onChanged, this.validator, this.dense = false}) : super(key: key);
 
   DateTime? date(String? value) {
     return DateTime.tryParse(value?.split("/").reversed.join("-") ?? "");
@@ -21,8 +23,9 @@ class DateInput extends StatelessWidget {
     label: label,
     hint: hint,
     dense: dense,
-    controller: DateController(),
+    controller: DateController(initialValue: initialValue),
     validator: (value) => validator?.call(date(value)),
     onSaved: (value) => onSaved?.call(date(value)),
+    onChanged: (value) => onChanged?.call(date(value)),
   );
 }

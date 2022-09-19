@@ -154,8 +154,9 @@ class ExpenseFormState extends State<ExpenseForm> with TickerProviderStateMixin{
             padding: EdgeInsets.only(top: 16),
             child: DateInput(
               label: "Data",
+              initialValue: model.date,
               validator: widget.validator.date,
-              onSaved: (value) => model.date = value!,
+              onChanged: (value) => model.date = value,
             ),
           ),
           SizeTransition(
@@ -235,7 +236,7 @@ class _ExpenseViewModel implements CreatesExpense {
   @override
   CardModel? getCard() => card;
 
-  DateTime? date;
+  DateTime? date = DateTime.now();
 
   @override
   DateTime getDate() => date!;

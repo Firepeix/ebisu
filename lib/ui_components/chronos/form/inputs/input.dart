@@ -9,8 +9,9 @@ class Input extends StatelessWidget {
   final Controller? controller;
   final FormFieldSetter<String>? onSaved;
   final FormFieldValidator<String>? validator;
+  final ValueChanged<String?>? onChanged;
 
-  const Input({Key? key, this.label, this.hint, this.keyboardType, this.controller, this.onSaved, this.validator, this.dense = false}) : super(key: key);
+  const Input({Key? key, this.label, this.hint, this.keyboardType, this.controller, this.onSaved, this.validator, this.onChanged,this.dense = false}) : super(key: key);
 
   @override
   Widget build(BuildContext context) => TextFormField(
@@ -25,6 +26,7 @@ class Input extends StatelessWidget {
     controller: controller?.getController(),
     onSaved: onSaved,
     validator: validator,
+    onChanged: onChanged,
     keyboardType: keyboardType,
   );
 }
