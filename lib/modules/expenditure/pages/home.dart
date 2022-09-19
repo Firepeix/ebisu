@@ -4,13 +4,9 @@ import 'package:ebisu/modules/expenditure/domain/ExpenditureSummary.dart';
 import 'package:ebisu/modules/expenditure/domain/services/purchase_service.dart';
 import 'package:ebisu/modules/expenditure/models/purchase/credit_expense_purchase_summary.dart';
 import 'package:ebisu/shared/UI/Components/Title.dart';
-import 'package:ebisu/src/Domain/Pages/AbstractPage.dart';
 import 'package:flutter/material.dart';
 
-class ExpenditureHomePage extends AbstractPage {
-  @override
-  int pageIndex() => 6;
-
+class ExpenditureHomePage extends StatelessWidget {
   final _service = getIt<ExpensePurchaseServiceInterface>();
 
 
