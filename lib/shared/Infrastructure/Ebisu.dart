@@ -2,10 +2,10 @@ import 'package:ebisu/modules/core/core.dart';
 import 'package:ebisu/modules/expenditure/pages/create_expenses.dart';
 import 'package:ebisu/modules/expenditure/pages/list_expenses.dart';
 import 'package:ebisu/shared/dependency/dependency_container.dart';
-import 'package:ebisu/src/Domain/Pages/AbstractPage.dart';
 import 'package:ebisu/src/UI/Components/Nav/BottomNavBar.dart';
 import 'package:ebisu/src/UI/Components/Nav/MainButtonPage.dart';
 import 'package:ebisu/src/UI/General/HomePage.dart';
+import 'package:ebisu/ui_components/chronos/layout/home_view.dart';
 import 'package:flutter/material.dart';
 
 class EbisuMainView extends StatefulWidget {
@@ -52,8 +52,8 @@ class EbisuMainView extends StatefulWidget {
 }
 
 class _EbisuMainViewState extends State<EbisuMainView> {
-  List<AbstractPage> _pages = [];
-  AbstractPage? currentPage;
+  List<HomeView> _pages = [];
+  HomeView? currentPage;
   int currentPageIndex = 0;
 
   @override
@@ -89,7 +89,7 @@ class _EbisuMainViewState extends State<EbisuMainView> {
     });
   }
 
-  void changeTo(AbstractPage page) {
+  void changeTo(HomeView page) {
     setState(() {
       _pages.insert(page.pageIndex(), page);
       currentPageIndex = page.pageIndex();

@@ -1,11 +1,28 @@
 import 'package:ebisu/configuration/UI/Components/CleanCredentials.dart';
 import 'package:ebisu/configuration/UI/Components/SheetIdConfiguration.dart';
-import 'package:ebisu/src/Domain/Pages/AbstractPage.dart';
 import 'package:flutter/material.dart';
 
-class ConfigurationPage extends AbstractPage {
-  @override
-  int pageIndex() => 5;
+class ConfigurationPage extends StatelessWidget {
+  Route getRoute() {
+    return PageRouteBuilder(
+        pageBuilder: (context, animation, secondaryAnimation) => this,
+        transitionsBuilder: (context, animation, secondaryAnimation, child) {
+          const begin = Offset(1.0, 0.0);
+          const end = Offset.zero;
+          const curve = Curves.ease;
+
+          final tween = Tween(begin: begin, end: end);
+          final curvedAnimation = CurvedAnimation(
+            parent: animation,
+            curve: curve,
+          );
+
+          return SlideTransition(
+            position: tween.animate(curvedAnimation),
+            child: child,
+          );
+        });
+  }
 
   @override
   Widget build(BuildContext context) {

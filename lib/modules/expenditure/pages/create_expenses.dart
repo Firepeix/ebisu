@@ -7,60 +7,51 @@ import 'package:ebisu/modules/expenditure/domain/expense_source.dart';
 import 'package:ebisu/modules/expenditure/domain/services/expense_service.dart';
 import 'package:ebisu/modules/user/domain/services/user_service.dart';
 import 'package:ebisu/shared/services/notification_service.dart';
-import 'package:ebisu/src/Domain/Pages/AbstractPage.dart';
 import 'package:ebisu/src/UI/Components/Nav/MainButtonPage.dart';
-import 'package:ebisu/src/UI/General/HomePage.dart';
+import 'package:ebisu/ui_components/chronos/layout/home_view.dart';
 import 'package:flutter/material.dart';
 
-class CreateExpenditurePage extends AbstractPage implements MainButtonPage {
+class CreateExpenditurePage extends StatefulWidget implements MainButtonPage, HomeView {
   static const PAGE_INDEX = 1;
+
+  @override
+  int pageIndex() => PAGE_INDEX;
+
   final GlobalKey<FormState> _form = GlobalKey<FormState>();
   final GlobalKey<ExpenseFormState> _modelState = GlobalKey<ExpenseFormState>();
   final ExpenseServiceInterface service = getIt();
   final NotificationService notificationService = getIt();
-  CreateExpenditurePage({required onChangePageTo}) : super(onChangeTo: onChangePageTo);
+  final CardServiceInterface cardService = getIt();
+  final UserServiceInterface userServiceInterface = getIt();
+  final EstablishmentServiceInterface establishmentServiceInterface = getIt();
 
-  @override
-  Widget build(BuildContext context) {
-    return Form(child: Content(_modelState), key: _form,);
-  }
+  CreateExpenditurePage({required onChangePageTo});
 
-  @override
-  int pageIndex() => PAGE_INDEX;
 
   @override
   FloatingActionButton getMainButton(BuildContext context) {
     return FloatingActionButton(
       onPressed: () async {
-       if (_form.currentState != null && _form.currentState!.validate() && _modelState.currentState != null) {
-         _form.currentState?.save();
-         final result = await service.createExpense(_modelState.currentState!.model);
-         if(result.isOk()) {
-           this.onChangeTo?.call(HomePage.PAGE_INDEX);
-         }
-       }
+        print(213);
+       //if (_form.currentState != null && _form.currentState!.validate() && _modelState.currentState != null) {
+       //  _form.currentState?.save();
+       //  final result = await service.createExpense(_modelState.currentState!.model);
+       //  if(result.isOk()) {
+       //    this.onChangeTo?.call(HomePage.PAGE_INDEX);
+       //  }
+       //}
       },
       tooltip: "Salvar Despesa",
       child: Icon(Icons.check),
       elevation: 2.0,
     );
   }
-}
-
-
-class Content extends StatefulWidget {
-  final CardServiceInterface cardService = getIt();
-  final UserServiceInterface userServiceInterface = getIt();
-  final EstablishmentServiceInterface establishmentServiceInterface = getIt();
-  final GlobalKey<ExpenseFormState> _modelState;
-
-  Content(this._modelState);
 
   @override
-  State<StatefulWidget> createState() => _ContentState();
+  State<StatefulWidget> createState() => _CreateExpenditurePageState();
 }
 
-class _ContentState extends State<Content> {
+class _CreateExpenditurePageState extends State<CreateExpenditurePage> {
   List<CardModel> cards = [];
   List<ExpenseSourceModel> beneficiaries = [];
   bool loaded = false;
@@ -98,9 +89,12 @@ class _ContentState extends State<Content> {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: EdgeInsets.symmetric(vertical: 20, horizontal: 10),
-      child: loaded ? ExpenseForm(cards, beneficiaries, key: widget._modelState,) : ExpenseFormSkeleton(),
+    return Form(
+      key: widget._form,
+        child: Padding(
+          padding: EdgeInsets.symmetric(vertical: 20, horizontal: 10),
+          child: loaded ? ExpenseForm(cards, beneficiaries, key: widget._modelState,) : ExpenseFormSkeleton(),
+        )
     );
   }
 }

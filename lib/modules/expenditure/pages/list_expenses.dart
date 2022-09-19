@@ -3,38 +3,25 @@ import 'package:ebisu/modules/expenditure/components/expense/expense_card.dart';
 import 'package:ebisu/modules/expenditure/domain/services/expense_service.dart';
 import 'package:ebisu/modules/expenditure/models/expense/expenditure_model.dart';
 import 'package:ebisu/modules/expenditure/pages/edit_expense.dart';
-import 'package:ebisu/src/Domain/Pages/AbstractPage.dart';
+import 'package:ebisu/ui_components/chronos/layout/home_view.dart';
 import 'package:ebisu/ui_components/chronos/list/dismissable_tile.dart';
 import 'package:flutter/material.dart';
 
-class ListExpendituresPage extends AbstractPage {
+class ListExpendituresPage extends StatefulWidget implements HomeView {
   static const PAGE_INDEX = 2;
-  final ExpenseServiceInterface _service = getIt<ExpenseServiceInterface>();
-
-  ListExpendituresPage({required onClickExpense}) : super(onChangeTo: onClickExpense);
-
-
-  @override
-  Widget build(BuildContext context) {
-    return Content(_service, onClickExpense: onChangeTo,);
-  }
 
   @override
   int pageIndex() => PAGE_INDEX;
-}
 
-
-class Content extends StatefulWidget {
-  final ExpenseServiceInterface _service;
+  final ExpenseServiceInterface _service = getIt<ExpenseServiceInterface>();
   final Function? onClickExpense;
 
-  Content(this._service, {this.onClickExpense});
+  ListExpendituresPage({this.onClickExpense});
 
   @override
-  State<StatefulWidget> createState() => _ContentState();
+  State<StatefulWidget> createState() => _ListExpendituresPageState();
 }
-
-class _ContentState extends State<Content> {
+class _ListExpendituresPageState extends State<ListExpendituresPage> {
   List<ExpenseModel> expenditures = [];
   bool loaded = false;
 
@@ -80,7 +67,7 @@ class _ContentState extends State<Content> {
           child: DismissibleTile(
             confirmOnDismissed: true,
             child: ExpenseListCard(expenditures[index], onClick: (model) {
-              widget.onClickExpense?.call(UpdateExpensePage(model.id, onChangePageTo: null,));
+              widget.onClickExpense?.call(UpdateExpensePage(model.id));
             },),
             onDismissed: (hasBeenDismissed) => _deleteExpense(hasBeenDismissed, index),
           ),

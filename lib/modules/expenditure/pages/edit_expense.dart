@@ -7,27 +7,31 @@ import 'package:ebisu/modules/expenditure/domain/expense_source.dart';
 import 'package:ebisu/modules/expenditure/domain/services/expense_service.dart';
 import 'package:ebisu/modules/user/domain/services/user_service.dart';
 import 'package:ebisu/shared/services/notification_service.dart';
-import 'package:ebisu/src/Domain/Pages/AbstractPage.dart';
 import 'package:ebisu/src/UI/Components/Nav/MainButtonPage.dart';
+import 'package:ebisu/ui_components/chronos/layout/home_view.dart';
 import 'package:flutter/material.dart';
 
-class UpdateExpensePage extends AbstractPage implements MainButtonPage {
+class UpdateExpensePage extends StatefulWidget  implements MainButtonPage, HomeView {
   static const PAGE_INDEX = 3;
   final String _expenseId;
   final GlobalKey<FormState> _form = GlobalKey<FormState>();
   final GlobalKey<ExpenseFormState> _modelState = GlobalKey<ExpenseFormState>();
   final NotificationService notificationService = getIt();
-  UpdateExpensePage(this._expenseId, {required onChangePageTo}) : super(onChangeTo: onChangePageTo);
+  final CardServiceInterface cardService = getIt();
+  final UserServiceInterface userServiceInterface = getIt();
+  final EstablishmentServiceInterface establishmentServiceInterface = getIt();
+  final ExpenseServiceInterface service = getIt();
+
+  UpdateExpensePage(this._expenseId);
 
   @override
-  Widget build(BuildContext context) {
-    return Form(child: Content(_expenseId, _modelState), key: _form,);
-  }
+  int pageIndex() => 3;
 
   @override
   FloatingActionButton getMainButton(BuildContext context) {
     return FloatingActionButton(
       onPressed: () async {
+        print("foi");
        //if (_form.currentState != null && _form.currentState!.validate() && _modelState.currentState != null) {
        //  _form.currentState?.save();
        //  final result = await service.createExpense(_modelState.currentState!.model);
@@ -43,24 +47,10 @@ class UpdateExpensePage extends AbstractPage implements MainButtonPage {
   }
 
   @override
-  int pageIndex() => PAGE_INDEX;
+  State<StatefulWidget> createState() => _UpdateExpensePageState();
 }
 
-
-class Content extends StatefulWidget {
-  final CardServiceInterface cardService = getIt();
-  final UserServiceInterface userServiceInterface = getIt();
-  final EstablishmentServiceInterface establishmentServiceInterface = getIt();
-  final ExpenseServiceInterface service = getIt();
-  final GlobalKey<ExpenseFormState> _modelState;
-  final String expenseId;
-  Content(this.expenseId, this._modelState);
-
-  @override
-  State<StatefulWidget> createState() => _ContentState();
-}
-
-class _ContentState extends State<Content> {
+class _UpdateExpensePageState extends State<UpdateExpensePage> {
   List<CardModel> cards = [];
   List<ExpenseSourceModel> beneficiaries = [];
   bool loaded = false;
@@ -98,9 +88,12 @@ class _ContentState extends State<Content> {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: EdgeInsets.symmetric(vertical: 20, horizontal: 10),
-      child: loaded ? ExpenseForm(cards, beneficiaries, key: widget._modelState,) : ExpenseFormSkeleton(),
+    return Form(
+      key: widget._form,
+        child: Padding(
+          padding: EdgeInsets.symmetric(vertical: 20, horizontal: 10),
+          child: loaded ? ExpenseForm(cards, beneficiaries, key: widget._modelState,) : ExpenseFormSkeleton(),
+        )
     );
   }
 }

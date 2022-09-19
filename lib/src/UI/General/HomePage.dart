@@ -1,63 +1,20 @@
 import 'package:ebisu/modules/expenditure/Pages/Home.dart';
 import 'package:ebisu/shared/Infrastructure/Repositories/Persistence/GoogleSheetsRepository.dart';
-import 'package:ebisu/src/Domain/Pages/AbstractPage.dart';
 import 'package:ebisu/src/UI/General/SetupApp.dart';
+import 'package:ebisu/ui_components/chronos/layout/home_view.dart';
 import 'package:flutter/material.dart';
 
-class HomePage extends AbstractPage {
+class HomePage extends StatefulWidget implements HomeView {
   static const PAGE_INDEX = 0;
 
   @override
-  Widget build(BuildContext context) {
-    return Home();
-  }
-
-  @override
   int pageIndex() => PAGE_INDEX;
-}
 
-class Home extends StatefulWidget {
   @override
   State createState() => _HomeState();
-
-  Widget build (_HomeState state) {
-    if (state.isSetup == true) {
-      return PageView(
-        children: [
-          Padding(
-              padding: EdgeInsets.symmetric(horizontal: 10),
-              child: ExpenditureHomePage()
-          )
-        ],
-      );
-    }
-    return Column(
-      children: [
-        Visibility(
-            visible: state.isSetup == null,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Padding(
-                    padding: EdgeInsets.symmetric(vertical: 40, horizontal: 30),
-                    child: CircularProgressIndicator()
-                )
-              ],
-            )
-        ),
-        Visibility(
-            visible: state.isSetup == false,
-            child: Padding(
-                padding: EdgeInsets.symmetric(vertical: 20, horizontal: 10),
-                child: SetupApp(() => state._checkSetup())
-            )
-        )
-      ],
-    );
-  }
 }
 
-class _HomeState extends State<Home>{
+class _HomeState extends State<HomePage>{
   bool? isSetup;
 
 
@@ -77,6 +34,39 @@ class _HomeState extends State<Home>{
   _HomeState();
 
   @override
-  Widget build(BuildContext context) => widget.build(this);
-
+  Widget build(BuildContext context) {
+    if (isSetup == true) {
+      return PageView(
+        children: [
+          Padding(
+              padding: EdgeInsets.symmetric(horizontal: 10),
+              child: ExpenditureHomePage()
+          )
+        ],
+      );
+    }
+    return Column(
+      children: [
+        Visibility(
+            visible: isSetup == null,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Padding(
+                    padding: EdgeInsets.symmetric(vertical: 40, horizontal: 30),
+                    child: CircularProgressIndicator()
+                )
+              ],
+            )
+        ),
+        Visibility(
+            visible: isSetup == false,
+            child: Padding(
+                padding: EdgeInsets.symmetric(vertical: 20, horizontal: 10),
+                child: SetupApp(() => _checkSetup())
+            )
+        )
+      ],
+    );
+  }
 }
