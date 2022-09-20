@@ -7,9 +7,12 @@ class CardMapper {
   CardModel fromJson(Map<dynamic, dynamic> json) {
     final rgb = json["color"];
     return CardModel(
-        json["id"],
-        json["name"],
-        Color.fromARGB(255, rgb["red"], rgb["green"], rgb["blue"])
+        id: json["id"],
+        name: json["name"],
+        budget: json["budget"],
+        color: Color.fromARGB(255, rgb["red"], rgb["green"], rgb["blue"]),
+        dueDate: json["due_date"] != null ? DateTime.parse(json["due_date"]) : null,
+        closeDate: json["close_date"] != null ? DateTime.parse(json["close_date"]) : null,
     );
   }
 

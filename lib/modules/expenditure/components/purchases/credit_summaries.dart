@@ -1,7 +1,11 @@
+import 'package:ebisu/main.dart';
+import 'package:ebisu/modules/card/pages/update_card_page.dart';
 import 'package:ebisu/modules/expenditure/models/purchase/credit_expense_purchase_summary.dart';
 import 'package:ebisu/shared/UI/Components/EbisuCards.dart';
 import 'package:ebisu/shared/UI/Components/Grids.dart';
 import 'package:ebisu/shared/UI/Components/Shimmer.dart';
+import 'package:ebisu/shared/navigator/navigator_interface.dart';
+import 'package:ebisu/ui_components/chronos/buttons/transparent_button.dart';
 import 'package:ebisu/ui_components/chronos/labels/money.dart';
 import 'package:flutter/material.dart';
 
@@ -38,9 +42,11 @@ class _CreditSummary extends StatelessWidget {
   const _CreditSummary({required this.summary});
 
   @override
-  Widget build(BuildContext context) =>
-      Card(
-        elevation: 4,
+  Widget build(BuildContext context) {
+    return Card(
+      elevation: 4,
+      child: TransparentButton(
+        () => routeTo(context, UpdateCardPage(summary.card.id, summary.card.name), animation: IntoViewAnimation.pop),
         child: Column(
           children: [
             Padding(
@@ -50,9 +56,9 @@ class _CreditSummary extends StatelessWidget {
                 children: [
                   Text(summary.card.name,
                     style: TextStyle(
-                      fontSize: 22,
-                      fontWeight: FontWeight.bold,
-                      color:  summary.card.color
+                        fontSize: 22,
+                        fontWeight: FontWeight.bold,
+                        color:  summary.card.color
                     ),
                   ),
                   Padding(child: Text('Planejado', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w400),), padding: EdgeInsets.only(top: 4)),
@@ -74,9 +80,12 @@ class _CreditSummary extends StatelessWidget {
               ),
             )
           ],
-        ),
-      );
+        )
+      ),
+    );
+  }
 }
+
 
 class CreditSummariesSkeleton extends StatelessWidget {
   @override

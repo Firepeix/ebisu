@@ -1,5 +1,6 @@
 import 'package:ebisu/modules/expenditure/models/expense/expenditure_model.dart';
 import 'package:ebisu/shared/UI/Components/Shimmer.dart';
+import 'package:ebisu/ui_components/chronos/buttons/transparent_button.dart';
 import 'package:ebisu/ui_components/chronos/labels/money.dart';
 import 'package:ebisu/ui_components/chronos/list/decorated_list_box.dart';
 import 'package:flutter/material.dart';
@@ -26,18 +27,18 @@ class ExpenseListCard extends StatelessWidget implements DecoratedTile  {
 
   @override
   Widget build(BuildContext context) {
-    return InkWell(
-      child: Card(
-        shape: RoundedRectangleBorder(
-            side: BorderSide(color: Colors.grey.shade400, width: 0.5),
-            borderRadius: BorderRadius.all(Radius.circular(5))),
-        elevation: 0,
+    return Card(
+      shape: RoundedRectangleBorder(
+          side: BorderSide(color: Colors.grey.shade400, width: 0.5),
+          borderRadius: BorderRadius.all(Radius.circular(5))),
+      elevation: 0,
+      child: TransparentButton(
+        () => onClick?.call(model),
         child: Padding(
           padding: EdgeInsets.all(10),
           child: _getViewModel(),
-        ),
+        )
       ),
-      onTap: () => onClick?.call(model),
     );
   }
 
