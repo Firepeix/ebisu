@@ -1,8 +1,9 @@
 import 'package:ebisu/modules/card/models/card.dart';
 import 'package:ebisu/modules/expenditure/domain/expense_source.dart';
 import 'package:ebisu/modules/expenditure/enums/expense_type.dart';
+import 'package:ebisu/modules/expenditure/infrastructure/transfer_objects/creates_expense.dart';
 
-class ExpenseModel {
+class ExpenseModel implements CreatesExpense {
   final String id;
   final String name;
   final int amount;
@@ -28,6 +29,33 @@ class ExpenseModel {
   bool isInstallmentBased() {
     return installments != null;
   }
+
+  @override
+  int getAmount() => amount;
+
+  @override
+  ExpenseSourceModel? getBeneficiary() => beneficiary;
+
+  @override
+  CardModel? getCard() => card;
+
+  @override
+  int? getCurrentInstallment() => installments?.currentInstallment;
+
+  @override
+  DateTime getDate() => date;
+
+  @override
+  String getName() => name;
+
+  @override
+  ExpenseSourceModel? getSource() => source;
+
+  @override
+  int? getTotalInstallments() => installments?.totalInstallments;
+
+  @override
+  ExpenseType getType() => type;
 }
 
 class ExpenseInstallments {

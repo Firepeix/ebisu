@@ -10,8 +10,20 @@ class Input extends StatelessWidget {
   final FormFieldSetter<String>? onSaved;
   final FormFieldValidator<String>? validator;
   final ValueChanged<String?>? onChanged;
+  final String? initialValue;
 
-  const Input({Key? key, this.label, this.hint, this.keyboardType, this.controller, this.onSaved, this.validator, this.onChanged,this.dense = false}) : super(key: key);
+  const Input({
+    Key? key,
+    this.label,
+    this.hint,
+    this.keyboardType,
+    this.controller,
+    this.onSaved,
+    this.validator,
+    this.onChanged,
+    this.initialValue,
+    this.dense = false
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) => TextFormField(
@@ -24,6 +36,7 @@ class Input extends StatelessWidget {
         contentPadding: EdgeInsets.fromLTRB(12, !dense ? 20 : 20, 12, !dense ? 12 : 0)
     ),
     controller: controller?.getController(),
+    initialValue: initialValue,
     onSaved: onSaved,
     validator: validator,
     onChanged: onChanged,

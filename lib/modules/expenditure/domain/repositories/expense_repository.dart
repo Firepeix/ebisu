@@ -61,7 +61,7 @@ class ExpenseRepository implements ExpenseRepositoryInterface {
 
   @override
   Future<Result<ExpenseModel, ResultError>> getExpense(String id) async {
-    final result = await _caron.get<ExpenseModel>(_Endpoint.ExpensesIndex, _mapper.fromJson);
+    final result = await _caron.get<ExpenseModel>(_Endpoint.Expense.replaceAll(":expenseId", id), _mapper.fromJson);
     return result.map((value) => value.data);
   }
 }

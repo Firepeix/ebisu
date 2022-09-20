@@ -94,7 +94,7 @@ class _UpdateExpensePageState extends State<UpdateExpensePage> {
     return NotificationListener<SaveExpenseNotification>(
       child: Padding(
         padding: EdgeInsets.symmetric(vertical: 20, horizontal: 10),
-        child: loaded ? ExpenseForm(cards, beneficiaries,) : ExpenseFormSkeleton(),
+        child: loaded ? ExpenseForm(cards, beneficiaries, model: expense,) : ExpenseFormSkeleton(),
       ),
       onNotification: (notification) {
         saveExpense(notification.model);

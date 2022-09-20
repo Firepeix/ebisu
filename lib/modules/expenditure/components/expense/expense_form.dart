@@ -58,7 +58,6 @@ class _ExpenseFormState extends State<ExpenseForm> with TickerProviderStateMixin
   @override
   void initState() {
     super.initState();
-    setModel();
     setMainButtonAction(context);
     cardOptionsController = AnimationController(vsync: this, duration: Duration(milliseconds: 500));
     installmentOptionsController = AnimationController(vsync: this, duration: Duration(milliseconds: 500));
@@ -66,7 +65,7 @@ class _ExpenseFormState extends State<ExpenseForm> with TickerProviderStateMixin
     _currentInstallmentState = GlobalKey<FormFieldState<dynamic>>();
     _totalInstallmentState = GlobalKey<FormFieldState<dynamic>>();
     _form = GlobalKey<FormState>();
-
+    setModel();
   }
 
   void setMainButtonAction(BuildContext context) {
@@ -91,6 +90,15 @@ class _ExpenseFormState extends State<ExpenseForm> with TickerProviderStateMixin
           installmentTotal: widget.model!.getTotalInstallments(),
           beneficiary: widget.model!.getBeneficiary()
       );
+
+      _showCards(model.type);
+      if (model.installmentTotal != null) {
+        _paymentType = _ExpensePaymentType.INSTALLMENT;
+      } else {
+        _paymentType = model.currentInstallment != null ? _ExpensePaymentType.FOREVER : _ExpensePaymentType.UNIT;
+      }
+
+      _showInstallments(_paymentType);
     }
   }
 
@@ -110,12 +118,16 @@ class _ExpenseFormState extends State<ExpenseForm> with TickerProviderStateMixin
       model.type = value;
       model.card = null;
       _cardState?.currentState?.reset();
-      if(value != null && !value.isDebit()) {
-        cardOptionsController.forward();
-        return;
-      }
-      cardOptionsController.reverse();
+      _showCards(value);
     });
+  }
+
+  void _showCards(ExpenseType? value) {
+    if(value != null && !value.isDebit()) {
+      cardOptionsController.forward();
+      return;
+    }
+    cardOptionsController.reverse();
   }
 
   void _handleExpenditureTypeChange(_ExpensePaymentType? value) {
@@ -125,12 +137,16 @@ class _ExpenseFormState extends State<ExpenseForm> with TickerProviderStateMixin
       model.installmentTotal = null;
       _currentInstallmentState?.currentState?.reset();
       _totalInstallmentState?.currentState?.reset();
-      if(value != null && _paymentType != _ExpensePaymentType.UNIT) {
-        installmentOptionsController.forward();
-        return;
-      }
-      installmentOptionsController.reverse();
+      _showInstallments(value);
     });
+  }
+
+  void _showInstallments(_ExpensePaymentType? value) {
+    if(value != null && _paymentType != _ExpensePaymentType.UNIT) {
+      installmentOptionsController.forward();
+      return;
+    }
+    installmentOptionsController.reverse();
   }
 
   @override
@@ -143,6 +159,7 @@ class _ExpenseFormState extends State<ExpenseForm> with TickerProviderStateMixin
           children: <Widget>[
             Input(
               label: "Nome",
+              initialValue: model.name,
               validator: widget.validator.name,
               onSaved: (value) => model.name = value!,
             ),
@@ -167,6 +184,7 @@ class _ExpenseFormState extends State<ExpenseForm> with TickerProviderStateMixin
                   Padding(
                     padding: EdgeInsets.only(top: 16),
                     child: SelectInput<CardModel>(
+                      value: model.card,
                       inputKey: _cardState,
                       onChanged: (c) => model.card = c,
                       label: "Cartão",
@@ -181,6 +199,7 @@ class _ExpenseFormState extends State<ExpenseForm> with TickerProviderStateMixin
               padding: EdgeInsets.only(top: 16),
               child: SelectInput<_ExpensePaymentType>(
                 label: "Pagamento",
+                value: _paymentType,
                 onSaved: (value) => _paymentType = value,
                 validator: (value) => widget.validator.expenditureType(value),
                 onChanged: _handleExpenditureTypeChange,
@@ -209,6 +228,7 @@ class _ExpenseFormState extends State<ExpenseForm> with TickerProviderStateMixin
                     Expanded(
                         flex: 10,
                         child: NumberInput(
+                          initialValue: model.currentInstallment,
                           inputKey: _currentInstallmentState,
                           label: "Parcela Atual",
                           onSaved: (value) => model.currentInstallment = value,
@@ -219,6 +239,7 @@ class _ExpenseFormState extends State<ExpenseForm> with TickerProviderStateMixin
                         visible: _paymentType == _ExpensePaymentType.INSTALLMENT,
                         child: Expanded(flex: 10,
                             child: NumberInput(
+                              initialValue: model.installmentTotal,
                               inputKey: _totalInstallmentState,
                               label: "Total de Parcelas",
                               onSaved: (value) => model.installmentTotal = value,
@@ -241,6 +262,7 @@ class _ExpenseFormState extends State<ExpenseForm> with TickerProviderStateMixin
             Padding(
               padding: EdgeInsets.only(top: 16),
               child: SelectInput<ExpenseSourceModel>(
+                value: model.beneficiary,
                 onChanged: (c) => model.beneficiary = c,
                 label: "Beneficiário",
                 items: widget.beneficiaries,

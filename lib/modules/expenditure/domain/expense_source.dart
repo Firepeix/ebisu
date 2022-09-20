@@ -18,4 +18,17 @@ class ExpenseSourceModel implements CanBePutInSelectBox, HasSubtitlesInSelectBox
 
   @override
   String selectBoxSubtitles() => type.title;
+
+  @override
+  bool operator ==(Object other) {
+    if (other is ExpenseSourceModel) {
+      return other.id == id && type == other.type;
+    }
+    return false;
+  }
+
+  @override
+  int get hashCode {
+    return id.hashCode + type.hashCode;
+  }
 }

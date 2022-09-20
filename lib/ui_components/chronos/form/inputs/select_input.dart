@@ -51,6 +51,7 @@ class SelectInput<V extends CanBePutInSelectBox> extends StatelessWidget  {
       children: [
         Expanded(
             child: DropdownButtonFormField<V>(
+              value: value,
               key: inputKey,
               onSaved: onSaved,
               validator: validator,
