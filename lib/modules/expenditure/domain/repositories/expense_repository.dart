@@ -19,13 +19,14 @@ abstract class ExpenseRepositoryInterface {
   Future<Result<Success, ExpenseError>> insert(CreatesExpense expenditure);
   Future<Result<List<ExpenseModel>, ExpenseError>> getCurrentExpenses();
   Future<Result<void, ResultError>> deleteExpense(String id);
+  Future<Result<ExpenseModel, ResultError>> getExpense(String id);
 
 //Future<DebitExpenditureSummary> getDebitExpenditureSummary (bool cacheLess);
 }
 
 class _Endpoint {
   static const ExpensesIndex = "expenses";
-  static const DeleteExpense = "expenses/:expenseId";
+  static const Expense = "expenses/:expenseId";
 }
 
 @Injectable(as: ExpenseRepositoryInterface)
@@ -36,8 +37,8 @@ class ExpenseRepository implements ExpenseRepositoryInterface {
 
   @override
   Future<Result<List<ExpenseModel>, ExpenseError>> getCurrentExpenses() async {
-    final result = await _caron.get(_Endpoint.ExpensesIndex, _mapper.fromJsonList);
-    return result.subError(ExpenseError.getExpenses());
+    final result = await _caron.getList<ExpenseModel>(_Endpoint.ExpensesIndex, _mapper.fromJson);
+    return result.map((value) => value.data).subError(ExpenseError.getExpenses());
   }
 
   @override
@@ -55,6 +56,12 @@ class ExpenseRepository implements ExpenseRepositoryInterface {
 
   @override
   Future<Result<void, ResultError>> deleteExpense(String id) async {
-    return await _caron.delete(_Endpoint.DeleteExpense.replaceAll(":expenseId", id));
+    return await _caron.delete(_Endpoint.Expense.replaceAll(":expenseId", id));
+  }
+
+  @override
+  Future<Result<ExpenseModel, ResultError>> getExpense(String id) async {
+    final result = await _caron.get<ExpenseModel>(_Endpoint.ExpensesIndex, _mapper.fromJson);
+    return result.map((value) => value.data);
   }
 }

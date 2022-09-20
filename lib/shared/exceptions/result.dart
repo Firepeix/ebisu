@@ -20,6 +20,10 @@ class Result<V, E extends ResultError> {
   V? _value;
   E? _error;
 
+  V? get value => _value;
+
+  E? get error => _error;
+
   Result(this._value, this._error);
 
   bool hasError() {
@@ -32,10 +36,6 @@ class Result<V, E extends ResultError> {
 
   V unwrap() {
     return _value!;
-  }
-
-  E error() {
-    return _error!;
   }
 
   Result<V, NewError> subError<NewError extends ResultError>(NewError error) {

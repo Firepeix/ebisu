@@ -1,6 +1,5 @@
 import 'package:ebisu/main.dart';
 import 'package:ebisu/shared/Domain/Services/ExpcetionHandlerService.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 mixin DisplaysErrors {

@@ -24,7 +24,7 @@ class CardRepository implements CardRepositoryInterface {
 
   @override
   Future<Result<List<CardModel>, CardError>> getCards() async {
-    final result = await _caron.get(_Endpoint.CardsIndex, _mapper.fromJsonList);
-    return result.subError(CardError.getCards());
+    final result = await _caron.getList<CardModel>(_Endpoint.CardsIndex, _mapper.fromJson);
+    return result.map((value) => value.data).subError(CardError.getCards());
   }
 }

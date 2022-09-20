@@ -1,13 +1,14 @@
 import 'package:ebisu/main.dart';
 import 'package:ebisu/modules/card/domain/services/card_service.dart';
 import 'package:ebisu/modules/card/models/card.dart';
-import 'package:ebisu/modules/establishment/domain/services/establishment_service.dart';
 import 'package:ebisu/modules/expenditure/components/expense/expense_form.dart';
 import 'package:ebisu/modules/expenditure/domain/expense_source.dart';
 import 'package:ebisu/modules/expenditure/domain/services/expense_service.dart';
-import 'package:ebisu/modules/user/domain/services/user_service.dart';
-import 'package:ebisu/shared/services/notification_service.dart';
+import 'package:ebisu/modules/expenditure/events/save_expense_notification.dart';
+import 'package:ebisu/modules/expenditure/infrastructure/transfer_objects/creates_expense.dart';
+import 'package:ebisu/shared/Infrastructure/Ebisu.dart';
 import 'package:ebisu/src/UI/Components/Nav/MainButtonPage.dart';
+import 'package:ebisu/src/UI/General/HomePage.dart';
 import 'package:ebisu/ui_components/chronos/layout/home_view.dart';
 import 'package:flutter/material.dart';
 
@@ -17,30 +18,17 @@ class CreateExpenditurePage extends StatefulWidget implements MainButtonPage, Ho
   @override
   int pageIndex() => PAGE_INDEX;
 
-  final GlobalKey<FormState> _form = GlobalKey<FormState>();
-  final GlobalKey<ExpenseFormState> _modelState = GlobalKey<ExpenseFormState>();
   final ExpenseServiceInterface service = getIt();
-  final NotificationService notificationService = getIt();
   final CardServiceInterface cardService = getIt();
-  final UserServiceInterface userServiceInterface = getIt();
-  final EstablishmentServiceInterface establishmentServiceInterface = getIt();
+  final ChangeExistentIndex? onSaveExpense;
 
-  CreateExpenditurePage({required onChangePageTo});
+  CreateExpenditurePage({this.onSaveExpense});
 
 
   @override
-  FloatingActionButton getMainButton(BuildContext context) {
+  FloatingActionButton getMainButton(BuildContext context, VoidCallback? onPressed) {
     return FloatingActionButton(
-      onPressed: () async {
-        print(213);
-       //if (_form.currentState != null && _form.currentState!.validate() && _modelState.currentState != null) {
-       //  _form.currentState?.save();
-       //  final result = await service.createExpense(_modelState.currentState!.model);
-       //  if(result.isOk()) {
-       //    this.onChangeTo?.call(HomePage.PAGE_INDEX);
-       //  }
-       //}
-      },
+      onPressed: onPressed,
       tooltip: "Salvar Despesa",
       child: Icon(Icons.check),
       elevation: 2.0,
@@ -79,22 +67,27 @@ class _CreateExpenditurePageState extends State<CreateExpenditurePage> {
 
 
   Future<void> _setBeneficiaries () async {
-    final responses = await Future.wait([
-      widget.userServiceInterface.getFriends(),
-      widget.establishmentServiceInterface.getEstablishments()
-    ]);
+    beneficiaries = await widget.service.getSources();
+  }
 
-    beneficiaries = [...responses[0], ...responses[1]];
+  Future<void> saveExpense(CreatesExpense model) async {
+    final result = await widget.service.createExpense(model);
+    if(result.isOk()) {
+      widget.onSaveExpense?.call(HomePage.PAGE_INDEX);
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    return Form(
-      key: widget._form,
+    return NotificationListener<SaveExpenseNotification>(
         child: Padding(
           padding: EdgeInsets.symmetric(vertical: 20, horizontal: 10),
-          child: loaded ? ExpenseForm(cards, beneficiaries, key: widget._modelState,) : ExpenseFormSkeleton(),
-        )
+          child: loaded ? ExpenseForm(cards, beneficiaries,) : ExpenseFormSkeleton(),
+        ),
+      onNotification: (notification) {
+          saveExpense(notification.model);
+          return true;
+      },
     );
   }
 }

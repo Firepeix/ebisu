@@ -1,6 +1,8 @@
 import 'package:ebisu/modules/card/models/card.dart';
 import 'package:ebisu/modules/expenditure/domain/expense_source.dart';
 import 'package:ebisu/modules/expenditure/enums/expense_type.dart';
+import 'package:ebisu/modules/expenditure/events/change_main_button_on_action_notification.dart';
+import 'package:ebisu/modules/expenditure/events/save_expense_notification.dart';
 import 'package:ebisu/modules/expenditure/infrastructure/transfer_objects/creates_expense.dart';
 import 'package:ebisu/shared/UI/Components/Shimmer.dart';
 import 'package:ebisu/src/UI/Components/Form/InputValidator.dart';
@@ -35,13 +37,15 @@ class ExpenseForm extends StatefulWidget {
   final validator = const _ExpenditureFormValidator();
   final List<CardModel> cards;
   final List<ExpenseSourceModel> beneficiaries;
-  const ExpenseForm (this.cards, this.beneficiaries, {Key? key}) : super(key: key);
+  final CreatesExpense? model;
+
+  const ExpenseForm (this.cards, this.beneficiaries, {Key? key, this.model}) : super(key: key);
 
   @override
-  State<ExpenseForm> createState() => ExpenseFormState();
+  State<ExpenseForm> createState() => _ExpenseFormState();
 }
 
-class ExpenseFormState extends State<ExpenseForm> with TickerProviderStateMixin{
+class _ExpenseFormState extends State<ExpenseForm> with TickerProviderStateMixin{
   _ExpenseViewModel model = _ExpenseViewModel();
   _ExpensePaymentType? _paymentType;
   late AnimationController cardOptionsController;
@@ -49,15 +53,45 @@ class ExpenseFormState extends State<ExpenseForm> with TickerProviderStateMixin{
   GlobalKey<FormFieldState<dynamic>>? _cardState;
   GlobalKey<FormFieldState<dynamic>>? _currentInstallmentState;
   GlobalKey<FormFieldState<dynamic>>? _totalInstallmentState;
+  GlobalKey<FormState>? _form;
 
   @override
   void initState() {
     super.initState();
+    setModel();
+    setMainButtonAction(context);
     cardOptionsController = AnimationController(vsync: this, duration: Duration(milliseconds: 500));
     installmentOptionsController = AnimationController(vsync: this, duration: Duration(milliseconds: 500));
     _cardState = GlobalKey<FormFieldState<dynamic>>();
     _currentInstallmentState = GlobalKey<FormFieldState<dynamic>>();
     _totalInstallmentState = GlobalKey<FormFieldState<dynamic>>();
+    _form = GlobalKey<FormState>();
+
+  }
+
+  void setMainButtonAction(BuildContext context) {
+    final onMainButtonPressed = () async {
+      if (_form?.currentState != null && _form!.currentState!.validate()) {
+        _form?.currentState?.save();
+        context.dispatchNotification(SaveExpenseNotification(model));
+      }
+    };
+    context.dispatchNotification(ChangeMainButtonActionNotification(onMainButtonPressed));
+  }
+
+  void setModel() {
+    if (widget.model != null) {
+      model = _ExpenseViewModel(
+          name: widget.model!.getName(),
+          type: widget.model!.getType(),
+          amount: widget.model!.getAmount(),
+          card: widget.model!.getCard(),
+          date: widget.model!.getDate(),
+          currentInstallment: widget.model!.getCurrentInstallment(),
+          installmentTotal: widget.model!.getTotalInstallments(),
+          beneficiary: widget.model!.getBeneficiary()
+      );
+    }
   }
 
   @override
@@ -67,6 +101,7 @@ class ExpenseFormState extends State<ExpenseForm> with TickerProviderStateMixin{
     _cardState = null;
     _currentInstallmentState = null;
     _totalInstallmentState = null;
+    _form = null;
     super.dispose();
   }
 
@@ -102,114 +137,117 @@ class ExpenseFormState extends State<ExpenseForm> with TickerProviderStateMixin{
   Widget build(BuildContext context) {
     return KeyboardAvoider(
       autoScroll: true,
-      child: Column(
-        children: <Widget>[
-          Input(
-            label: "Nome",
-            validator: widget.validator.name,
-            onSaved: (value) => model.name = value!,
-          ),
-          Padding(
-            padding: EdgeInsets.only(right: 16, top: 10),
-            child: RadioGroup(
-              validator: () => widget.validator.type(model.type),
-              children: [
-                RadioInput<ExpenseType>(label: ExpenseType.CREDIT.label, value: ExpenseType.CREDIT, groupValue: model.type, onChanged: _handleTypeChange,),
-                RadioInput<ExpenseType>(label: ExpenseType.DEBIT.label, value: ExpenseType.DEBIT, groupValue: model.type, onChanged: _handleTypeChange,)
-              ],
+      child: Form(
+        key: _form,
+        child: Column(
+          children: <Widget>[
+            Input(
+              label: "Nome",
+              validator: widget.validator.name,
+              onSaved: (value) => model.name = value!,
             ),
-          ),
-          SizeTransition(
-            axisAlignment: 1.0,
-            sizeFactor: CurvedAnimation(
-              parent: cardOptionsController,
-              curve: Curves.fastOutSlowIn,
-            ),
-            child: Column(
-              children: [
-                Padding(
-                  padding: EdgeInsets.only(top: 16),
-                  child: SelectInput<CardModel>(
-                    inputKey: _cardState,
-                    onChanged: (c) => model.card = c,
-                    label: "Cartão",
-                    validator: (value) => widget.validator.card(value, model.type != null && !model.type!.isDebit()),
-                    items: widget.cards,
-                  ),
-                ),
-              ],
-            ),
-          ),
-          Padding(
-            padding: EdgeInsets.only(top: 16),
-            child: SelectInput<_ExpensePaymentType>(
-              label: "Pagamento",
-              onSaved: (value) => _paymentType = value,
-              validator: (value) => widget.validator.expenditureType(value),
-              onChanged: _handleExpenditureTypeChange,
-              items: _ExpensePaymentType.values,
-            ),
-          ),
-          Padding(
-            padding: EdgeInsets.only(top: 16),
-            child: DateInput(
-              label: "Data",
-              initialValue: model.date,
-              validator: widget.validator.date,
-              onChanged: (value) => model.date = value,
-            ),
-          ),
-          SizeTransition(
-            axisAlignment: 1.0,
-            sizeFactor: CurvedAnimation(
-              parent: installmentOptionsController,
-              curve: Curves.fastOutSlowIn,
-            ),
-            child: Padding(
-              padding: EdgeInsets.only(top: 16),
-              child: Row(
+            Padding(
+              padding: EdgeInsets.only(right: 16, top: 10),
+              child: RadioGroup(
+                validator: () => widget.validator.type(model.type),
                 children: [
-                  Expanded(
-                      flex: 10,
-                      child: NumberInput(
-                        inputKey: _currentInstallmentState,
-                        label: "Parcela Atual",
-                        onSaved: (value) => model.currentInstallment = value,
-                        validator: (value) => widget.validator.activeInstallment(value, _paymentType != _ExpensePaymentType.UNIT),
-                      )),
-                  Visibility(visible: _paymentType == _ExpensePaymentType.INSTALLMENT, child: Spacer(flex: 1,),),
-                  Visibility(
-                      visible: _paymentType == _ExpensePaymentType.INSTALLMENT,
-                      child: Expanded(flex: 10,
-                          child: NumberInput(
-                            inputKey: _totalInstallmentState,
-                            label: "Total de Parcelas",
-                            onSaved: (value) => model.installmentTotal = value,
-                            validator: (value) => widget.validator.totalInstallments(value, _paymentType == _ExpensePaymentType.INSTALLMENT),
-                          )
-                      )
+                  RadioInput<ExpenseType>(label: ExpenseType.CREDIT.label, value: ExpenseType.CREDIT, groupValue: model.type, onChanged: _handleTypeChange,),
+                  RadioInput<ExpenseType>(label: ExpenseType.DEBIT.label, value: ExpenseType.DEBIT, groupValue: model.type, onChanged: _handleTypeChange,)
+                ],
+              ),
+            ),
+            SizeTransition(
+              axisAlignment: 1.0,
+              sizeFactor: CurvedAnimation(
+                parent: cardOptionsController,
+                curve: Curves.fastOutSlowIn,
+              ),
+              child: Column(
+                children: [
+                  Padding(
+                    padding: EdgeInsets.only(top: 16),
+                    child: SelectInput<CardModel>(
+                      inputKey: _cardState,
+                      onChanged: (c) => model.card = c,
+                      label: "Cartão",
+                      validator: (value) => widget.validator.card(value, model.type != null && !model.type!.isDebit()),
+                      items: widget.cards,
+                    ),
                   ),
                 ],
               ),
             ),
-          ),
-          Padding(
-            padding: EdgeInsets.only(top: 16),
-            child: AmountInput(
-              value: model.amount,
-              onChanged: (value) => model.amount = value,
-              validator: (value) => widget.validator.amount(value),
+            Padding(
+              padding: EdgeInsets.only(top: 16),
+              child: SelectInput<_ExpensePaymentType>(
+                label: "Pagamento",
+                onSaved: (value) => _paymentType = value,
+                validator: (value) => widget.validator.expenditureType(value),
+                onChanged: _handleExpenditureTypeChange,
+                items: _ExpensePaymentType.values,
+              ),
             ),
-          ),
-          Padding(
-            padding: EdgeInsets.only(top: 16),
-            child: SelectInput<ExpenseSourceModel>(
-              onChanged: (c) => model.beneficiary = c,
-              label: "Beneficiário",
-              items: widget.beneficiaries,
+            Padding(
+              padding: EdgeInsets.only(top: 16),
+              child: DateInput(
+                label: "Data",
+                initialValue: model.date,
+                validator: widget.validator.date,
+                onChanged: (value) => model.date = value,
+              ),
             ),
-          ),
-        ],
+            SizeTransition(
+              axisAlignment: 1.0,
+              sizeFactor: CurvedAnimation(
+                parent: installmentOptionsController,
+                curve: Curves.fastOutSlowIn,
+              ),
+              child: Padding(
+                padding: EdgeInsets.only(top: 16),
+                child: Row(
+                  children: [
+                    Expanded(
+                        flex: 10,
+                        child: NumberInput(
+                          inputKey: _currentInstallmentState,
+                          label: "Parcela Atual",
+                          onSaved: (value) => model.currentInstallment = value,
+                          validator: (value) => widget.validator.activeInstallment(value, _paymentType != _ExpensePaymentType.UNIT),
+                        )),
+                    Visibility(visible: _paymentType == _ExpensePaymentType.INSTALLMENT, child: Spacer(flex: 1,),),
+                    Visibility(
+                        visible: _paymentType == _ExpensePaymentType.INSTALLMENT,
+                        child: Expanded(flex: 10,
+                            child: NumberInput(
+                              inputKey: _totalInstallmentState,
+                              label: "Total de Parcelas",
+                              onSaved: (value) => model.installmentTotal = value,
+                              validator: (value) => widget.validator.totalInstallments(value, _paymentType == _ExpensePaymentType.INSTALLMENT),
+                            )
+                        )
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            Padding(
+              padding: EdgeInsets.only(top: 16),
+              child: AmountInput(
+                value: model.amount,
+                onChanged: (value) => model.amount = value,
+                validator: (value) => widget.validator.amount(value),
+              ),
+            ),
+            Padding(
+              padding: EdgeInsets.only(top: 16),
+              child: SelectInput<ExpenseSourceModel>(
+                onChanged: (c) => model.beneficiary = c,
+                label: "Beneficiário",
+                items: widget.beneficiaries,
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -258,6 +296,17 @@ class _ExpenseViewModel implements CreatesExpense {
 
   @override
   ExpenseSourceModel? getSource() => null;
+
+  _ExpenseViewModel({
+    this.name,
+    this.type,
+    this.amount,
+    this.card,
+    this.date,
+    this.currentInstallment,
+    this.installmentTotal,
+    this.beneficiary
+  });
 }
 
 class _ExpenditureFormValidator extends InputValidator {

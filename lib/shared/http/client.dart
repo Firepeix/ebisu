@@ -34,20 +34,21 @@ class Caron {
     return Uri.https(host[1], endpoint);
   }
 
-  Future<Result<R, ResultError>> get<R>(String endpoint, DecodeJson<R> decoder, {DecodeError? errorDecoder}) async {
+  Future<Result<DataResponse<V>, ResultError>> get<V>(String endpoint, DecodeJson<V> decoder, {DecodeError? errorDecoder}) async {
     try {
       final response = await http.get(_url(endpoint));
-      if (response.statusCode.toString().startsWith("2")) {
-        return Result(decoder(jsonDecode(response.body)), null);
-      }
-      // TODO - ADD LOG
-      print(response.reasonPhrase);
-      final errorResponse = _mapper.fromErrorJson(jsonDecode(response.body), response.statusCode);
-      return Result(null, errorDecoder?.call(errorResponse) ?? HttpError.server(Details(messageAddon: errorResponse.message)));
+      return _parsePayload<DataResponse<V>, V>(response, decoder: decoder, errorDecoder: errorDecoder);
     } catch(error) {
-      // TODO - ADD LOG
-      print(error);
-      return Result(null, HttpError.unknown());
+      return _parseError(error: error);
+    }
+  }
+
+  Future<Result<ListResponse<V>, ResultError>> getList<V>(String endpoint, DecodeJson<V> decoder, {DecodeError? errorDecoder}) async {
+    try {
+      final response = await http.get(_url(endpoint));
+      return _parsePayload<ListResponse<V>, V>(response, decoder: decoder, errorDecoder: errorDecoder);
+    } catch(error) {
+      return _parseError(error: error);
     }
   }
 
@@ -59,32 +60,43 @@ class Caron {
       if (response.statusCode.toString().startsWith("2")) {
         return Result(responseDecode(jsonDecode(response.body)), error).mapTo<R>();
       }
-      // TODO - ADD LOG
-      print(response.reasonPhrase);
-      final errorResponse = _mapper.fromErrorJson(jsonDecode(response.body), response.statusCode);
-      return Result(null, errorDecoder?.call(errorResponse) ?? HttpError.server(Details(messageAddon: errorResponse.message)));
+      return _parseError(response: response, errorDecoder: errorDecoder);
     } catch(error) {
-      // TODO - ADD LOG
-      print(error);
-      return Result(null, HttpError.unknown());
+      return _parseError(error: error);
     }
   }
 
   Future<Result<R, ResultError>> delete<R extends Response>(String endpoint, {DecodeError? errorDecoder}) async {
-    try {
-      final response = await http.delete(_url(endpoint));
-      final ResultError? error = null;
-      if (response.statusCode.toString().startsWith("2")) {
-        return Result(Success("Elemento deletado com sucesso!"), error).mapTo<R>();
+      try {
+        final response = await http.delete(_url(endpoint));
+        return _parsePayload<R, String>(response, successResponse: Success("Elemento deletado com sucesso!") as R);
+      } catch(error) {
+        return _parseError(error: error);
       }
-      // TODO - ADD LOG
+  }
+
+  Result<R, ResultError> _parsePayload<R extends Response, V>(http.Response response, {DecodeJson<V>? decoder, DecodeError? errorDecoder, R? successResponse}) {
+    if (response.statusCode.toString().startsWith("2")) {
+      if (successResponse != null) {
+        return Result(successResponse, null);
+      }
+
+      final ResultError? error = null;
+      final payload = _mapper.fromResponse<R, V>(jsonDecode(response.body), decoder);
+      return Result(payload as R, error);
+    }
+
+    return _parseError(response: response, errorDecoder: errorDecoder);
+  }
+
+  Result<R, ResultError> _parseError<R extends Response, V>({http.Response? response, DecodeError? errorDecoder, Object? error}) {
+    // TODO - ADD LOG
+    if (response != null) {
       print(response.reasonPhrase);
       final errorResponse = _mapper.fromErrorJson(jsonDecode(response.body), response.statusCode);
       return Result(null, errorDecoder?.call(errorResponse) ?? HttpError.server(Details(messageAddon: errorResponse.message)));
-    } catch(error) {
-      // TODO - ADD LOG
-      print(error);
-      return Result(null, HttpError.unknown());
     }
+    print(error);
+    return Result(null, HttpError.unknown());
   }
 }

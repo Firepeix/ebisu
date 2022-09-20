@@ -41,7 +41,7 @@ abstract class CommandCentralResponse {
   }
 }
 
-abstract class Response {
+abstract class Response<V> {
 
 }
 
@@ -61,8 +61,12 @@ class ErrorResponse extends GenericResponse {
   ErrorResponse(this.code, this.internalCode, super.message);
 }
 
-class ListResponse<T> extends Response {
-  List<T> items;
+class DataResponse<T> extends Response<T> {
+  final T data;
 
-  ListResponse(this.items);
+  DataResponse(this.data);
+}
+
+class ListResponse<T> extends DataResponse<List<T>> {
+  ListResponse(List<T> items) : super(items);
 }

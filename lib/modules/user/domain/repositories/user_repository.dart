@@ -24,7 +24,7 @@ class CardRepository implements UserRepositoryInterface {
 
   @override
   Future<Result<List<UserModel>, UserError>> getFriends() async {
-    final result = await _caron.get(_Endpoint.FriendsIndex, _mapper.fromJsonList);
-    return result.subError(UserError.getFriends());
+    final result = await _caron.getList<UserModel>(_Endpoint.FriendsIndex, _mapper.fromJson);
+    return result.map((value) => value.data).subError(UserError.getFriends());
   }
 }

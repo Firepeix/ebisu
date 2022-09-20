@@ -24,7 +24,7 @@ class PurchaseRepository implements PurchaseRepositoryInterface {
 
   @override
   Future<Result<List<CreditExpensePurchaseSummaryModel>, PurchaseError>> getPurchaseCreditSummary() async {
-    final result = await _caron.get(_Endpoint.PurchaseCreditSummary, _mapper.fromJsonList);
-    return result.subError(PurchaseError.getCreditSummary());
+    final result = await _caron.getList<CreditExpensePurchaseSummaryModel>(_Endpoint.PurchaseCreditSummary, _mapper.fromJson);
+    return result.map((value) => value.data).subError(PurchaseError.getCreditSummary());
   }
 }

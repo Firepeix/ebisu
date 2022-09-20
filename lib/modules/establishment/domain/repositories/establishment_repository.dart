@@ -24,7 +24,7 @@ class EstablishmentRepository implements EstablishmentRepositoryInterface {
 
   @override
   Future<Result<List<EstablishmentModel>, EstablishmentError>> getEstablishments() async {
-    final result = await _caron.get(_Endpoint.EstablishmentsIndex, _mapper.fromJsonList);
-    return result.subError(EstablishmentError.getEstablishments());
+    final result = await _caron.getList<EstablishmentModel>(_Endpoint.EstablishmentsIndex, _mapper.fromJson);
+    return result.map((value) => value.data).subError(EstablishmentError.getEstablishments());
   }
 }
