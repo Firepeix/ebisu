@@ -27,6 +27,6 @@ class Mapper {
   }
 
   ErrorResponse fromErrorJson(Map<dynamic, dynamic> json, int code) {
-    return ErrorResponse(code, json["business_code"], json["message"]);
+    return ErrorResponse(code, json["business_code"].toString(), json["message"]);
   }
 }

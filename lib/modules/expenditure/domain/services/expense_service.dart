@@ -16,6 +16,7 @@ abstract class ExpenseServiceInterface {
   Future<Result<void, ResultError>> deleteExpense(ExpenseModel model);
   Future<List<ExpenseSourceModel>> getSources();
   Future<Result<ExpenseModel, ResultError>> getExpense(String id);
+  Future<Result<void, ResultError>> updateExpense(String id, CreatesExpense builder);
 }
 
 @Injectable(as: ExpenseServiceInterface)
@@ -67,6 +68,19 @@ class ExpenseService implements ExpenseServiceInterface {
   @override
   Future<Result<ExpenseModel, ResultError>> getExpense(String id) async {
     final result = await _repository.getExpense(id);
+    _exceptionHandler.expect(result);
+    return result;
+  }
+
+  @override
+  Future<Result<void, ResultError>> updateExpense(String id, CreatesExpense builder) async {
+    _notificationService.displayLoading();
+    final result = await _repository.update(id, builder);
+
+    if(result.isOk()) {
+      _notificationService.displaySuccess(message: result.unwrap().message);
+    }
+
     _exceptionHandler.expect(result);
     return result;
   }

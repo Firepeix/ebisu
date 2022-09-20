@@ -41,7 +41,7 @@ abstract class CommandCentralResponse {
   }
 }
 
-abstract class Response<V> {
+abstract class Response {
 
 }
 
@@ -61,7 +61,7 @@ class ErrorResponse extends GenericResponse {
   ErrorResponse(this.code, this.internalCode, super.message);
 }
 
-class DataResponse<T> extends Response<T> {
+class DataResponse<T> extends Response {
   final T data;
 
   DataResponse(this.data);

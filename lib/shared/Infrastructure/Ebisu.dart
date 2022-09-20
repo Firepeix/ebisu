@@ -78,7 +78,7 @@ class EbisuMainViewState extends State<EbisuMainView> {
   void _addPages () {
     this._pages.add(HomePage());
     this._pages.add(CreateExpenditurePage(onSaveExpense: (value) => this.changePageTo(value),));
-    this._pages.add(ListExpendituresPage(onClickExpense: (value) => this.changeTo(value),));
+    this._pages.add(ListExpendituresPage(onClickExpense: (value) => this.changeTo(value), onSaveExpense: (value) => this.changePageTo(value),));
   }
 
   Widget build(BuildContext context) {

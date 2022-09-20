@@ -20,8 +20,7 @@ abstract class ExpenseRepositoryInterface {
   Future<Result<List<ExpenseModel>, ExpenseError>> getCurrentExpenses();
   Future<Result<void, ResultError>> deleteExpense(String id);
   Future<Result<ExpenseModel, ResultError>> getExpense(String id);
-
-//Future<DebitExpenditureSummary> getDebitExpenditureSummary (bool cacheLess);
+  Future<Result<Success, ResultError>> update(String id, CreatesExpense expenditure);
 }
 
 class _Endpoint {
@@ -63,5 +62,11 @@ class ExpenseRepository implements ExpenseRepositoryInterface {
   Future<Result<ExpenseModel, ResultError>> getExpense(String id) async {
     final result = await _caron.get<ExpenseModel>(_Endpoint.Expense.replaceAll(":expenseId", id), _mapper.fromJson);
     return result.map((value) => value.data);
+  }
+
+  @override
+  Future<Result<Success, ResultError>> update(String id, CreatesExpense expenditure)  async {
+    final endpoint = _Endpoint.Expense.replaceAll(":expenseId", id);
+    return await _caron.put<Success, CreatesExpense>(endpoint, expenditure, _mapper.toJson);
   }
 }

@@ -3,6 +3,7 @@ import 'package:ebisu/modules/expenditure/components/expense/expense_card.dart';
 import 'package:ebisu/modules/expenditure/domain/services/expense_service.dart';
 import 'package:ebisu/modules/expenditure/models/expense/expenditure_model.dart';
 import 'package:ebisu/modules/expenditure/pages/edit_expense.dart';
+import 'package:ebisu/shared/Infrastructure/Ebisu.dart';
 import 'package:ebisu/ui_components/chronos/layout/home_view.dart';
 import 'package:ebisu/ui_components/chronos/list/dismissable_tile.dart';
 import 'package:flutter/material.dart';
@@ -15,8 +16,9 @@ class ListExpendituresPage extends StatefulWidget implements HomeView {
 
   final ExpenseServiceInterface _service = getIt<ExpenseServiceInterface>();
   final Function? onClickExpense;
+  final ChangeExistentIndex? onSaveExpense;
 
-  ListExpendituresPage({this.onClickExpense});
+  ListExpendituresPage({this.onClickExpense, this.onSaveExpense});
 
   @override
   State<StatefulWidget> createState() => _ListExpendituresPageState();
@@ -67,7 +69,7 @@ class _ListExpendituresPageState extends State<ListExpendituresPage> {
           child: DismissibleTile(
             confirmOnDismissed: true,
             child: ExpenseListCard(expenditures[index], onClick: (model) {
-              widget.onClickExpense?.call(UpdateExpensePage(model.id));
+              widget.onClickExpense?.call(UpdateExpensePage(model.id, onSaveExpense: widget.onSaveExpense,));
             },),
             onDismissed: (hasBeenDismissed) => _deleteExpense(hasBeenDismissed, index),
           ),

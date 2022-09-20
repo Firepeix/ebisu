@@ -55,12 +55,16 @@ class Caron {
   Future<Result<R, ResultError>> post<R extends Response, B>(String endpoint, B body, EncodeJson<B> encoder, {DecodeJson<R>? decoder, DecodeError? errorDecoder}) async {
     try {
       final response = await http.post(_url(endpoint), body: jsonEncode(encoder(body)));
-      final responseDecode = decoder ?? _mapper.fromSuccessJson;
-      final ResultError? error = null;
-      if (response.statusCode.toString().startsWith("2")) {
-        return Result(responseDecode(jsonDecode(response.body)), error).mapTo<R>();
-      }
-      return _parseError(response: response, errorDecoder: errorDecoder);
+      return _parsePayload<R, R>(response, decoder: decoder ?? _mapper.fromSuccessJson as DecodeJson<R>, errorDecoder: errorDecoder);
+    } catch(error) {
+      return _parseError(error: error);
+    }
+  }
+
+  Future<Result<R, ResultError>> put<R extends Response, B>(String endpoint, B body, EncodeJson<B> encoder, {DecodeJson<R>? decoder, DecodeError? errorDecoder}) async {
+    try {
+      final response = await http.put(_url(endpoint), body: jsonEncode(encoder(body)));
+      return _parsePayload<R, R>(response, decoder: decoder ?? _mapper.fromSuccessJson as DecodeJson<R>, errorDecoder: errorDecoder);
     } catch(error) {
       return _parseError(error: error);
     }

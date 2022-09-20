@@ -157,11 +157,14 @@ class _ExpenseFormState extends State<ExpenseForm> with TickerProviderStateMixin
         key: _form,
         child: Column(
           children: <Widget>[
-            Input(
-              label: "Nome",
-              initialValue: model.name,
-              validator: widget.validator.name,
-              onSaved: (value) => model.name = value!,
+            Padding(
+              padding: EdgeInsets.only(top: 8),
+              child: Input(
+                label: "Nome",
+                initialValue: model.name,
+                validator: widget.validator.name,
+                onSaved: (value) => model.name = value!,
+              ),
             ),
             Padding(
               padding: EdgeInsets.only(right: 16, top: 10),
