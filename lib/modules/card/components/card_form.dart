@@ -1,18 +1,23 @@
+import 'dart:async';
+
+import 'package:ebisu/modules/card/components/card_form_skeleton.dart';
+import 'package:ebisu/modules/card/domain/services/card_service.dart';
 import 'package:ebisu/modules/card/events/save_card_notification.dart';
 import 'package:ebisu/modules/card/infrastructure/transfer_objects/SaveCardModel.dart';
-import 'package:ebisu/modules/expenditure/events/change_main_button_on_action_notification.dart';
 import 'package:ebisu/src/UI/Components/Form/InputValidator.dart';
 import 'package:ebisu/src/UI/Components/General/KeyboardAvoider.dart';
+import 'package:ebisu/ui_components/chronos/actions/tap.dart';
 import 'package:ebisu/ui_components/chronos/form/inputs/amount_input.dart';
-import 'package:ebisu/ui_components/chronos/form/inputs/date_input.dart';
 import 'package:ebisu/ui_components/chronos/form/inputs/input.dart';
+import 'package:ebisu/ui_components/chronos/form/inputs/number_input.dart';
 import 'package:flutter/material.dart';
 
 class CardForm extends StatefulWidget {
   final validator = const _CardFormValidator();
-  final SaveCardModel? model;
-
-  const CardForm ({Key? key, this.model}) : super(key: key);
+  final CardServiceInterface? service;
+  final String? cardId;
+  final OnTap<VoidCallback>? submit;
+  CardForm ({Key? key, this.cardId, this.service, this.submit}) : super(key: key);
 
   @override
   State<CardForm> createState() => _CardFormState();
@@ -56,7 +61,7 @@ class _CardFormValidator extends InputValidator {
   }
 
 
-  String? date (DateTime? value) {
+  String? date (String? value) {
     if (isRequired(value)) {
       return 'Obrigatório';
     }
@@ -77,33 +82,42 @@ class _CardFormValidator extends InputValidator {
 
 class _CardFormState extends State<CardForm> with TickerProviderStateMixin {
   _CardViewModel model = _CardViewModel();
+  bool isLoading = false;
   GlobalKey<FormState>? _form;
 
   @override
   void initState() {
     super.initState();
     _form = GlobalKey<FormState>();
+    setSubmitButtonAction();
     setModel();
   }
 
-  void setMainButtonAction(BuildContext context) {
-    final onMainButtonPressed = () async {
+  void setSubmitButtonAction() {
+    widget.submit?.action = () async {
       if (_form?.currentState != null && _form!.currentState!.validate()) {
         _form?.currentState?.save();
         context.dispatchNotification(SaveCardNotification(model));
       }
     };
-    context.dispatchNotification(ChangeMainButtonActionNotification(onMainButtonPressed));
   }
 
-  void setModel() {
-    if (widget.model != null) {
-      model = _CardViewModel(
-          name: widget.model!.getName(),
-          budget: widget.model!.getBudget(),
-          dueDate: widget.model!.getDueDate(),
-          closeDate: widget.model!.getCloseDate()
-      );
+  Future<void> setModel() async {
+    if (widget.cardId != null && widget.service != null) {
+      isLoading = true;
+      final result = await widget.service!.getCard(widget.cardId!);
+      if(result.isOk()) {
+        final card = result.unwrap();
+        setState((){
+          isLoading = false;
+          model = _CardViewModel(
+              name: card.getName(),
+              budget: card.getBudget(),
+              dueDate: card.getDueDate(),
+              closeDate: card.getCloseDate()
+          );
+        });
+      }
     }
   }
 
@@ -113,8 +127,7 @@ class _CardFormState extends State<CardForm> with TickerProviderStateMixin {
     super.dispose();
   }
 
-  @override
-  Widget build(BuildContext context) {
+  KeyboardAvoider _formWidget() {
     return KeyboardAvoider(
       autoScroll: true,
       child: Form(
@@ -132,20 +145,28 @@ class _CardFormState extends State<CardForm> with TickerProviderStateMixin {
             ),
             Padding(
               padding: EdgeInsets.only(top: 16),
-              child: DateInput(
-                label: "Data de Fechamento",
-                initialValue: model.closeDate,
-                validator: widget.validator.date,
-                onChanged: (value) => model.closeDate = value,
-              ),
-            ),
-            Padding(
-              padding: EdgeInsets.only(top: 16),
-              child: DateInput(
-                label: "Data de Vencimento",
-                initialValue: model.dueDate,
-                validator: widget.validator.date,
-                onChanged: (value) => model.dueDate = value,
+              child: Row(
+                children: [
+                  Expanded(flex: 10, child: NumberInput(
+                    label: "Dia de Fechamento",
+                    initialValue: model.closeDate?.day ?? 0,
+                    validator: widget.validator.date,
+                    onChanged: (value) {
+                      final now = DateTime.now();
+                      model.closeDate = DateTime(now.year, now.month, value?.toInt() ?? 0);
+                    },
+                  ),),
+                  Spacer(),
+                  Expanded(flex: 10, child: NumberInput(
+                    label: "Dia de Vencimento",
+                    initialValue: model.dueDate?.day ?? 0,
+                    validator: widget.validator.date,
+                    onChanged: (value) {
+                      final now = DateTime.now();
+                      model.closeDate = DateTime(now.year, now.month, value?.toInt() ?? 0);
+                    },
+                  ))
+                ],
               ),
             ),
             Padding(
@@ -160,5 +181,10 @@ class _CardFormState extends State<CardForm> with TickerProviderStateMixin {
         ),
       ),
     );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return isLoading ? CardFormSkeleton() : _formWidget();
   }
 }

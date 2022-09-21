@@ -1,5 +1,6 @@
 import 'package:ebisu/shared/UI/Components/Shimmer.dart';
 import 'package:ebisu/ui_components/chronos/form/inputs/amount_input.dart';
+import 'package:ebisu/ui_components/chronos/skeleton/input_skeleton.dart';
 import 'package:flutter/material.dart';
 
 class CardFormSkeleton extends StatelessWidget {
@@ -8,31 +9,18 @@ class CardFormSkeleton extends StatelessWidget {
     return Shimmer(
       child: ShimmerLoading(isLoading: true, child: Column(
         children: [
-          Container(
-            width: 351,
-            height: 51,
-            decoration: const BoxDecoration(
-              color: Colors.black,
-              borderRadius: BorderRadius.all(Radius.circular(8)),
-              shape: BoxShape.rectangle,
-            ),
+          Padding(
+            padding: EdgeInsets.only(top: 8),
+            child: InputSkeleton(expanded: true,),
           ),
-          Container(
-            width: 351,
-            height: 51,
-            decoration: const BoxDecoration(
-              color: Colors.black,
-              borderRadius: BorderRadius.all(Radius.circular(8)),
-              shape: BoxShape.rectangle,
-            ),
-          ),
-          Container(
-            width: 351,
-            height: 51,
-            decoration: const BoxDecoration(
-              color: Colors.black,
-              borderRadius: BorderRadius.all(Radius.circular(8)),
-              shape: BoxShape.rectangle,
+          Padding(
+            padding: EdgeInsets.only(top: 16),
+            child: Row(
+              children: [
+                Expanded(flex: 10, child: InputSkeleton(),),
+                Spacer(),
+                Expanded(flex: 10, child: InputSkeleton())
+              ],
             ),
           ),
           Padding(

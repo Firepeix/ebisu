@@ -10,10 +10,12 @@ class CardError extends ResultError {
 
 abstract class CardRepositoryInterface {
   Future<Result<List<CardModel>, CardError>> getCards();
+  Future<Result<CardModel, ResultError>> getCard(String id);
 }
 
 class _Endpoint {
   static const CardsIndex = "cards";
+  static const Card = "cards/:cardId";
 }
 
 @Injectable(as: CardRepositoryInterface)
@@ -26,5 +28,11 @@ class CardRepository implements CardRepositoryInterface {
   Future<Result<List<CardModel>, CardError>> getCards() async {
     final result = await _caron.getList<CardModel>(_Endpoint.CardsIndex, _mapper.fromJson);
     return result.map((value) => value.data).subError(CardError.getCards());
+  }
+
+  @override
+  Future<Result<CardModel, ResultError>> getCard(String id) async {
+    final result = await _caron.get<CardModel>(_Endpoint.Card.replaceAll(":expenseId", id), _mapper.fromJson);
+    return result.map((value) => value.data);
   }
 }
