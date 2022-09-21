@@ -13,6 +13,7 @@ import 'package:ebisu/ui_components/chronos/form/inputs/input.dart';
 import 'package:ebisu/ui_components/chronos/form/inputs/number_input.dart';
 import 'package:ebisu/ui_components/chronos/form/inputs/select_input.dart';
 import 'package:ebisu/ui_components/chronos/form/radio/radio_input.dart';
+import 'package:ebisu/ui_components/chronos/labels/money.dart';
 import 'package:flutter/material.dart';
 
 enum _ExpensePaymentType implements CanBePutInSelectBox{
@@ -387,7 +388,7 @@ class _ExpenditureFormValidator extends InputValidator {
 
   String? amount (String? value) {
     if (!this.isRequired(value)) {
-      double? amount = double.tryParse(value!.replaceAll(',', '.'));
+      int? amount = Money.parse(value ?? "");
       if (amount != null) {
         return amount > 0 ? null : 'Valor deve ser maior que 0';
       }

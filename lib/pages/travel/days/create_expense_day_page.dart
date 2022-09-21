@@ -115,7 +115,7 @@ class _Validator extends InputValidator{
 
   String? amount (String? value) {
     if (!this.isRequired(value)) {
-      double? amount = double.tryParse(value!.replaceAll(',', '.'));
+      int? amount = Money.parse(value ?? "");
       if (amount != null) {
         return amount > 0 ? null : 'Valor deve ser maior que 0';
       }

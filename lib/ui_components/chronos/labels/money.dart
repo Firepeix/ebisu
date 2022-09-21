@@ -46,6 +46,11 @@ class Money extends StatelessWidget {
     return value / 100;
   }
 
+  static int? parse(String real) {
+    final amount = real.replaceAll(",", "").replaceAll('.', '');
+    return int.tryParse(amount);
+  }
+
   String _addSeparators(String src, String divider) {
     List<String> newStr = [];
     int step = 3;

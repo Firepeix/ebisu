@@ -3,6 +3,7 @@ import 'package:ebisu/shopping-list/ShoppingList/Domain/ShoppingList.dart';
 import 'package:ebisu/src/UI/Components/Form/InputDecorator.dart';
 import 'package:ebisu/src/UI/Components/Form/InputValidator.dart';
 import 'package:ebisu/ui_components/chronos/form/inputs/amount_input.dart';
+import 'package:ebisu/ui_components/chronos/labels/money.dart';
 import 'package:flutter/material.dart';
 
 class ShoppingListForm extends StatefulWidget {
@@ -92,7 +93,7 @@ class ShoppingListFormValidator extends InputValidator{
 
   String? amount (String? value) {
     if (!this.isRequired(value)) {
-      double? amount = double.tryParse(value!.replaceAll(',', '.'));
+      int? amount = Money.parse(value ?? "");
       if (amount != null) {
         return amount > 0 ? null : 'Valor deve ser maior que 0';
       }

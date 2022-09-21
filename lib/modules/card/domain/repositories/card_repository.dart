@@ -1,7 +1,9 @@
 import 'package:ebisu/modules/card/domain/mappers/card_mapper.dart';
+import 'package:ebisu/modules/card/infrastructure/transfer_objects/SaveCardModel.dart';
 import 'package:ebisu/modules/card/models/card.dart';
 import 'package:ebisu/shared/exceptions/result.dart';
 import 'package:ebisu/shared/http/client.dart';
+import 'package:ebisu/shared/http/response.dart';
 import 'package:injectable/injectable.dart';
 
 class CardError extends ResultError {
@@ -11,6 +13,7 @@ class CardError extends ResultError {
 abstract class CardRepositoryInterface {
   Future<Result<List<CardModel>, CardError>> getCards();
   Future<Result<CardModel, ResultError>> getCard(String id);
+  Future<Result<Success, ResultError>> update(String id, SaveCardModel model);
 }
 
 class _Endpoint {
@@ -34,5 +37,11 @@ class CardRepository implements CardRepositoryInterface {
   Future<Result<CardModel, ResultError>> getCard(String id) async {
     final result = await _caron.get<CardModel>(_Endpoint.Card.replaceAll(":expenseId", id), _mapper.fromJson);
     return result.map((value) => value.data);
+  }
+
+  @override
+  Future<Result<Success, ResultError>> update(String id, SaveCardModel model) async {
+    final endpoint = _Endpoint.Card.replaceAll(":cardId", id);
+    return await _caron.put<Success, SaveCardModel>(endpoint, model, _mapper.toJson);
   }
 }

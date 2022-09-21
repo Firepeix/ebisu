@@ -9,49 +9,6 @@ import 'package:ebisu/ui_components/chronos/buttons/simple_fab.dart';
 import 'package:ebisu/ui_components/chronos/layout/view_body.dart';
 import 'package:flutter/material.dart';
 
-/*class UpdateCardPage extends StatefulWidget {
-  final String _id;
-  final String _name;
-  final CardServiceInterface service = getIt();
-
-  UpdateCardPage(this._id, this._name, {Key? key}) : super(key: key);
-
-  @override
-  State<UpdateCardPage> createState() => _UpdateCardPageState();
-}
-
-class _UpdateCardPageState extends State<UpdateCardPage> {
-  VoidCallback? submit;
-
-  @override
-  void initState() {
-    super.initState();
-    if (submit != null) {
-      //setState(() {});
-    }
-  }
-
-
-  @override
-  Widget build(BuildContext context) {
-    return ViewBody(
-      title: "Editar Cartão ${widget._name}",
-      child: NotificationListener<SaveCardNotification>(
-        child: NotificationListener<ChangeMainButtonActionNotification> (
-          child: CardForm(cardId: widget._id, service: widget.service,),
-          onNotification: (notification) {
-            submit = notification.onPressed;
-            return true;
-          },
-        ),
-      ),
-      fab: CFloatActionButton(
-          button: SimpleFAB.save(() {submit?.call();})
-      ),
-    );
-  }
-}*/
-
 class UpdateCardPage extends StatelessWidget {
   final String _id;
   final String _name;
@@ -60,8 +17,11 @@ class UpdateCardPage extends StatelessWidget {
 
   UpdateCardPage(this._id, this._name, {Key? key}) : super(key: key);
 
-  Future<void> updateCard(SaveCardModel model)  async {
-    print(model);
+  Future<void> updateCard(BuildContext context, SaveCardModel model)  async {
+    final result = await service.updateCard(_id, model);
+    if (result.isOk()) {
+      routeToBack(context);
+    }
   }
 
   @override
@@ -71,7 +31,7 @@ class UpdateCardPage extends StatelessWidget {
       child: NotificationListener<SaveCardNotification>(
         child: CardForm(cardId: _id, service: service, submit: _onSubmit,),
         onNotification: (notification) {
-          updateCard(notification.model);
+          updateCard(context, notification.model);
           return true;
         },
       ),

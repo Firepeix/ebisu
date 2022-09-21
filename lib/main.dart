@@ -107,3 +107,7 @@ void routeToPop(BuildContext context, Widget view, int times) {
 
   routeTo(context, view);
 }
+
+void routeToBack(BuildContext context) {
+  Navigator.pop(context);
+}

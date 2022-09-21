@@ -10,6 +10,7 @@ import 'package:ebisu/ui_components/chronos/actions/tap.dart';
 import 'package:ebisu/ui_components/chronos/form/inputs/amount_input.dart';
 import 'package:ebisu/ui_components/chronos/form/inputs/input.dart';
 import 'package:ebisu/ui_components/chronos/form/inputs/number_input.dart';
+import 'package:ebisu/ui_components/chronos/labels/money.dart';
 import 'package:flutter/material.dart';
 
 class CardForm extends StatefulWidget {
@@ -70,7 +71,7 @@ class _CardFormValidator extends InputValidator {
 
   String? amount (String? value) {
     if (!this.isRequired(value)) {
-      double? amount = double.tryParse(value!.replaceAll(',', '.'));
+      int? amount = Money.parse(value ?? "");
       if (amount != null) {
         return amount > 0 ? null : 'Valor deve ser maior que 0';
       }

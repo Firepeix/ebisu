@@ -1,3 +1,4 @@
+import 'package:ebisu/modules/card/infrastructure/transfer_objects/SaveCardModel.dart';
 import 'package:ebisu/modules/card/models/card.dart';
 import 'package:flutter/material.dart';
 import 'package:injectable/injectable.dart';
@@ -14,6 +15,15 @@ class CardMapper {
         dueDate: json["due_date"] != null ? DateTime.parse(json["due_date"]) : null,
         closeDate: json["close_date"] != null ? DateTime.parse(json["close_date"]) : null,
     );
+  }
+
+  Map<dynamic, dynamic> toJson(SaveCardModel model) {
+    return {
+      "name": model.getName(),
+      "budget": model.getBudget(),
+      "dueDate": model.getDueDate()?.toString(),
+      "closeDate": model.getCloseDate()?.toString()
+    };
   }
 
   List<CardModel> fromJsonList(Map<dynamic, dynamic> json) {
