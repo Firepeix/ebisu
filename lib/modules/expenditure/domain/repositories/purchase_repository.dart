@@ -4,16 +4,12 @@ import 'package:ebisu/shared/exceptions/result.dart';
 import 'package:ebisu/shared/http/client.dart';
 import 'package:injectable/injectable.dart';
 
-class PurchaseError extends ResultError {
-  const PurchaseError.getCreditSummary() : super("Não foi possível buscar sumario de despesas", "PCS1", null);
-}
-
 class _Endpoint {
   static const PurchaseCreditSummary = "purchases/credit/summary";
 }
 
 abstract class PurchaseRepositoryInterface {
-  Future<Result<List<CreditExpensePurchaseSummaryModel>, PurchaseError>> getPurchaseCreditSummary();
+  Future<Result<List<CreditExpensePurchaseSummaryModel>, ResultError>> getPurchaseCreditSummary();
 }
 
 @Injectable(as: PurchaseRepositoryInterface)
@@ -23,8 +19,8 @@ class PurchaseRepository implements PurchaseRepositoryInterface {
   PurchaseRepository(this._caron, this._mapper);
 
   @override
-  Future<Result<List<CreditExpensePurchaseSummaryModel>, PurchaseError>> getPurchaseCreditSummary() async {
+  Future<Result<List<CreditExpensePurchaseSummaryModel>, ResultError>> getPurchaseCreditSummary() async {
     final result = await _caron.getList<CreditExpensePurchaseSummaryModel>(_Endpoint.PurchaseCreditSummary, _mapper.fromJson);
-    return result.map((value) => value.data).subError(PurchaseError.getCreditSummary());
+    return result.map((value) => value.data);
   }
 }

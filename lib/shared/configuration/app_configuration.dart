@@ -34,6 +34,7 @@ class AppConfiguration {
   List<_Feature> features;
   String travelSheetId;
   String ebisuEndpoint;
+  String authToken;
 
   AppConfiguration._init({
     required this.theme,
@@ -41,6 +42,7 @@ class AppConfiguration {
     required this.features,
     required this.travelSheetId,
     required this.ebisuEndpoint,
+    required this.authToken,
   });
 
   factory AppConfiguration() {
@@ -49,15 +51,13 @@ class AppConfiguration {
 
   factory AppConfiguration._internal() {
     final features = (const String.fromEnvironment("FEATURES", defaultValue: "")).split(",").map((e) => _Feature(e)).toList();
-    final userId = const String.fromEnvironment("USER", defaultValue: "tutu");
-    final ebisuEndpoint = const String.fromEnvironment("EBISU_ENDPOINT", defaultValue: "http://localhost");
-
     return AppConfiguration._init(
-        user: _User.fromId(userId),
-        theme: const String.fromEnvironment("THEME", defaultValue: "wewe") == AppTheme.tutu.name ? AppTheme.tutu : AppTheme.wewe,
-        travelSheetId: const String.fromEnvironment("TRAVEL_SHEET_ID", defaultValue: ""),
-        features: features,
-        ebisuEndpoint: ebisuEndpoint
+      user: _User.fromId(const String.fromEnvironment("USER", defaultValue: "tutu")),
+      theme: const String.fromEnvironment("THEME", defaultValue: "wewe") == AppTheme.tutu.name ? AppTheme.tutu : AppTheme.wewe,
+      travelSheetId: const String.fromEnvironment("TRAVEL_SHEET_ID", defaultValue: ""),
+      features: features,
+      ebisuEndpoint: const String.fromEnvironment("EBISU_ENDPOINT", defaultValue: "http://localhost"),
+      authToken: const String.fromEnvironment("AUTH_TOKEN", defaultValue: "")
     );
   }
   

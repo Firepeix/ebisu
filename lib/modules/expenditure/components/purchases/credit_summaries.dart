@@ -17,12 +17,13 @@ class CreditSummaries extends StatelessWidget {
   @override
   Widget build(BuildContext context) =>
       Padding(
-        padding: EdgeInsets.only(top: 20, bottom: 14),
+        padding: EdgeInsets.only(top: 10, bottom: 14),
         child: GridView.builder(
           padding: EdgeInsets.zero,
           physics: NeverScrollableScrollPhysics(),
           shrinkWrap: true,
             gridDelegate: SliverGridDelegateWithFixedCrossAxisCountAndCentralizedLastElement(
+              childAspectRatio: 1 / 1.25,
               crossAxisCount: 2,
               mainAxisSpacing: 0,
               crossAxisSpacing: 2,
@@ -62,9 +63,10 @@ class _CreditSummary extends StatelessWidget {
                     ),
                   ),
                   Padding(child: Text('Planejado', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w400),), padding: EdgeInsets.only(top: 4)),
-                  //Text(summary.budget.real, style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),),
                   Money(summary.planned, color: Colors.black, size: 22),
-                  Padding(child: Text('Gasto', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w400),), padding: EdgeInsets.only(top: 4),),
+                  Padding(child: Text('Parcelado', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w400),), padding: EdgeInsets.only(top: 4)),
+                  Money(summary.previousInstallmentSpent, color: Colors.black, size: 22),
+                  Padding(child: Text('Gasto atual', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w400),), padding: EdgeInsets.only(top: 4),),
                   Money(summary.spent, color: Colors.black, size: 22,),
                 ],
               ),
