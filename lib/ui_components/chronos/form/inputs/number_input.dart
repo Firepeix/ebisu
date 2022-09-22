@@ -29,9 +29,9 @@ class NumberInput extends StatelessWidget  {
   Widget build(BuildContext context) {
     return TextFormField(
       key: inputKey,
-      initialValue: initialValue == 0 ? "" : initialValue.toString(),
+      initialValue: initialValue == 0 ? "" : "${initialValue == null ? "" : initialValue}",
       onSaved: (value) => onSaved?.call(value != null ? int.tryParse(value) : null),
-      onChanged: (value) => onChanged!(int.tryParse(value)),
+      onChanged: (value) => onChanged?.call(int.tryParse(value)),
       validator: validator,
       maxLength: maxLength,
       maxLengthEnforcement: MaxLengthEnforcement.enforced,
