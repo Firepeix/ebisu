@@ -11,7 +11,6 @@ class BottomNavBarItem {
 class BottomNavBar extends StatefulWidget {
   final List<BottomNavBarItem> items = _createItems();
   final ValueChanged<int> onTabSelected;
-  final Color selectedColor = Colors.redAccent;
   final Color color = Colors.black;
   final double height = 60;
   final String centerItemText;
@@ -99,7 +98,8 @@ class _NavBarState extends State<BottomNavBar> {
     int index = 0,
     required ValueChanged<int> onPressed,
   }) {
-    Color color = widget.selectedIndex == index ? widget.selectedColor : widget.color;
+    final highlightColor = Theme.of(context).colorScheme.primary;
+    Color color = widget.selectedIndex == index ? highlightColor : widget.color;
     return Expanded(
       child: SizedBox(
         height: widget.height,

@@ -72,7 +72,7 @@ abstract class _BaseExpenditureViewModel extends StatelessWidget {
 
   _BaseExpenditureViewModel(this.model);
 
-  Widget getIcon() => Container(
+  Widget getIcon(BuildContext context) => Container(
         width: 60,
         height: 66,
         decoration: const BoxDecoration(
@@ -91,7 +91,7 @@ abstract class _BaseExpenditureViewModel extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       children: [
-        Expanded(child: getIcon()),
+        Expanded(child: getIcon(context)),
         Expanded(
             flex: 4,
             child: Container(
@@ -146,16 +146,18 @@ class _DebitExpenditureViewModel extends _BaseExpenditureViewModel {
   @override
   String _getSubtitle() => 'Débito';
 
-  Widget getIcon() => Container(
-    width: 71,
-    height: 71,
-    child: Icon(Icons.money, size: 71, color: Colors.white,),
-      decoration: const BoxDecoration(
-        color: Color(0xFFEF5350),
-        shape: BoxShape.rectangle,
-        borderRadius: BorderRadius.all(Radius.circular(8)),
-      )
-  );
+  Widget getIcon(BuildContext context) {
+    return Container(
+        width: 71,
+        height: 71,
+        child: Icon(Icons.money, size: 71, color: Colors.white,),
+        decoration: BoxDecoration(
+          color: Theme.of(context).colorScheme.primaryContainer,
+          shape: BoxShape.rectangle,
+          borderRadius: BorderRadius.all(Radius.circular(8)),
+        )
+    );
+  }
 }
 
 class _CreditPurchaseExpenditureViewModel extends _BaseExpenditureViewModel {
@@ -164,12 +166,12 @@ class _CreditPurchaseExpenditureViewModel extends _BaseExpenditureViewModel {
   @override
   String _getSubtitle() => 'Credito';
 
-  Widget getIcon() => Container(
+  Widget getIcon(BuildContext context) => Container(
       width: 71,
       height: 71,
       child: Icon(Icons.credit_card, size: 71, color: Colors.white,),
       decoration: BoxDecoration(
-        color: Color(0xFFEF5350),
+        color: Theme.of(context).colorScheme.primaryContainer,
         borderRadius: BorderRadius.all(Radius.circular(8)),
         shape: BoxShape.rectangle,
       )
@@ -182,12 +184,12 @@ class _CreditPurchaseExpenditureViewModel extends _BaseExpenditureViewModel {
 class _InstallmentPurchaseExpenditureViewModel extends _CreditPurchaseExpenditureViewModel {
   _InstallmentPurchaseExpenditureViewModel(ExpenseModel model) : super(model);
 
-  Widget getIcon() => Container(
+  Widget getIcon(BuildContext context) => Container(
       width: 71,
       height: 71,
       child: Icon(Icons.date_range, size: 71, color: Colors.white,),
       decoration: BoxDecoration(
-        color: Color(0xFFEF5350),
+        color: Theme.of(context).colorScheme.primaryContainer,
         borderRadius: BorderRadius.all(Radius.circular(8)),
         shape: BoxShape.rectangle,
       )

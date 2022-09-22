@@ -12,7 +12,6 @@ import 'package:hive_flutter/hive_flutter.dart';
 import 'package:injectable/injectable.dart';
 
 import 'main.config.dart';
-import 'pages/travel/days/travel_expense_page.dart';
 import 'shared/Infrastructure/Providers/ServiceProvider.dart';
 
 final getIt = GetIt.instance;
@@ -54,7 +53,7 @@ class MyApp extends StatelessWidget {
       theme: _configuration.getTheme(),
       initialRoute: '/',
       routes: {
-        '/': (context) => _configuration.theme == AppTheme.tutu ? MyHomePage(title: 'Home') : TravelExpensePage(),
+        '/': (context) =>  MyHomePage(title: 'Home'),
       },
       navigatorKey: _interactor.navigatorKey(),
       onGenerateRoute: (settings) {

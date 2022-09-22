@@ -68,13 +68,23 @@ class AppConfiguration {
   ThemeData _tutuTheme() {
     return ThemeData(
       primaryColor: Colors.red,
-      colorScheme: ColorScheme.fromSeed(seedColor: Colors.red, primary: Colors.red, secondary: Colors.redAccent),
+      colorScheme: ColorScheme.fromSeed(
+          primaryContainer: Colors.red[700],
+          seedColor: Colors.red,
+          primary: Colors.red,
+          secondary: Colors.redAccent
+      ),
     );
   }
   
   ThemeData _weweTheme() {
     return ThemeData(
-      colorScheme: ColorScheme.fromSeed(seedColor: Colors.lightBlue, primary: Colors.lightBlue, secondary: Colors.orangeAccent),
+      colorScheme: ColorScheme.fromSeed(
+          primaryContainer: Colors.blue[700],
+          seedColor: Colors.lightBlue,
+          primary: Colors.lightBlue,
+          secondary: Colors.orangeAccent
+      ),
     );
   }
 }

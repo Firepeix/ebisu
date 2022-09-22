@@ -107,7 +107,7 @@ class EbisuMainViewState extends State<EbisuMainView> {
       bottomNavigationBar: BottomNavBar(
           onTabSelected: (int value) => changePageTo(value),
           centerItemText: 'Despesa',
-          selectedIndex: currentPageIndex
+          selectedIndex: currentPageIndex,
       ),
       body: NotificationListener<ChangeMainButtonActionNotification>(
         child: currentPage != null ? currentPage! : Column(),
