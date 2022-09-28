@@ -35,7 +35,7 @@ class CardRepository implements CardRepositoryInterface {
 
   @override
   Future<Result<CardModel, ResultError>> getCard(String id) async {
-    final result = await _caron.get<CardModel>(_Endpoint.Card.replaceAll(":expenseId", id), _mapper.fromJson);
+    final result = await _caron.get<CardModel>(_Endpoint.Card.replaceAll(":cardId", id), _mapper.fromJson);
     return result.map((value) => value.data);
   }
 

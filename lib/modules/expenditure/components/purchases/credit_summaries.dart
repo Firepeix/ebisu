@@ -73,7 +73,7 @@ class _CreditSummary extends StatelessWidget {
             ),
             EbisuDivider(),
             Padding(
-              padding: EdgeInsets.all(8),
+              padding: EdgeInsets.only(top: 3, left: 4, right: 4, bottom: 4),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [

@@ -48,7 +48,8 @@ class Caron {
     final token = await _configRepository.getAuthToken();
 
     return {
-      "Authorization": "Bearer $token"
+      "Authorization": "Bearer $token",
+      "Content-Type": "application/json"
     };
   }
 
