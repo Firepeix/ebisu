@@ -1,9 +1,15 @@
 import 'dart:convert';
 
-import 'package:ebisu/shared/configuration/app_configuration.dart';
+import 'package:ebisu/main.dart';
+import 'package:ebisu/modules/auth/domain/services/auth_service.dart';
+import 'package:ebisu/modules/auth/pages/login_page.dart';
+import 'package:ebisu/modules/configuration/domain/repositories/config_repository.dart';
+import 'package:ebisu/shared/dependency/dependency_container.dart';
+import 'package:ebisu/shared/exceptions/handler.dart';
 import 'package:ebisu/shared/exceptions/result.dart';
 import 'package:ebisu/shared/http/codes.dart';
 import 'package:ebisu/shared/http/mapper.dart';
+import 'package:ebisu/shared/services/notification_service.dart';
 import 'package:http/http.dart' as http;
 import 'package:injectable/injectable.dart';
 
@@ -22,29 +28,33 @@ class HttpError extends ResultError {
 @singleton
 class Caron {
   Mapper _mapper;
+  ConfigRepositoryInterface _configRepository;
+  late AuthServiceInterface _authService;
 
-  Caron(this._mapper);
+  Caron(this._mapper, this._configRepository, NotificationService notificationService, ExceptionHandlerInterface exceptionHandlerInterface) {
+    _authService = AuthService(this, notificationService, exceptionHandlerInterface, _configRepository);
+  }
 
-  AppConfiguration _config = AppConfiguration();
-
-  Uri _url(String endpoint) {
-    final host = _config.ebisuEndpoint.split("://");
+  Future<Uri> _url(String endpoint) async {
+    final url = await _configRepository.getEndpointUrl();
+    final host = url.split("://");
     if (host[0] == "http") {
       return Uri.http(host[1], endpoint);
     }
-
     return Uri.https(host[1], endpoint);
   }
 
-  Map<String, String>? _headers() {
+  Future<Map<String, String>?> _headers() async {
+    final token = await _configRepository.getAuthToken();
+
     return {
-      "Authorization": "Bearer ${_config.authToken}"
+      "Authorization": "Bearer $token"
     };
   }
 
   Future<Result<DataResponse<V>, ResultError>> get<V>(String endpoint, DecodeJson<V> decoder, {DecodeError? errorDecoder}) async {
     try {
-      final response = await http.get(_url(endpoint), headers: _headers());
+      final response = await http.get(await _url(endpoint), headers: await _headers());
       return _parsePayload<DataResponse<V>, V>(response, decoder: decoder, errorDecoder: errorDecoder);
     } catch(error) {
       return _parseError(error: error);
@@ -53,7 +63,7 @@ class Caron {
 
   Future<Result<ListResponse<V>, ResultError>> getList<V>(String endpoint, DecodeJson<V> decoder, {DecodeError? errorDecoder}) async {
     try {
-      final response = await http.get(_url(endpoint), headers: _headers());
+      final response = await http.get(await _url(endpoint), headers: await _headers());
       return _parsePayload<ListResponse<V>, V>(response, decoder: decoder, errorDecoder: errorDecoder);
     } catch(error) {
       return _parseError(error: error);
@@ -62,7 +72,7 @@ class Caron {
 
   Future<Result<R, ResultError>> post<R extends Response, B>(String endpoint, B body, EncodeJson<B> encoder, {DecodeJson<R>? decoder, DecodeError? errorDecoder}) async {
     try {
-      final response = await http.post(_url(endpoint), body: jsonEncode(encoder(body)), headers: _headers());
+      final response = await http.post(await _url(endpoint), body: jsonEncode(encoder(body)), headers: await _headers());
       return _parsePayload<R, R>(response, decoder: decoder ?? _mapper.fromSuccessJson as DecodeJson<R>, errorDecoder: errorDecoder);
     } catch(error) {
       return _parseError(error: error);
@@ -71,7 +81,7 @@ class Caron {
 
   Future<Result<R, ResultError>> put<R extends Response, B>(String endpoint, B body, EncodeJson<B> encoder, {DecodeJson<R>? decoder, DecodeError? errorDecoder}) async {
     try {
-      final response = await http.put(_url(endpoint), body: jsonEncode(encoder(body)), headers: _headers());
+      final response = await http.put(await _url(endpoint), body: jsonEncode(encoder(body)), headers: await _headers());
       return _parsePayload<R, R>(response, decoder: decoder ?? _mapper.fromSuccessJson as DecodeJson<R>, errorDecoder: errorDecoder);
     } catch(error) {
       return _parseError(error: error);
@@ -80,7 +90,7 @@ class Caron {
 
   Future<Result<R, ResultError>> delete<R extends Response>(String endpoint, {DecodeError? errorDecoder}) async {
       try {
-        final response = await http.delete(_url(endpoint), headers: _headers());
+        final response = await http.delete(await _url(endpoint), headers: await _headers());
         return _parsePayload<R, String>(response, successResponse: Success("Elemento deletado com sucesso!") as R);
       } catch(error) {
         return _parseError(error: error);
@@ -106,6 +116,10 @@ class Caron {
     if (response != null) {
       print(response.reasonPhrase);
       if(response.statusCode == HttpCodes.Unauthorized) {
+        final context = DependencyManager.getContext();
+        if (context != null) {
+          routeTo(context, LoginPage(_authService));
+        }
         return Result(null, HttpError.unauthorized());
       }
 

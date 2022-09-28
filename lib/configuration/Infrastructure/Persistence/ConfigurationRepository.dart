@@ -18,9 +18,4 @@ class ConfigurationRepository extends GoogleSheetsRepository implements Configur
     final prefs = await SharedPreferences.getInstance();
     prefs.setString(GoogleSheetsRepository.SPREADSHEET_ID_KEY, sheetId);
   }
-
-  @override
-  Future<String> ebisuUrl() {
-    return Future.value("http://localhost:3001");
-  }
 }

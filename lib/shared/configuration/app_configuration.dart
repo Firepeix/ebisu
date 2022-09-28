@@ -33,16 +33,12 @@ class AppConfiguration {
   _User user;
   List<_Feature> features;
   String travelSheetId;
-  String ebisuEndpoint;
-  String authToken;
 
   AppConfiguration._init({
     required this.theme,
     required this.user,
     required this.features,
     required this.travelSheetId,
-    required this.ebisuEndpoint,
-    required this.authToken,
   });
 
   factory AppConfiguration() {
@@ -56,8 +52,6 @@ class AppConfiguration {
       theme: const String.fromEnvironment("THEME", defaultValue: "wewe") == AppTheme.tutu.name ? AppTheme.tutu : AppTheme.wewe,
       travelSheetId: const String.fromEnvironment("TRAVEL_SHEET_ID", defaultValue: ""),
       features: features,
-      ebisuEndpoint: const String.fromEnvironment("EBISU_ENDPOINT", defaultValue: "http://localhost"),
-      authToken: const String.fromEnvironment("AUTH_TOKEN", defaultValue: "")
     );
   }
   

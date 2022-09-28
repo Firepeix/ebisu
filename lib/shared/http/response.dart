@@ -55,6 +55,11 @@ class Success extends GenericResponse {
   Success(super.message);
 }
 
+class TokenResponse extends DataResponse<String> {
+  String get token => super.data;
+  TokenResponse(super.message);
+}
+
 class ErrorResponse extends GenericResponse {
   String internalCode;
   int code;

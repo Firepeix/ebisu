@@ -19,6 +19,10 @@ class Mapper {
       return DataResponse<B>(decoder(json["data"])) as R;
     }
 
+    if (name.startsWith("TokenResponse")) {
+      return decoder(json["data"]) as R;
+    }
+
     return Success("Sucesso");
   }
 

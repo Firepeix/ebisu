@@ -1,11 +1,13 @@
 import 'package:ebisu/configuration/UI/Pages/Configuration.dart';
 import 'package:ebisu/domain/travel/models/travel_day_model.dart';
 import 'package:ebisu/domain/travel/models/travel_expense_model.dart';
+import 'package:ebisu/modules/configuration/domain/repositories/config_repository.dart';
 import 'package:ebisu/modules/core/interactor.dart';
 import 'package:ebisu/modules/scout/book/book.dart';
 import 'package:ebisu/shared/Infrastructure/Ebisu.dart';
 import 'package:ebisu/shared/configuration/app_configuration.dart';
 import 'package:ebisu/shared/navigator/navigator_interface.dart';
+import 'package:ebisu/shared/services/notification_service.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:hive_flutter/hive_flutter.dart';
@@ -58,7 +60,7 @@ class MyApp extends StatelessWidget {
       navigatorKey: _interactor.navigatorKey(),
       onGenerateRoute: (settings) {
         if (settings.name == "/configuration") {
-          return ConfigurationPage().getRoute();
+          return ConfigurationPage(getIt<ConfigRepositoryInterface>(), getIt<NotificationService>()).getRoute();
         }
 
         if (_pageContainer.hasPage(settings.name ?? '')) {
