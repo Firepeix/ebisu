@@ -47,7 +47,7 @@ class ExpenseForm extends StatefulWidget {
 }
 
 class _ExpenseFormState extends State<ExpenseForm> with TickerProviderStateMixin{
-  _ExpenseViewModel model = _ExpenseViewModel();
+  _ExpenseViewModel model = _ExpenseViewModel(date: DateTime.now());
   _ExpensePaymentType? _paymentType;
   late AnimationController cardOptionsController;
   late AnimationController installmentOptionsController;

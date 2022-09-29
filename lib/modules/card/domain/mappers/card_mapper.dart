@@ -21,8 +21,8 @@ class CardMapper {
     return {
       "name": model.getName(),
       "budget": model.getBudget(),
-      "dueDate": model.getDueDate()?.toString(),
-      "closeDate": model.getCloseDate()?.toString()
+      "due_date": model.getDueDate()?.toString(),
+      "close_date": model.getCloseDate()?.toString()
     };
   }
 

@@ -12,18 +12,4 @@ class EstablishmentModel extends ExpenseSourceModel implements CanBePutInSelectB
 
   @override
   String selectBoxLabel() => name;
-
-  @override
-  bool operator ==(Object other) {
-    if (other is EstablishmentModel) {
-      return id == other.id;
-    }
-
-    return false;
-  }
-
-  @override
-  int get hashCode {
-    return id.hashCode;
-  }
 }

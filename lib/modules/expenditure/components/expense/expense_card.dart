@@ -18,10 +18,6 @@ class ExpenseListCard extends StatelessWidget implements DecoratedTile  {
       return _DebitExpenditureViewModel(model);
     }
 
-    if (model.isInstallmentBased()) {
-      return _InstallmentPurchaseExpenditureViewModel(model);
-    }
-
     return _CreditPurchaseExpenditureViewModel(model);
   }
 
@@ -72,26 +68,49 @@ abstract class _BaseExpenditureViewModel extends StatelessWidget {
 
   _BaseExpenditureViewModel(this.model);
 
-  Widget getIcon(BuildContext context) => Container(
-        width: 60,
-        height: 66,
-        decoration: const BoxDecoration(
-          color: Colors.grey,
-          shape: BoxShape.rectangle,
-        ),
-      );
+  Widget getIcon(BuildContext context) {
+    return Container(
+      width: 60,
+      height: 66,
+      decoration: const BoxDecoration(
+        color: Colors.grey,
+        shape: BoxShape.rectangle,
+      ),
+    );
+  }
 
   String _getSubtitle() => 'Placeholder';
 
-  Widget? get topRightComponent => null;
+  Widget? get topRightComponent {
+    if(!model.isInstallmentBased()) {
+      return null;
+    }
+
+    return Text(model.installments!.summary,
+        style: TextStyle(fontSize: 16, height: 1, fontWeight: FontWeight.w500)
+    );
+  }
 
   Widget? get bottomLeftComponent => null;
+
+  Widget _installmentIcon(BuildContext context) {
+    return Container(
+        width: 71,
+        height: 71,
+        child: Icon(Icons.date_range, size: 71, color: Colors.white,),
+        decoration: BoxDecoration(
+          color: Theme.of(context).colorScheme.primaryContainer,
+          borderRadius: BorderRadius.all(Radius.circular(8)),
+          shape: BoxShape.rectangle,
+        )
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
     return Row(
       children: [
-        Expanded(child: getIcon(context)),
+        Expanded(child: model.isInstallmentBased() ? _installmentIcon(context) : getIcon(context)),
         Expanded(
             flex: 4,
             child: Container(
@@ -179,23 +198,5 @@ class _CreditPurchaseExpenditureViewModel extends _BaseExpenditureViewModel {
 
   @override
   Widget? get bottomLeftComponent => Text(model.card!.name, style: TextStyle(fontSize: 16, color: model.card!.color, height: 1, fontWeight: FontWeight.w500));
-}
-
-class _InstallmentPurchaseExpenditureViewModel extends _CreditPurchaseExpenditureViewModel {
-  _InstallmentPurchaseExpenditureViewModel(ExpenseModel model) : super(model);
-
-  Widget getIcon(BuildContext context) => Container(
-      width: 71,
-      height: 71,
-      child: Icon(Icons.date_range, size: 71, color: Colors.white,),
-      decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.primaryContainer,
-        borderRadius: BorderRadius.all(Radius.circular(8)),
-        shape: BoxShape.rectangle,
-      )
-  );
-
-  @override
-  Widget? get topRightComponent => Text(model.installments!.summary, style: TextStyle(fontSize: 16, height: 1, fontWeight: FontWeight.w500));
 }
 
