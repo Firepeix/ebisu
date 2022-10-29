@@ -1,4 +1,5 @@
 import 'package:ebisu/shared/dependency/dependency_container.dart';
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/material.dart';
 import 'package:injectable/injectable.dart';
 
@@ -18,6 +19,7 @@ class ExceptionHandlerService implements ExceptionHandlerServiceInterface {
     } catch (error) {
       final context = DependencyManager.getContext();
       if (context != null) {
+        FirebaseCrashlytics.instance.recordFlutterFatalError(FlutterErrorDetails(exception: error));
         displayError(error.toString(), context);
       } else {
         throw error;
@@ -32,6 +34,7 @@ class ExceptionHandlerService implements ExceptionHandlerServiceInterface {
     } catch (error) {
       final context = DependencyManager.getContext();
       if (context != null) {
+        FirebaseCrashlytics.instance.recordFlutterFatalError(FlutterErrorDetails(exception: error));
         displayError(error.toString(), context);
       } else {
         throw error;

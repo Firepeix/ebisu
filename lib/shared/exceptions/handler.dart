@@ -1,5 +1,6 @@
 import 'package:ebisu/shared/exceptions/result.dart';
 import 'package:ebisu/shared/services/notification_service.dart';
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/material.dart';
 import 'package:injectable/injectable.dart';
 
@@ -23,10 +24,19 @@ class ExceptionHandler implements ExceptionHandlerInterface {
   @override
   V? expect<V, E extends ResultError>(Result<V, E> result) {
     if (result.hasError()) {
+      if (result.error!.details != null) {
+        analyzeError(result.error!.details!);
+      }
       _displayError(result.error!);
       return null;
     }
 
     return result.unwrap();
+  }
+
+  void analyzeError(Details details) {
+    if(details.data is FlutterErrorDetails) {
+      FirebaseCrashlytics.instance.recordFlutterFatalError(details.data);
+    }
   }
 }

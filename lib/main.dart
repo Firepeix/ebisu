@@ -8,11 +8,14 @@ import 'package:ebisu/shared/Infrastructure/Ebisu.dart';
 import 'package:ebisu/shared/configuration/app_configuration.dart';
 import 'package:ebisu/shared/navigator/navigator_interface.dart';
 import 'package:ebisu/shared/services/notification_service.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:injectable/injectable.dart';
 
+import 'firebase_options.dart';
 import 'main.config.dart';
 import 'shared/Infrastructure/Providers/ServiceProvider.dart';
 
@@ -38,6 +41,8 @@ void register() {
 void main() async {
   await Hive.initFlutter();
   configureDependencies();
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform,);
+  FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterFatalError;
   runApp(MyApp(getIt<PageContainer>(), AppConfiguration()));
 }
 

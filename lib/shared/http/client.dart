@@ -10,6 +10,7 @@ import 'package:ebisu/shared/exceptions/result.dart';
 import 'package:ebisu/shared/http/codes.dart';
 import 'package:ebisu/shared/http/mapper.dart';
 import 'package:ebisu/shared/services/notification_service.dart';
+import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:injectable/injectable.dart';
 
@@ -20,7 +21,7 @@ typedef EncodeJson<B> = Map<dynamic, dynamic> Function(B body);
 typedef DecodeError = ResultError Function(ErrorResponse response);
 
 class HttpError extends ResultError {
-  const HttpError.unknown() : super("Ops! Ocorreu um erro. Tente Novamente mais tarde.", "U1", null) ;
+  HttpError.unknown(FlutterErrorDetails? details) : super("Ops! Ocorreu um erro. Tente Novamente mais tarde.", "U1", Details(data: details)) ;
   const HttpError.server(details) : super(null, "U2", details) ;
   const HttpError.unauthorized() : super("Acesso negado ao acessar o servidor", "U3", null) ;
 }
@@ -113,7 +114,6 @@ class Caron {
   }
 
   Result<R, ResultError> _parseError<R extends Response, V>({http.Response? response, DecodeError? errorDecoder, Object? error}) {
-    // TODO - ADD LOG
     if (response != null) {
       print(response.reasonPhrase);
       if(response.statusCode == HttpCodes.Unauthorized) {
@@ -125,9 +125,18 @@ class Caron {
       }
 
       final errorResponse = _mapper.fromErrorJson(jsonDecode(response.body), response.statusCode);
+
       return Result(null, errorDecoder?.call(errorResponse) ?? HttpError.server(Details(messageAddon: errorResponse.message)));
     }
-    print(error);
-    return Result(null, HttpError.unknown());
+    return Result(null, HttpError.unknown(error != null ? FlutterErrorDetails(exception: error) : null));
+  }
+
+  FlutterErrorDetails parseError(String message, int statusCode, String phrase) {
+    return FlutterErrorDetails(exception: FlutterError(
+        "Client Exception.\n" +
+            "Message: $message.\n" +
+            "Status: $statusCode.\n" +
+            "Phrase: $phrase.\n"
+    ));
   }
 }
