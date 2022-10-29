@@ -1,4 +1,3 @@
-import 'package:ebisu/card/Domain/Card.dart';
 import 'package:gsheets/gsheets.dart';
 import 'package:injectable/injectable.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -26,17 +25,11 @@ class GoogleSheetsRepository {
     return prefs.getString(SPREADSHEET_ID_KEY);
   }
 
-  Future<String> getActiveSheetName(CardClass type) async {
-    final prefs = await SharedPreferences.getInstance();
-    final sheetsNames = prefs.getStringList(ACTIVE_SHEET_CACHE);
-    return sheetsNames != null ? sheetsNames[type.index] : '';
-  }
-
-  Future<Worksheet> getSheet(CardClass type) async {
+  Future<Worksheet> getSheet() async {
     final credentials = await _getCredentials();
     final googleSheets = GSheets(credentials!);
     final spreadSheetId = await getSheetId();
-    final sheetName = await getActiveSheetName(type);
+    final sheetName = "TODO";
     if(spreadSheetId != null) {
       final spreadSheet = await googleSheets.spreadsheet(spreadSheetId);
       return Future(() {

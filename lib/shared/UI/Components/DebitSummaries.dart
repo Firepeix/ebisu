@@ -1,4 +1,4 @@
-import 'package:ebisu/expenditure/Domain/ExpenditureSummary.dart';
+import 'package:ebisu/modules/expenditure/domain/ExpenditureSummary.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';

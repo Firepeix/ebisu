@@ -1,18 +1,19 @@
 import 'package:ebisu/configuration/UI/Pages/Configuration.dart';
 import 'package:ebisu/domain/travel/models/travel_day_model.dart';
 import 'package:ebisu/domain/travel/models/travel_expense_model.dart';
+import 'package:ebisu/modules/configuration/domain/repositories/config_repository.dart';
 import 'package:ebisu/modules/core/interactor.dart';
 import 'package:ebisu/modules/scout/book/book.dart';
 import 'package:ebisu/shared/Infrastructure/Ebisu.dart';
 import 'package:ebisu/shared/configuration/app_configuration.dart';
 import 'package:ebisu/shared/navigator/navigator_interface.dart';
+import 'package:ebisu/shared/services/notification_service.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:injectable/injectable.dart';
 
 import 'main.config.dart';
-import 'pages/travel/days/travel_expense_page.dart';
 import 'shared/Infrastructure/Providers/ServiceProvider.dart';
 
 final getIt = GetIt.instance;
@@ -54,12 +55,12 @@ class MyApp extends StatelessWidget {
       theme: _configuration.getTheme(),
       initialRoute: '/',
       routes: {
-        '/': (context) => _configuration.theme == AppTheme.tutu ? MyHomePage(title: 'Home') : TravelExpensePage(),
+        '/': (context) =>  MyHomePage(title: 'Home'),
       },
       navigatorKey: _interactor.navigatorKey(),
       onGenerateRoute: (settings) {
         if (settings.name == "/configuration") {
-          return ConfigurationPage().getRoute();
+          return ConfigurationPage(getIt<ConfigRepositoryInterface>(), getIt<NotificationService>()).getRoute();
         }
 
         if (_pageContainer.hasPage(settings.name ?? '')) {
@@ -106,4 +107,8 @@ void routeToPop(BuildContext context, Widget view, int times) {
   }
 
   routeTo(context, view);
+}
+
+void routeToBack(BuildContext context) {
+  Navigator.pop(context);
 }

@@ -1,12 +1,12 @@
 import 'package:ebisu/domain/travel/travel_expense_service.dart';
 import 'package:ebisu/main.dart';
 import 'package:ebisu/shared/form/BiFormValue.dart';
-import 'package:ebisu/src/UI/Components/Form/InputFactory.dart';
 import 'package:ebisu/src/UI/Components/Form/InputValidator.dart';
 import 'package:ebisu/ui_components/chronos/buttons/float_action_button.dart';
 import 'package:ebisu/ui_components/chronos/buttons/simple_fab.dart';
 import 'package:ebisu/ui_components/chronos/controllers/date_controller.dart';
-import 'package:ebisu/ui_components/chronos/inputs/input.dart';
+import 'package:ebisu/ui_components/chronos/form/inputs/amount_input.dart';
+import 'package:ebisu/ui_components/chronos/form/inputs/input.dart';
 import 'package:ebisu/ui_components/chronos/labels/money.dart';
 import 'package:ebisu/ui_components/chronos/layout/view_body.dart';
 import 'package:flutter/material.dart';
@@ -115,7 +115,7 @@ class _Validator extends InputValidator{
 
   String? amount (String? value) {
     if (!this.isRequired(value)) {
-      double? amount = double.tryParse(value!.replaceAll(',', '.'));
+      int? amount = Money.parse(value ?? "");
       if (amount != null) {
         return amount > 0 ? null : 'Valor deve ser maior que 0';
       }

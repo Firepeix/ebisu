@@ -47,13 +47,11 @@ class AppConfiguration {
 
   factory AppConfiguration._internal() {
     final features = (const String.fromEnvironment("FEATURES", defaultValue: "")).split(",").map((e) => _Feature(e)).toList();
-    final userId = const String.fromEnvironment("USER", defaultValue: "tutu");
-
     return AppConfiguration._init(
-        user: _User.fromId(userId),
-        theme: const String.fromEnvironment("THEME", defaultValue: "wewe") == AppTheme.tutu.name ? AppTheme.tutu : AppTheme.wewe,
-        travelSheetId: const String.fromEnvironment("TRAVEL_SHEET_ID", defaultValue: ""),
-        features: features
+      user: _User.fromId(const String.fromEnvironment("USER", defaultValue: "tutu")),
+      theme: const String.fromEnvironment("THEME", defaultValue: "wewe") == AppTheme.tutu.name ? AppTheme.tutu : AppTheme.wewe,
+      travelSheetId: const String.fromEnvironment("TRAVEL_SHEET_ID", defaultValue: ""),
+      features: features,
     );
   }
   
@@ -64,13 +62,23 @@ class AppConfiguration {
   ThemeData _tutuTheme() {
     return ThemeData(
       primaryColor: Colors.red,
-      colorScheme: ColorScheme.fromSeed(seedColor: Colors.red, primary: Colors.red, secondary: Colors.redAccent),
+      colorScheme: ColorScheme.fromSeed(
+          primaryContainer: Colors.red[700],
+          seedColor: Colors.red,
+          primary: Colors.red,
+          secondary: Colors.redAccent
+      ),
     );
   }
   
   ThemeData _weweTheme() {
     return ThemeData(
-      colorScheme: ColorScheme.fromSeed(seedColor: Colors.lightBlue, primary: Colors.lightBlue, secondary: Colors.orangeAccent),
+      colorScheme: ColorScheme.fromSeed(
+          primaryContainer: Colors.blue[700],
+          seedColor: Colors.lightBlue,
+          primary: Colors.lightBlue,
+          secondary: Colors.orangeAccent
+      ),
     );
   }
 }

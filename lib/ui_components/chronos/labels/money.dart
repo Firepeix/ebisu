@@ -1,3 +1,4 @@
+import 'package:ebisu/shared/utils/matcher.dart';
 import 'package:flutter/material.dart';
 
 enum MoneyStrata {
@@ -9,17 +10,31 @@ enum MoneyStrata {
 class Money extends StatelessWidget {
   final int value;
   final Color? color;
-  const Money(this.value, {Key? key, this.color}) : super(key: key);
+  final double size;
+  final bool valueBasedColor;
+  const Money(this.value, {Key? key, this.color, this.valueBasedColor = false, this.size = 19}) : super(key: key);
 
   @override
   Widget build(BuildContext context) => Text(
     toReal(),
     style: TextStyle(
         fontWeight: FontWeight.w700,
-        fontSize: 19,
-        color: color ?? Theme.of(context).colorScheme.secondary
+        fontSize: size,
+        color: _color(context)
     ),
   );
+
+  Color _color(BuildContext context) {
+    if (valueBasedColor) {
+      return Matcher.matchWhen(strata, {
+        MoneyStrata.positive: Colors.green.shade800,
+        MoneyStrata.zeroed: Colors.blue.shade800,
+        MoneyStrata.negative: Colors.red.shade800,
+      });
+    }
+
+    return color ?? Theme.of(context).colorScheme.secondary;
+  }
 
   String toReal() {
     final amount = value >= 0 ? value / 100 : (value / 100) * -1;
@@ -29,6 +44,11 @@ class Money extends StatelessWidget {
 
   double toDouble() {
     return value / 100;
+  }
+
+  static int? parse(String real) {
+    final amount = real.replaceAll(",", "").replaceAll('.', '');
+    return int.tryParse(amount);
   }
 
   String _addSeparators(String src, String divider) {

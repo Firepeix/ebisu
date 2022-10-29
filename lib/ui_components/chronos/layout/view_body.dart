@@ -1,6 +1,6 @@
+import 'package:ebisu/main.dart';
 import 'package:ebisu/modules/core/components/drawer.dart';
 import 'package:ebisu/modules/core/interactor.dart';
-import 'package:ebisu/shared/dependency/dependency_container.dart';
 import 'package:ebisu/ui_components/chronos/bodies/body.dart';
 import 'package:ebisu/ui_components/chronos/buttons/float_action_button.dart';
 import 'package:flutter/material.dart';
@@ -27,7 +27,7 @@ class ViewBody extends StatelessWidget {
       appBar: AppBar(
         title: Text(title),
       ),
-      drawer: EbisuDrawer(DependencyManager.get<CoreInteractorInterface>()),
+      drawer: EbisuDrawer(getIt<CoreInteractorInterface>()),
       floatingActionButton: fab?.button,
       floatingActionButtonLocation: fab?.location,
       body: body ?? Body(child: child!),

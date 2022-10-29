@@ -1,5 +1,5 @@
-import 'package:ebisu/modules/dialogs/confirm_dialog.dart';
 import 'package:ebisu/shared/navigator/navigator_interface.dart';
+import 'package:ebisu/ui_components/chronos/dialogs/confirm_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:injectable/injectable.dart';
 
@@ -38,6 +38,20 @@ class NotificationService {
         duration: Duration(seconds: 4),
         behavior: behavior,)
       );
+    }
+  }
+
+  void displayError ({BuildContext? context, String message = "Erro", behavior: SnackBarBehavior.fixed}) {
+    context = context ?? _contextService.getContext();
+    if (context != null) {
+      ScaffoldMessengerState messenger = ScaffoldMessenger.of(context);
+      messenger.hideCurrentSnackBar();
+      messenger.showSnackBar(SnackBar(
+          content: Text(message),
+          duration: Duration(seconds: 4),
+          backgroundColor: Colors.red,
+          behavior: behavior
+      ));
     }
   }
 

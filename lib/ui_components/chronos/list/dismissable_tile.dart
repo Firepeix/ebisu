@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 typedef DismissedCallback = void Function(bool isDismissed);
 
 class DismissibleTile extends StatelessWidget {
-  final DecoratedListTileBox child;
+  final DecoratedTile child;
   final DismissedCallback? onDismissed;
   final bool confirmOnDismissed;
   final _notification = getIt<NotificationService>();
@@ -17,7 +17,7 @@ class DismissibleTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Dismissible(
-      key: Key(confirmOnDismissed ? "${child.tile.id()}-${DateTime.now()}" : child.tile.id()),
+      key: Key(confirmOnDismissed ? "${child.id()}-${DateTime.now()}" : child.id()),
       onDismissed: (_) async {
         if (confirmOnDismissed) {
           final result = await _notification.displayConfirmation(context: context);

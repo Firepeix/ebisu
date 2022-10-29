@@ -4,7 +4,10 @@ import 'package:flutter/material.dart';
 class DateController implements Controller{
   final _controller = TextEditingController();
 
-  DateController() {
+  DateController({DateTime? initialValue}) {
+    if (initialValue != null) {
+      _setInitialValue(initialValue);
+    }
     _controller.addListener(() {
       final String text = _applyDate(_controller.text.replaceAll(RegExp(r'\D'), ""));
 
@@ -15,6 +18,15 @@ class DateController implements Controller{
         composing: TextRange.empty,
       );
     });
+  }
+
+  void _setInitialValue(DateTime value) {
+    final text = value.toString().split(" ")[0].split("-").reversed.join("/");
+    _controller.value = _controller.value.copyWith(
+      text: text,
+      selection: TextSelection(baseOffset: text.length, extentOffset: text.length),
+      composing: TextRange.empty,
+    );
   }
 
   String _applyDate(String rawNumbers) {
