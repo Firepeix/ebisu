@@ -1,5 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.tutufernandes.ebisu">
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
    <application
         android:label="Ebisu"
         android:icon="@mipmap/ic_launcher">
@@ -39,5 +41,4 @@
             android:name="flutterEmbedding"
             android:value="2" />
    </application>
-    <uses-permission android:name="android.permission.INTERNET"/>
 </manifest>
