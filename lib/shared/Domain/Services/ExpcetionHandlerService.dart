@@ -1,44 +1,37 @@
-import 'package:ebisu/shared/dependency/dependency_container.dart';
-import 'package:firebase_crashlytics/firebase_crashlytics.dart';
+import 'package:ebisu/shared/exceptions/handler.dart';
+import 'package:ebisu/shared/exceptions/result.dart';
 import 'package:flutter/material.dart';
 import 'package:injectable/injectable.dart';
 
 abstract class ExceptionHandlerServiceInterface {
-  T? wrap<T>(Function callback);
-  Future<T?> wrapAsync<T>(Function callback);
+  T? wrap<T>(Function callback, {String? errorContext});
+  Future<T?> wrapAsync<T>(Function callback, {String? errorContext});
   void displayError(String message, BuildContext context, {behavior: SnackBarBehavior.fixed});
 }
 
 @Singleton(as: ExceptionHandlerServiceInterface)
 class ExceptionHandlerService implements ExceptionHandlerServiceInterface {
+  final ExceptionHandlerInterface _handler;
+
+  ExceptionHandlerService(this._handler);
 
   @override
-  T? wrap<T>(Function callback) {
+  T? wrap<T>(Function callback, {String? errorContext}) {
     try {
       return callback();
     } catch (error) {
-      final context = DependencyManager.getContext();
-      if (context != null) {
-        FirebaseCrashlytics.instance.recordFlutterFatalError(FlutterErrorDetails(exception: error));
-        displayError(error.toString(), context);
-      } else {
-        throw error;
-      }
+      final _error = _handler.parseError(error, errorContext: errorContext);
+      _handler.expect(Result(null, _error));
     }
   }
 
   @override
-  Future<T?> wrapAsync<T>(Function callback) async {
+  Future<T?> wrapAsync<T>(Function callback, {String? errorContext}) async {
     try {
       return await callback();
     } catch (error) {
-      final context = DependencyManager.getContext();
-      if (context != null) {
-        FirebaseCrashlytics.instance.recordFlutterFatalError(FlutterErrorDetails(exception: error));
-        displayError(error.toString(), context);
-      } else {
-        throw error;
-      }
+      final _error = _handler.parseError(error, errorContext: errorContext);
+      _handler.expect(Result(null, _error));
     }
   }
 

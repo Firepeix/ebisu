@@ -1,6 +1,6 @@
+import 'package:ebisu/shared/exceptions/reporter.dart';
 import 'package:ebisu/shared/exceptions/result.dart';
 import 'package:ebisu/shared/services/notification_service.dart';
-import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/material.dart';
 import 'package:injectable/injectable.dart';
 
@@ -9,13 +9,17 @@ abstract class ExceptionHandlerInterface {
   // TODO ADD UNWRAP
   // TODO ADD IGNORE
   // TODO ADD GET ERROR
+  ResultError createError(Error error, {StackTrace? alternativeStackTrace, String? errorContext});
+  UnknownError createUnknownError(Object error, {StackTrace? alternativeStackTrace, String? errorContext});
+  ResultError parseError(Object error, {StackTrace? alternativeStackTrace, String? errorContext});
 }
 
 @Singleton(as: ExceptionHandlerInterface)
 class ExceptionHandler implements ExceptionHandlerInterface {
   final NotificationService _notificationService;
+  final ReporterServiceInterface _reporterService;
 
-  ExceptionHandler(this._notificationService);
+  ExceptionHandler(this._notificationService, this._reporterService);
 
   void _displayError (ResultError error, {behavior: SnackBarBehavior.fixed}) {
       _notificationService.displayError(message: "${error.message ?? ""}${error.details?.messageAddon ?? ""}");
@@ -24,9 +28,7 @@ class ExceptionHandler implements ExceptionHandlerInterface {
   @override
   V? expect<V, E extends ResultError>(Result<V, E> result) {
     if (result.hasError()) {
-      if (result.error!.details != null) {
-        analyzeError(result.error!.details!);
-      }
+      _reporterService.reportError(result.error!);
       _displayError(result.error!);
       return null;
     }
@@ -34,9 +36,31 @@ class ExceptionHandler implements ExceptionHandlerInterface {
     return result.unwrap();
   }
 
-  void analyzeError(Details details) {
-    if(details.data is FlutterErrorDetails) {
-      FirebaseCrashlytics.instance.recordFlutterFatalError(details.data);
+  @override
+  ResultError createError(Error error, {StackTrace? alternativeStackTrace, String? errorContext}) {
+    return UnknownError(Details(data: FlutterErrorDetails(
+        exception: error,
+        stack: error.stackTrace ?? alternativeStackTrace,
+        library: "Ebisu",
+        context: errorContext != null ? ErrorDescription(errorContext) : null
+    )));
+  }
+
+  @override
+  UnknownError createUnknownError(Object error, {StackTrace? alternativeStackTrace, String? errorContext}) {
+    return UnknownError(Details(data: FlutterErrorDetails(
+        exception: error,
+        stack: alternativeStackTrace,
+        context: errorContext != null ? ErrorDescription(errorContext) : null
+    )));
+  }
+
+  @override
+  ResultError parseError(Object error, {StackTrace? alternativeStackTrace, String? errorContext}) {
+    if (error is Error) {
+      return createError(error, alternativeStackTrace: alternativeStackTrace, errorContext: errorContext);
     }
+
+    return createUnknownError(error, alternativeStackTrace: alternativeStackTrace, errorContext: errorContext);
   }
 }

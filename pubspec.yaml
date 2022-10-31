@@ -17,7 +17,7 @@ dependencies:
   gsheets: ^0.3.1
   file_picker: ^3.0.3
   shared_preferences: ^2.0.6
-  injectable: ^1.4.1
+  injectable: ^1.5.3
   hive: ^2.0.4
   hive_flutter: ^1.1.0
   fl_chart: ^0.36.3

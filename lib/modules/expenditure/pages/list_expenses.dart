@@ -48,7 +48,6 @@ class _ListExpendituresPageState extends State<ListExpendituresPage> {
   }
 
   void _deleteExpense(bool hasBeenDismissed, int index) async {
-    print([hasBeenDismissed, index]);
     if (hasBeenDismissed) {
       final result = await widget._service.deleteExpense(expenditures[index]);
       if (result.isOk()) {

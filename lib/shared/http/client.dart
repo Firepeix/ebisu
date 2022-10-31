@@ -21,7 +21,7 @@ typedef EncodeJson<B> = Map<dynamic, dynamic> Function(B body);
 typedef DecodeError = ResultError Function(ErrorResponse response);
 
 class HttpError extends ResultError {
-  HttpError.unknown(FlutterErrorDetails? details) : super("Ops! Ocorreu um erro. Tente Novamente mais tarde.", "U1", Details(data: details)) ;
+  const HttpError.unknown() : super("Ops! Ocorreu um erro. Tente Novamente mais tarde.", "U1", null) ;
   const HttpError.server(details) : super(null, "U2", details) ;
   const HttpError.unauthorized() : super("Acesso negado ao acessar o servidor", "U3", null) ;
 }
@@ -30,10 +30,12 @@ class HttpError extends ResultError {
 class Caron {
   Mapper _mapper;
   ConfigRepositoryInterface _configRepository;
+  late ExceptionHandlerInterface _handler;
   late AuthServiceInterface _authService;
 
-  Caron(this._mapper, this._configRepository, NotificationService notificationService, ExceptionHandlerInterface exceptionHandlerInterface) {
-    _authService = AuthService(this, notificationService, exceptionHandlerInterface, _configRepository);
+  Caron(this._mapper, this._configRepository, NotificationService notificationService, ExceptionHandlerInterface handler) {
+    _handler = handler;
+    _authService = AuthService(this, notificationService, _handler, _configRepository);
   }
 
   Future<Uri> _url(String endpoint) async {
@@ -115,7 +117,6 @@ class Caron {
 
   Result<R, ResultError> _parseError<R extends Response, V>({http.Response? response, DecodeError? errorDecoder, Object? error}) {
     if (response != null) {
-      print(response.reasonPhrase);
       if(response.statusCode == HttpCodes.Unauthorized) {
         final context = DependencyManager.getContext();
         if (context != null) {
@@ -126,11 +127,18 @@ class Caron {
 
       final errorResponse = _mapper.fromErrorJson(jsonDecode(response.body), response.statusCode);
 
-      return Result(null, errorDecoder?.call(errorResponse) ?? HttpError.server(Details(messageAddon: errorResponse.message)));
+      return Result(null, errorDecoder?.call(errorResponse) ?? HttpError.server(Details(messageAddon: "${errorResponse.message}", data: jsonDecode(response.body))));
     }
-    return Result(null, HttpError.unknown(error != null ? FlutterErrorDetails(exception: error) : null));
+
+    if (error != null) {
+        return Result(null, _handler.parseError(error));
+    }
+
+    return Result(null, HttpError.unknown());
   }
 
+  /// Esse método existe para que no futuro se necessário
+  /// seja possível formatar erros de API em erros FLUTTER
   FlutterErrorDetails parseError(String message, int statusCode, String phrase) {
     return FlutterErrorDetails(exception: FlutterError(
         "Client Exception.\n" +

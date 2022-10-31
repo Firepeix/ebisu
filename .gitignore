@@ -47,3 +47,4 @@ app.*.map.json
 scout-cred.json
 lib/main.config.dart
 lib/firebase_options.dart
+android/app/google-services.json

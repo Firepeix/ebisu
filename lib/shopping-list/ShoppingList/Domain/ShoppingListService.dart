@@ -9,7 +9,6 @@ abstract class ShoppingListServiceInterface {
 @Singleton(as: ShoppingListServiceInterface)
 class ShoppingListService implements ShoppingListServiceInterface {
   Future<ShoppingList?> merge(ShoppingList mutable, ShoppingList truthSource) {
-    print("123");
     return Future.value(null);
   }
 }

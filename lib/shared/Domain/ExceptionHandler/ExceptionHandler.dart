@@ -6,7 +6,6 @@ mixin DisplaysErrors {
   final ExceptionHandlerServiceInterface _service = getIt<ExceptionHandlerServiceInterface>();
 
   void displayError (Object error, {BuildContext? context}) {
-    print(error);
     if (context != null) {
       _service.displayError(error.toString(), context, behavior: SnackBarBehavior.floating);
     }
