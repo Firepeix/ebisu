@@ -4,6 +4,8 @@ import 'package:ebisu/shopping-list/Purchase/Infrastructure/Providers/ServicesPr
 import 'package:ebisu/shopping-list/ShoppingList/Infrastructure/Providers/ServicesProvider.dart';
 import 'package:injectable/injectable.dart';
 
+import '../../Domain/Services/ExpcetionHandlerService.dart';
+
 abstract class ServiceProvider {
   void register ();
 }
@@ -16,6 +18,11 @@ abstract class PageServiceProvider {
 
 @singleton
 class PageContainer {
+  // ignore: unused
+  ExceptionHandlerServiceInterface _dummy;
+
+  PageContainer(this._dummy);
+
   List<PageServiceProvider?> _providers = [
     ShoppingListPageServiceProvider(),
     PurchasePageServiceProvider()

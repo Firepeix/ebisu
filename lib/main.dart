@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:ebisu/configuration/UI/Pages/Configuration.dart';
 import 'package:ebisu/domain/travel/models/travel_day_model.dart';
 import 'package:ebisu/domain/travel/models/travel_expense_model.dart';
@@ -6,13 +8,18 @@ import 'package:ebisu/modules/core/interactor.dart';
 import 'package:ebisu/modules/scout/book/book.dart';
 import 'package:ebisu/shared/Infrastructure/Ebisu.dart';
 import 'package:ebisu/shared/configuration/app_configuration.dart';
+import 'package:ebisu/shared/exceptions/handler.dart';
+import 'package:ebisu/shared/exceptions/result.dart';
 import 'package:ebisu/shared/navigator/navigator_interface.dart';
 import 'package:ebisu/shared/services/notification_service.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:injectable/injectable.dart';
 
+import 'firebase_options.dart';
 import 'main.config.dart';
 import 'shared/Infrastructure/Providers/ServiceProvider.dart';
 
@@ -35,9 +42,29 @@ void register() {
   Hive.registerAdapter(TravelExpenseModelAdapter());
 }
 
+void installExceptionHandler() {
+  FlutterError.onError = (FlutterErrorDetails details) {
+    getIt<ExceptionHandlerInterface>().expect(Result(null, UnknownError(Details(data: details))));
+  };
+
+  PlatformDispatcher.instance.onError = (error, stack) {
+    final service = getIt<ExceptionHandlerInterface>();
+    service.expect(Result(null, service.parseError(error, alternativeStackTrace: stack)));
+    return true;
+  };
+}
+
+Future<void> installRelease() async {
+  if(!kDebugMode) {
+    await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform,);
+  }
+}
+
 void main() async {
   await Hive.initFlutter();
+  await installRelease();
   configureDependencies();
+  installExceptionHandler();
   runApp(MyApp(getIt<PageContainer>(), AppConfiguration()));
 }
 

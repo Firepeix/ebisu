@@ -10,6 +10,7 @@ import 'package:ebisu/shared/exceptions/result.dart';
 import 'package:ebisu/shared/http/codes.dart';
 import 'package:ebisu/shared/http/mapper.dart';
 import 'package:ebisu/shared/services/notification_service.dart';
+import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:injectable/injectable.dart';
 
@@ -29,10 +30,12 @@ class HttpError extends ResultError {
 class Caron {
   Mapper _mapper;
   ConfigRepositoryInterface _configRepository;
+  late ExceptionHandlerInterface _handler;
   late AuthServiceInterface _authService;
 
-  Caron(this._mapper, this._configRepository, NotificationService notificationService, ExceptionHandlerInterface exceptionHandlerInterface) {
-    _authService = AuthService(this, notificationService, exceptionHandlerInterface, _configRepository);
+  Caron(this._mapper, this._configRepository, NotificationService notificationService, ExceptionHandlerInterface handler) {
+    _handler = handler;
+    _authService = AuthService(this, notificationService, _handler, _configRepository);
   }
 
   Future<Uri> _url(String endpoint) async {
@@ -113,9 +116,7 @@ class Caron {
   }
 
   Result<R, ResultError> _parseError<R extends Response, V>({http.Response? response, DecodeError? errorDecoder, Object? error}) {
-    // TODO - ADD LOG
     if (response != null) {
-      print(response.reasonPhrase);
       if(response.statusCode == HttpCodes.Unauthorized) {
         final context = DependencyManager.getContext();
         if (context != null) {
@@ -125,9 +126,25 @@ class Caron {
       }
 
       final errorResponse = _mapper.fromErrorJson(jsonDecode(response.body), response.statusCode);
-      return Result(null, errorDecoder?.call(errorResponse) ?? HttpError.server(Details(messageAddon: errorResponse.message)));
+
+      return Result(null, errorDecoder?.call(errorResponse) ?? HttpError.server(Details(messageAddon: "${errorResponse.message}", data: jsonDecode(response.body))));
     }
-    print(error);
+
+    if (error != null) {
+        return Result(null, _handler.parseError(error));
+    }
+
     return Result(null, HttpError.unknown());
+  }
+
+  /// Esse método existe para que no futuro se necessário
+  /// seja possível formatar erros de API em erros FLUTTER
+  FlutterErrorDetails parseError(String message, int statusCode, String phrase) {
+    return FlutterErrorDetails(exception: FlutterError(
+        "Client Exception.\n" +
+            "Message: $message.\n" +
+            "Status: $statusCode.\n" +
+            "Phrase: $phrase.\n"
+    ));
   }
 }

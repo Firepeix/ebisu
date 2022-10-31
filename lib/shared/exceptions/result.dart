@@ -9,6 +9,10 @@ abstract class ResultError {
   const ResultError(this.message, this.code, this.details);
 }
 
+class UnknownError extends ResultError {
+  const UnknownError(details) : super("Ops! Ocorreu um erro. Tente Novamente mais tarde.", "FU1", details) ;
+}
+
 class Details {
   String? messageAddon;
   dynamic data;
