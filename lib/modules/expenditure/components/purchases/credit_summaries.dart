@@ -6,6 +6,7 @@ import 'package:ebisu/shared/UI/Components/Grids.dart';
 import 'package:ebisu/shared/UI/Components/Shimmer.dart';
 import 'package:ebisu/shared/navigator/navigator_interface.dart';
 import 'package:ebisu/ui_components/chronos/buttons/transparent_button.dart';
+import 'package:ebisu/ui_components/chronos/cards/general_card.dart';
 import 'package:ebisu/ui_components/chronos/labels/money.dart';
 import 'package:flutter/material.dart';
 
@@ -23,7 +24,7 @@ class CreditSummaries extends StatelessWidget {
           physics: NeverScrollableScrollPhysics(),
           shrinkWrap: true,
             gridDelegate: SliverGridDelegateWithFixedCrossAxisCountAndCentralizedLastElement(
-              childAspectRatio: 1 / 1.25,
+              childAspectRatio: 1 / 1.20,
               crossAxisCount: 2,
               mainAxisSpacing: 0,
               crossAxisSpacing: 2,
@@ -44,8 +45,8 @@ class _CreditSummary extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      elevation: 4,
+    return GeneralCard(
+      hasOwnPadding: true,
       child: TransparentButton(
         () => routeTo(context, UpdateCardPage(summary.card.id, summary.card.name), animation: IntoViewAnimation.pop),
         child: Column(
@@ -73,7 +74,7 @@ class _CreditSummary extends StatelessWidget {
             ),
             EbisuDivider(),
             Padding(
-              padding: EdgeInsets.only(top: 3, left: 4, right: 4, bottom: 4),
+              padding: EdgeInsets.only(top: 4, left: 4, right: 4, bottom: 4),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
@@ -90,53 +91,39 @@ class _CreditSummary extends StatelessWidget {
 
 
 class CreditSummariesSkeleton extends StatelessWidget {
+  final int quantity;
+  const CreditSummariesSkeleton(this.quantity);
+
   @override
   Widget build(BuildContext context) =>
       Shimmer(
         child: ShimmerLoading(isLoading: true, child: Padding(
-          padding: EdgeInsets.only(top: 20, bottom: 14),
+          padding: EdgeInsets.only(top: 15, bottom: 14),
           child: GridView.builder(
             physics: NeverScrollableScrollPhysics(),
             shrinkWrap: true,
             gridDelegate: SliverGridDelegateWithFixedCrossAxisCountAndCentralizedLastElement(
+                childAspectRatio: 1 / 1.20,
                 crossAxisCount: 2,
                 mainAxisSpacing: 0,
                 crossAxisSpacing: 2,
-                childAspectRatio: 1 / 0.91,
-                itemCount: 2
+                itemCount: quantity
             ),
-            itemCount: 2,
-            itemBuilder: (BuildContext context, int index) => Container(
-              height: 177.0,
-              decoration: const BoxDecoration(
-                color: Colors.black,
-                borderRadius: BorderRadius.all(Radius.circular(8)),
-                shape: BoxShape.rectangle,
-              ),
-            ),
+            itemCount: quantity,
+            itemBuilder: (BuildContext context, int index) {
+              return Padding(
+                  padding: EdgeInsets.all(4),
+                child: Container(
+                  decoration: const BoxDecoration(
+                    color: Colors.black,
+                    borderRadius: BorderRadius.all(Radius.circular(5)),
+                    shape: BoxShape.rectangle,
+                  ),
+                ),
+              );
+            },
           ),
         )
         ),
-      ); /* @override
-  Widget build(BuildContext context) =>
-      Shimmer(
-        child: ShimmerLoading(isLoading: true, child: Column(
-          children: [
-            Padding(padding: EdgeInsets.symmetric(vertical: 20), child:
-                Row(
-                  children: List.generate(2, (index) => Padding(padding: EdgeInsets.only(right: 4, left: 4), child:
-                  Container(
-                    width: 122,
-                    height: 177.0,
-                    decoration: const BoxDecoration(
-                      color: Colors.black,
-                      borderRadius: BorderRadius.all(Radius.circular(8)),
-                      shape: BoxShape.rectangle,
-                    ),
-                  ),)),
-                )
-            )
-          ],
-        )),
-      );*/
+      );
 }
