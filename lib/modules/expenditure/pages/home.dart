@@ -25,7 +25,7 @@ class _Content extends StatefulWidget {
     return ListView(
       children: [
         //Padding(padding: EdgeInsets.only(top: 20), child: EbisuTitle('Resumo de Credito'),),
-        state.loaded ? summary : CreditSummariesSkeleton(),
+        state.loaded ? summary : CreditSummariesSkeleton(state.creditSummaryQuantity),
       ],
     );
   }
@@ -45,6 +45,7 @@ class _Content extends StatefulWidget {
 
 class _ContentState extends State<_Content> {
   bool loaded = false;
+  int creditSummaryQuantity = 4;
   List<CreditExpensePurchaseSummaryModel> creditSummaries = [];
   DebitExpenditureSummary? debitSummary;
 
@@ -55,6 +56,8 @@ class _ContentState extends State<_Content> {
   }
 
   Future<void> updateHomeState ({cacheLess: false}) async {
+    creditSummaryQuantity = await widget._service.getLocalCreditSummaryQuantity();
+    setState(() {});
     await Future.wait([
       _setCreditExpendituresSummary(),
       _setDebitExpendituresSummary(cacheLess)

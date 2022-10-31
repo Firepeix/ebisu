@@ -24,7 +24,7 @@ class CreditSummaries extends StatelessWidget {
           physics: NeverScrollableScrollPhysics(),
           shrinkWrap: true,
             gridDelegate: SliverGridDelegateWithFixedCrossAxisCountAndCentralizedLastElement(
-              childAspectRatio: 1 / 1.19,
+              childAspectRatio: 1 / 1.20,
               crossAxisCount: 2,
               mainAxisSpacing: 0,
               crossAxisSpacing: 2,
@@ -46,7 +46,6 @@ class _CreditSummary extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GeneralCard(
-      elevation: 4,
       hasOwnPadding: true,
       child: TransparentButton(
         () => routeTo(context, UpdateCardPage(summary.card.id, summary.card.name), animation: IntoViewAnimation.pop),
@@ -92,53 +91,39 @@ class _CreditSummary extends StatelessWidget {
 
 
 class CreditSummariesSkeleton extends StatelessWidget {
+  final int quantity;
+  const CreditSummariesSkeleton(this.quantity);
+
   @override
   Widget build(BuildContext context) =>
       Shimmer(
         child: ShimmerLoading(isLoading: true, child: Padding(
-          padding: EdgeInsets.only(top: 20, bottom: 14),
+          padding: EdgeInsets.only(top: 15, bottom: 14),
           child: GridView.builder(
             physics: NeverScrollableScrollPhysics(),
             shrinkWrap: true,
             gridDelegate: SliverGridDelegateWithFixedCrossAxisCountAndCentralizedLastElement(
+                childAspectRatio: 1 / 1.20,
                 crossAxisCount: 2,
                 mainAxisSpacing: 0,
                 crossAxisSpacing: 2,
-                childAspectRatio: 1 / 0.91,
-                itemCount: 2
+                itemCount: quantity
             ),
-            itemCount: 2,
-            itemBuilder: (BuildContext context, int index) => Container(
-              height: 177.0,
-              decoration: const BoxDecoration(
-                color: Colors.black,
-                borderRadius: BorderRadius.all(Radius.circular(8)),
-                shape: BoxShape.rectangle,
-              ),
-            ),
+            itemCount: quantity,
+            itemBuilder: (BuildContext context, int index) {
+              return Padding(
+                  padding: EdgeInsets.all(4),
+                child: Container(
+                  decoration: const BoxDecoration(
+                    color: Colors.black,
+                    borderRadius: BorderRadius.all(Radius.circular(5)),
+                    shape: BoxShape.rectangle,
+                  ),
+                ),
+              );
+            },
           ),
         )
         ),
-      ); /* @override
-  Widget build(BuildContext context) =>
-      Shimmer(
-        child: ShimmerLoading(isLoading: true, child: Column(
-          children: [
-            Padding(padding: EdgeInsets.symmetric(vertical: 20), child:
-                Row(
-                  children: List.generate(2, (index) => Padding(padding: EdgeInsets.only(right: 4, left: 4), child:
-                  Container(
-                    width: 122,
-                    height: 177.0,
-                    decoration: const BoxDecoration(
-                      color: Colors.black,
-                      borderRadius: BorderRadius.all(Radius.circular(8)),
-                      shape: BoxShape.rectangle,
-                    ),
-                  ),)),
-                )
-            )
-          ],
-        )),
-      );*/
+      );
 }
