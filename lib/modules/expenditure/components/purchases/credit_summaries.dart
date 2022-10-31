@@ -6,6 +6,7 @@ import 'package:ebisu/shared/UI/Components/Grids.dart';
 import 'package:ebisu/shared/UI/Components/Shimmer.dart';
 import 'package:ebisu/shared/navigator/navigator_interface.dart';
 import 'package:ebisu/ui_components/chronos/buttons/transparent_button.dart';
+import 'package:ebisu/ui_components/chronos/cards/general_card.dart';
 import 'package:ebisu/ui_components/chronos/labels/money.dart';
 import 'package:flutter/material.dart';
 
@@ -23,7 +24,7 @@ class CreditSummaries extends StatelessWidget {
           physics: NeverScrollableScrollPhysics(),
           shrinkWrap: true,
             gridDelegate: SliverGridDelegateWithFixedCrossAxisCountAndCentralizedLastElement(
-              childAspectRatio: 1 / 1.25,
+              childAspectRatio: 1 / 1.19,
               crossAxisCount: 2,
               mainAxisSpacing: 0,
               crossAxisSpacing: 2,
@@ -44,8 +45,9 @@ class _CreditSummary extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
+    return GeneralCard(
       elevation: 4,
+      hasOwnPadding: true,
       child: TransparentButton(
         () => routeTo(context, UpdateCardPage(summary.card.id, summary.card.name), animation: IntoViewAnimation.pop),
         child: Column(
@@ -73,7 +75,7 @@ class _CreditSummary extends StatelessWidget {
             ),
             EbisuDivider(),
             Padding(
-              padding: EdgeInsets.only(top: 3, left: 4, right: 4, bottom: 4),
+              padding: EdgeInsets.only(top: 4, left: 4, right: 4, bottom: 4),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [

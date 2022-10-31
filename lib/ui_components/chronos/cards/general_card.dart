@@ -10,7 +10,12 @@ class GeneralCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Card(
-    elevation: elevation ?? 3,
+    elevation: 0,
+    shape: RoundedRectangleBorder(
+        side: BorderSide(color: Colors.grey.shade400, width: 0.5),
+        borderRadius: BorderRadius.all(Radius.circular(5)
+        )
+    ),
     child: Padding(
       padding: EdgeInsets.all(hasOwnPadding ? 0 : padding),
       child: child,
