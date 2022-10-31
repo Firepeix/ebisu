@@ -13,6 +13,7 @@ import 'package:ebisu/shared/exceptions/result.dart';
 import 'package:ebisu/shared/navigator/navigator_interface.dart';
 import 'package:ebisu/shared/services/notification_service.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:hive_flutter/hive_flutter.dart';
@@ -54,7 +55,9 @@ void installExceptionHandler() {
 }
 
 Future<void> installRelease() async {
-  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform,);
+  if(!kDebugMode) {
+    await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform,);
+  }
 }
 
 void main() async {
