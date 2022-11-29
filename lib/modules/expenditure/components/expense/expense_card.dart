@@ -97,7 +97,7 @@ abstract class _BaseExpenditureViewModel extends StatelessWidget {
     return Container(
         width: 71,
         height: 71,
-        child: Icon(Icons.date_range, size: 71, color: Colors.white,),
+        child: Icon(Icons.date_range, size: 60, color: Colors.white,),
         decoration: BoxDecoration(
           color: Theme.of(context).colorScheme.primaryContainer,
           borderRadius: BorderRadius.all(Radius.circular(8)),
@@ -169,7 +169,7 @@ class _DebitExpenditureViewModel extends _BaseExpenditureViewModel {
     return Container(
         width: 71,
         height: 71,
-        child: Icon(Icons.money, size: 71, color: Colors.white,),
+        child: Icon(Icons.money, size: 60, color: Colors.white,),
         decoration: BoxDecoration(
           color: Theme.of(context).colorScheme.primaryContainer,
           shape: BoxShape.rectangle,
@@ -188,7 +188,7 @@ class _CreditPurchaseExpenditureViewModel extends _BaseExpenditureViewModel {
   Widget getIcon(BuildContext context) => Container(
       width: 71,
       height: 71,
-      child: Icon(Icons.credit_card, size: 71, color: Colors.white,),
+      child: Icon(Icons.credit_card, size: 60, color: Colors.white,),
       decoration: BoxDecoration(
         color: Theme.of(context).colorScheme.primaryContainer,
         borderRadius: BorderRadius.all(Radius.circular(8)),

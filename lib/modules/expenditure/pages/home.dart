@@ -3,6 +3,7 @@ import 'package:ebisu/modules/expenditure/components/purchases/credit_summaries.
 import 'package:ebisu/modules/expenditure/domain/ExpenditureSummary.dart';
 import 'package:ebisu/modules/expenditure/domain/services/purchase_service.dart';
 import 'package:ebisu/modules/expenditure/models/purchase/credit_expense_purchase_summary.dart';
+import 'package:ebisu/shared/state/async_component.dart';
 import 'package:flutter/material.dart';
 
 class ExpenditureHomePage extends StatelessWidget {
@@ -43,7 +44,7 @@ class _Content extends StatefulWidget {
   State<StatefulWidget> createState() => _ContentState();
 }
 
-class _ContentState extends State<_Content> {
+class _ContentState extends State<_Content> with AsyncComponent<_Content>{
   bool loaded = false;
   int creditSummaryQuantity = 4;
   List<CreditExpensePurchaseSummaryModel> creditSummaries = [];
@@ -57,12 +58,12 @@ class _ContentState extends State<_Content> {
 
   Future<void> updateHomeState ({cacheLess: false}) async {
     creditSummaryQuantity = await widget._service.getLocalCreditSummaryQuantity();
-    setState(() {});
+    updateState(() {});
     await Future.wait([
       _setCreditExpendituresSummary(),
       _setDebitExpendituresSummary(cacheLess)
     ]);
-    setState(() {
+    updateState(() {
       loaded = true;
     });
   }

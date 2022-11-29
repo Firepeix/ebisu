@@ -24,7 +24,7 @@ class CreditSummaries extends StatelessWidget {
           physics: NeverScrollableScrollPhysics(),
           shrinkWrap: true,
             gridDelegate: SliverGridDelegateWithFixedCrossAxisCountAndCentralizedLastElement(
-              childAspectRatio: 1 / 1.20,
+              childAspectRatio: 1 / 1.25,
               crossAxisCount: 2,
               mainAxisSpacing: 0,
               crossAxisSpacing: 2,
@@ -98,12 +98,12 @@ class CreditSummariesSkeleton extends StatelessWidget {
   Widget build(BuildContext context) =>
       Shimmer(
         child: ShimmerLoading(isLoading: true, child: Padding(
-          padding: EdgeInsets.only(top: 15, bottom: 14),
+          padding: EdgeInsets.only(top: 10, bottom: 14),
           child: GridView.builder(
             physics: NeverScrollableScrollPhysics(),
             shrinkWrap: true,
             gridDelegate: SliverGridDelegateWithFixedCrossAxisCountAndCentralizedLastElement(
-                childAspectRatio: 1 / 1.20,
+                childAspectRatio: 1 / 1.25,
                 crossAxisCount: 2,
                 mainAxisSpacing: 0,
                 crossAxisSpacing: 2,

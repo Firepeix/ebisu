@@ -4,6 +4,7 @@ import 'package:ebisu/modules/expenditure/domain/services/expense_service.dart';
 import 'package:ebisu/modules/expenditure/models/expense/expenditure_model.dart';
 import 'package:ebisu/modules/expenditure/pages/edit_expense.dart';
 import 'package:ebisu/shared/Infrastructure/Ebisu.dart';
+import 'package:ebisu/shared/state/async_component.dart';
 import 'package:ebisu/ui_components/chronos/layout/home_view.dart';
 import 'package:ebisu/ui_components/chronos/list/dismissable_tile.dart';
 import 'package:flutter/material.dart';
@@ -23,7 +24,7 @@ class ListExpendituresPage extends StatefulWidget implements HomeView {
   @override
   State<StatefulWidget> createState() => _ListExpendituresPageState();
 }
-class _ListExpendituresPageState extends State<ListExpendituresPage> {
+class _ListExpendituresPageState extends State<ListExpendituresPage> with AsyncComponent<ListExpendituresPage> {
   List<ExpenseModel> expenditures = [];
   bool loaded = false;
 
@@ -35,14 +36,14 @@ class _ListExpendituresPageState extends State<ListExpendituresPage> {
 
   void _setInitialState () async {
     setExpenditures();
-    setState(() {
+    updateState(() {
       loaded = true;
     });
   }
 
   Future<void> setExpenditures() async {
     final expenditures = await widget._service.getCurrentExpenses();
-    setState(() {
+    updateState(() {
       this.expenditures = expenditures;
     });
   }
