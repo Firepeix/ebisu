@@ -46,10 +46,10 @@ class AppConfiguration {
   }
 
   factory AppConfiguration._internal() {
-    final features = (const String.fromEnvironment("FEATURES", defaultValue: "")).split(",").map((e) => _Feature(e)).toList();
+    final features = (const String.fromEnvironment("FEATURES", defaultValue: "expenses,shopping,books,travel")).split(",").map((e) => _Feature(e)).toList();
     return AppConfiguration._init(
       user: _User.fromId(const String.fromEnvironment("USER", defaultValue: "tutu")),
-      theme: const String.fromEnvironment("THEME", defaultValue: "wewe") == AppTheme.tutu.name ? AppTheme.tutu : AppTheme.wewe,
+      theme: const String.fromEnvironment("THEME", defaultValue: "tutu") == AppTheme.tutu.name ? AppTheme.tutu : AppTheme.wewe,
       travelSheetId: const String.fromEnvironment("TRAVEL_SHEET_ID", defaultValue: ""),
       features: features,
     );

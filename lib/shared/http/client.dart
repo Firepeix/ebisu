@@ -21,9 +21,18 @@ typedef EncodeJson<B> = Map<dynamic, dynamic> Function(B body);
 typedef DecodeError = ResultError Function(ErrorResponse response);
 
 class HttpError extends ResultError {
-  const HttpError.unknown() : super("Ops! Ocorreu um erro. Tente Novamente mais tarde.", "U1", null) ;
-  const HttpError.server(details) : super(null, "U2", details) ;
-  const HttpError.unauthorized() : super("Acesso negado ao acessar o servidor", "U3", null) ;
+  const HttpError.unknown() : super("Ops! Ocorreu um erro. Tente Novamente mais tarde.", "U1", null);
+  const HttpError.server(details) : super(null, "U2", details);
+  const HttpError.unauthorized() : super("Acesso negado ao acessar o servidor", "U3", null);
+}
+
+class Tank extends Caron {
+  Tank(super.mapper, super.configRepository, super.notificationService, super.handler);
+
+  @override
+  Application getApplication() {
+    return Application.Scout;
+  }
 }
 
 @singleton
@@ -38,8 +47,12 @@ class Caron {
     _authService = AuthService(this, notificationService, _handler, _configRepository);
   }
 
+  Application getApplication() {
+    return Application.Ebisu;
+  }
+
   Future<Uri> _url(String endpoint) async {
-    final url = await _configRepository.getEndpointUrl();
+    final url = await _configRepository.getEndpointUrl(getApplication());
     final host = url.split("://");
     final uri = host[1].split("/");
     final domain = uri[0];
@@ -53,17 +66,14 @@ class Caron {
   Future<Map<String, String>?> _headers() async {
     final token = await _configRepository.getAuthToken();
 
-    return {
-      "Authorization": "Bearer $token",
-      "Content-Type": "application/json"
-    };
+    return {"Authorization": "Bearer $token", "Content-Type": "application/json"};
   }
 
   Future<Result<DataResponse<V>, ResultError>> get<V>(String endpoint, DecodeJson<V> decoder, {DecodeError? errorDecoder}) async {
     try {
       final response = await http.get(await _url(endpoint), headers: await _headers());
       return _parsePayload<DataResponse<V>, V>(response, decoder: decoder, errorDecoder: errorDecoder);
-    } catch(error) {
+    } catch (error) {
       return _parseError(error: error);
     }
   }
@@ -72,39 +82,42 @@ class Caron {
     try {
       final response = await http.get(await _url(endpoint), headers: await _headers());
       return _parsePayload<ListResponse<V>, V>(response, decoder: decoder, errorDecoder: errorDecoder);
-    } catch(error) {
+    } catch (error) {
       return _parseError(error: error);
     }
   }
 
-  Future<Result<R, ResultError>> post<R extends Response, B>(String endpoint, B body, EncodeJson<B> encoder, {DecodeJson<R>? decoder, DecodeError? errorDecoder}) async {
+  Future<Result<R, ResultError>> post<R extends Response, B>(String endpoint, B body, EncodeJson<B> encoder,
+      {DecodeJson<R>? decoder, DecodeError? errorDecoder}) async {
     try {
       final response = await http.post(await _url(endpoint), body: jsonEncode(encoder(body)), headers: await _headers());
       return _parsePayload<R, R>(response, decoder: decoder ?? _mapper.fromSuccessJson as DecodeJson<R>, errorDecoder: errorDecoder);
-    } catch(error) {
+    } catch (error) {
       return _parseError(error: error);
     }
   }
 
-  Future<Result<R, ResultError>> put<R extends Response, B>(String endpoint, B body, EncodeJson<B> encoder, {DecodeJson<R>? decoder, DecodeError? errorDecoder}) async {
+  Future<Result<R, ResultError>> put<R extends Response, B>(String endpoint, B body, EncodeJson<B> encoder,
+      {DecodeJson<R>? decoder, DecodeError? errorDecoder}) async {
     try {
       final response = await http.put(await _url(endpoint), body: jsonEncode(encoder(body)), headers: await _headers());
       return _parsePayload<R, R>(response, decoder: decoder ?? _mapper.fromSuccessJson as DecodeJson<R>, errorDecoder: errorDecoder);
-    } catch(error) {
+    } catch (error) {
       return _parseError(error: error);
     }
   }
 
   Future<Result<R, ResultError>> delete<R extends Response>(String endpoint, {DecodeError? errorDecoder}) async {
     try {
-        final response = await http.delete(await _url(endpoint), headers: await _headers());
-        return _parsePayload<R, String>(response, successResponse: Success("Elemento deletado com sucesso!") as R);
-      } catch(error) {
+      final response = await http.delete(await _url(endpoint), headers: await _headers());
+      return _parsePayload<R, String>(response, successResponse: Success("Elemento deletado com sucesso!") as R);
+    } catch (error) {
       return _parseError(error: error);
     }
   }
 
-  Result<R, ResultError> _parsePayload<R extends Response, V>(http.Response response, {DecodeJson<V>? decoder, DecodeError? errorDecoder, R? successResponse}) {
+  Result<R, ResultError> _parsePayload<R extends Response, V>(http.Response response,
+      {DecodeJson<V>? decoder, DecodeError? errorDecoder, R? successResponse}) {
     if (response.statusCode.toString().startsWith("2")) {
       if (successResponse != null) {
         return Result(successResponse, null);
@@ -120,7 +133,7 @@ class Caron {
 
   Result<R, ResultError> _parseError<R extends Response, V>({http.Response? response, DecodeError? errorDecoder, Object? error}) {
     if (response != null) {
-      if(response.statusCode == HttpCodes.Unauthorized) {
+      if (response.statusCode == HttpCodes.Unauthorized) {
         final context = DependencyManager.getContext();
         if (context != null) {
           routeTo(context, LoginPage(_authService));
@@ -130,7 +143,8 @@ class Caron {
 
       final errorResponse = _mapper.fromErrorJson(jsonDecode(response.body), response.statusCode);
 
-      return Result(null, errorDecoder?.call(errorResponse) ?? HttpError.server(Details(messageAddon: "${errorResponse.message}", data: jsonDecode(response.body))));
+      return Result(null,
+          errorDecoder?.call(errorResponse) ?? HttpError.server(Details(messageAddon: "${errorResponse.message}", data: jsonDecode(response.body))));
     }
 
     if (error != null) {
@@ -143,11 +157,7 @@ class Caron {
   /// Esse método existe para que no futuro se necessário
   /// seja possível formatar erros de API em erros FLUTTER
   FlutterErrorDetails parseError(String message, int statusCode, String phrase) {
-    return FlutterErrorDetails(exception: FlutterError(
-        "Client Exception.\n" +
-            "Message: $message.\n" +
-            "Status: $statusCode.\n" +
-            "Phrase: $phrase.\n"
-    ));
+    return FlutterErrorDetails(
+        exception: FlutterError("Client Exception.\n" + "Message: $message.\n" + "Status: $statusCode.\n" + "Phrase: $phrase.\n"));
   }
 }
