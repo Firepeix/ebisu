@@ -41,10 +41,13 @@ class Caron {
   Future<Uri> _url(String endpoint) async {
     final url = await _configRepository.getEndpointUrl();
     final host = url.split("://");
+    final uri = host[1].split("/");
+    final domain = uri[0];
+    final path = uri.length > 0 ? "${uri[1]}/$endpoint" : endpoint;
     if (host[0] == "http") {
-      return Uri.http(host[1], endpoint);
+      return Uri.http(domain, path);
     }
-    return Uri.https(host[1], endpoint);
+    return Uri.https(domain, path);
   }
 
   Future<Map<String, String>?> _headers() async {

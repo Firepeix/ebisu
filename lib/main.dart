@@ -13,6 +13,7 @@ import 'package:ebisu/shared/exceptions/result.dart';
 import 'package:ebisu/shared/navigator/navigator_interface.dart';
 import 'package:ebisu/shared/services/notification_service.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_remote_config/firebase_remote_config.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
@@ -30,7 +31,7 @@ final getIt = GetIt.instance;
   preferRelativeImports: true,
   asExtension: false,
 )
-void configureDependencies() {
+void installDependencyInjection() {
   $initGetIt(getIt);
   ServiceContainer.register();
   register();
@@ -57,13 +58,14 @@ void installExceptionHandler() {
 Future<void> installRelease() async {
   if(!kDebugMode) {
     await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform,);
+    await ConfigRepositoryInterface.install(FirebaseRemoteConfig.instance);
   }
 }
 
 void main() async {
   await Hive.initFlutter();
   await installRelease();
-  configureDependencies();
+  installDependencyInjection();
   installExceptionHandler();
   runApp(MyApp(getIt<PageContainer>(), AppConfiguration()));
 }
