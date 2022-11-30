@@ -1,4 +1,5 @@
 import 'package:firebase_remote_config/firebase_remote_config.dart';
+import 'package:flutter/foundation.dart';
 import 'package:injectable/injectable.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -29,7 +30,7 @@ class ConfigRepository implements ConfigRepositoryInterface {
   static const SHOULD_USE_LOCAL_ENDPOINT_KEY = 'SHOULD_USE_LOCAL_ENDPOINT';
   static const AUTH_TOKEN_CONFIG_KEY = 'AUTH_TOKEN';
 
-  final _remoteConfig = FirebaseRemoteConfig.instance;
+  final _remoteConfig = kDebugMode ? null : FirebaseRemoteConfig.instance;
 
   Future<String> getLocalEndpoint() async {
     final defaultEndpoint = const String.fromEnvironment(ENDPOINT_CONFIG_KEY, defaultValue: "http://localhost");
@@ -43,9 +44,9 @@ class ConfigRepository implements ConfigRepositoryInterface {
       return await getLocalEndpoint();
     }
 
-    final endpoint = _remoteConfig.getString(ENDPOINT_CONFIG_KEY);
+    final endpoint = _remoteConfig?.getString(ENDPOINT_CONFIG_KEY);
 
-    return endpoint == '' ? await getLocalEndpoint() : endpoint;
+    return endpoint != null && endpoint == '' ? await getLocalEndpoint() : endpoint!;
   }
 
   @override
