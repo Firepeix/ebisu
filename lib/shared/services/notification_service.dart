@@ -1,5 +1,6 @@
 import 'package:ebisu/shared/navigator/navigator_interface.dart';
 import 'package:ebisu/ui_components/chronos/dialogs/confirm_dialog.dart';
+import 'package:ebisu/ui_components/chronos/dialogs/select_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:injectable/injectable.dart';
 
@@ -63,5 +64,14 @@ class NotificationService {
     }
 
     return ConfirmResult.cancelled;
+  }
+
+  Future<T?> displaySelectDialog<T>(String title, List<SelectOption> options, {String? appendix, BuildContext? context}) async {
+    context = context ?? _contextService.getContext();
+    if (context != null) {
+      return await showModalBottomSheet(context: context, builder: (_) => SelectDialog(title, options, appendix: appendix,));
+    }
+
+    return null;
   }
 }

@@ -4,8 +4,9 @@ import 'package:ebisu/ui_components/chronos/list/tile.dart';
 import 'package:ebisu/ui_components/chronos/menus/simple_menu.dart';
 import 'package:ebisu/ui_components/chronos/time/moment.dart';
 import 'package:flutter/material.dart';
+import 'package:ebisu/ui_components/chronos/labels/label.dart';
 
-typedef BookActionCallback = void Function(BookViewModel id, BookAction action);
+typedef BookActionCallback = void Function(BookViewModel book);
 
 enum BookAction {
   MARK_AS_READ,
@@ -21,6 +22,10 @@ class BookViewModel extends StatefulWidget {
   BookChapter get chapter => _chapter;
   final OnTap<BookActionCallback> onTap = OnTap<BookActionCallback>();
   late final Moment? _originalIgnoredUntil;
+
+  String get statusName  => ignoreUntil != null ? "Desativado" : "Ativo";
+  bool get isIgnored  => ignoreUntil != null;
+
 
   _BookState? get _state => (key as GlobalKey<_BookState>).currentState;
 
@@ -50,34 +55,21 @@ class _BookState extends State<BookViewModel> {
 
   _BookState(this.ignoredUntil);
 
-  EbisuMenuItem<BookAction> get stateItem {
-    if(ignoredUntil == null) {
-      return EbisuMenuItem(BookAction.POSTPONE, Row(children: [Icon(Icons.calendar_today, color: EColor.accent,), Text("     Adiar para depois")],));
-    }
-
-    return EbisuMenuItem(BookAction.ACTIVATE, Row(children: [Icon(Icons.play_arrow, color: EColor.secondary,), Text("     Ativar")],));
-  }
-
   void save() => setState(() {
 
   });
 
   @override
-  Widget build(BuildContext context) => Tile(
-    titleText: "${widget._name}:  ",
-    accent: widget._chapter.value,
-    subtitleText: ignoredUntil != null ? "Desativado" : "Ativo",
-    trailing: SimpleMenu<BookAction>(
-        icon:  Icons.more_vert,
-        onSelected: (action) {
-          widget.onTap.action?.call(widget, action);
-        },
-        children: [
-          EbisuMenuItem(BookAction.MARK_AS_READ, Row(children: [Icon(Icons.check, color: EColor.success,), Text("     Marcar como lido")],)),
-          stateItem,
-        ]
-    ),
-  );
+  Widget build(BuildContext context) {
+    return Tile(
+      titleText: "${widget._name}:  ",
+      subtitleText: ignoredUntil != null ? "Desativado" : "Ativo",
+      trailing: Label.main(text: widget._chapter.value, size: 18,),
+      onTap: () {
+        widget.onTap.action?.call(widget);
+      },
+    );
+  }
 }
 
 class BookChapter {

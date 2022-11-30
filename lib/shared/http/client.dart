@@ -18,7 +18,7 @@ import 'response.dart';
 
 typedef DecodeJson<R> = R Function(Map<dynamic, dynamic>);
 typedef EncodeJson<B> = Map<dynamic, dynamic> Function(B body);
-typedef DecodeError = ResultError Function(ErrorResponse response);
+typedef DecodeError = ResultError Function(ErrorResponse response); 
 
 class HttpError extends ResultError {
   const HttpError.unknown() : super("Ops! Ocorreu um erro. Tente Novamente mais tarde.", "U1", null);
