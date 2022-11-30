@@ -43,7 +43,7 @@ class Caron {
     final host = url.split("://");
     final uri = host[1].split("/");
     final domain = uri[0];
-    final path = uri.length > 0 ? "${uri[1]}/$endpoint" : endpoint;
+    final path = uri.length > 1 ? "${uri[1]}/$endpoint" : endpoint;
     if (host[0] == "http") {
       return Uri.http(domain, path);
     }
@@ -96,12 +96,12 @@ class Caron {
   }
 
   Future<Result<R, ResultError>> delete<R extends Response>(String endpoint, {DecodeError? errorDecoder}) async {
-      try {
+    try {
         final response = await http.delete(await _url(endpoint), headers: await _headers());
         return _parsePayload<R, String>(response, successResponse: Success("Elemento deletado com sucesso!") as R);
       } catch(error) {
-        return _parseError(error: error);
-      }
+      return _parseError(error: error);
+    }
   }
 
   Result<R, ResultError> _parsePayload<R extends Response, V>(http.Response response, {DecodeJson<V>? decoder, DecodeError? errorDecoder, R? successResponse}) {
@@ -134,7 +134,7 @@ class Caron {
     }
 
     if (error != null) {
-        return Result(null, _handler.parseError(error));
+      return Result(null, _handler.parseError(error));
     }
 
     return Result(null, HttpError.unknown());
