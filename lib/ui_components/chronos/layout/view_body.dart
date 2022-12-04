@@ -11,6 +11,7 @@ class ViewBody extends StatelessWidget {
   final CFloatActionButton? fab;
   final Color? bgColor;
   final Body? body;
+  final bool hasAccessToConfig;
 
   const ViewBody({
     this.bgColor,
@@ -18,14 +19,27 @@ class ViewBody extends StatelessWidget {
     this.child,
     this.fab,
     this.body,
+    this.hasAccessToConfig = true,
     Key? key,
-  }) : assert(child != null || body != null), super(key: key);
+  })  : assert(child != null || body != null),
+        super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text(title),
+        actions: hasAccessToConfig ?  [
+          IconButton(
+            icon: Icon(
+              Icons.settings,
+              size: 26.0,
+            ),
+            onPressed: () {
+              Navigator.pushNamed(context, '/configuration');
+            },
+          )
+        ]: null,
       ),
       drawer: EbisuDrawer(getIt<CoreInteractorInterface>()),
       floatingActionButton: fab?.button,

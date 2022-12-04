@@ -1,6 +1,4 @@
-import 'package:ebisu/modules/scout/book/models/book_hive_model.dart';
 import 'package:ebisu/modules/scout/book/services/service.dart';
-import 'package:hive/hive.dart';
 import 'package:injectable/injectable.dart';
 
 abstract class BookInterface {
@@ -19,6 +17,5 @@ class Book implements BookInterface {
 
   @override
   void register() {
-    Hive.registerAdapter(BookHiveModelAdapter());
   }
 }

@@ -55,18 +55,18 @@ class ExpenseRepository implements ExpenseRepositoryInterface {
 
   @override
   Future<Result<void, ResultError>> deleteExpense(String id) async {
-    return await _caron.delete(_Endpoint.Expense.replaceAll(":expenseId", id));
+    return await _caron.deleteLegacy(_Endpoint.Expense.replaceAll(":expenseId", id));
   }
 
   @override
   Future<Result<ExpenseModel, ResultError>> getExpense(String id) async {
-    final result = await _caron.get<ExpenseModel>(_Endpoint.Expense.replaceAll(":expenseId", id), _mapper.fromJson);
+    final result = await _caron.getLegacy<ExpenseModel>(_Endpoint.Expense.replaceAll(":expenseId", id), _mapper.fromJson);
     return result.map((value) => value.data);
   }
 
   @override
   Future<Result<Success, ResultError>> update(String id, CreatesExpense expenditure)  async {
     final endpoint = _Endpoint.Expense.replaceAll(":expenseId", id);
-    return await _caron.put<Success, CreatesExpense>(endpoint, expenditure, _mapper.toJson);
+    return await _caron.putLegacy<Success, CreatesExpense>(endpoint, expenditure, _mapper.toJson);
   }
 }

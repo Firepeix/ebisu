@@ -1,5 +1,3 @@
-import 'dart:ui';
-
 import 'package:ebisu/configuration/UI/Pages/Configuration.dart';
 import 'package:ebisu/domain/travel/models/travel_day_model.dart';
 import 'package:ebisu/domain/travel/models/travel_expense_model.dart';

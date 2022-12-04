@@ -1,11 +1,5 @@
-import 'package:ebisu/ui_components/chronos/actions/tap.dart';
-import 'package:ebisu/ui_components/chronos/colors/colors.dart';
-import 'package:ebisu/ui_components/chronos/list/tile.dart';
-import 'package:ebisu/ui_components/chronos/menus/simple_menu.dart';
 import 'package:ebisu/ui_components/chronos/time/moment.dart';
 import 'package:flutter/material.dart';
-
-typedef BookActionCallback = void Function(BookViewModel id, BookAction action);
 
 enum BookAction {
   MARK_AS_READ,
@@ -13,87 +7,34 @@ enum BookAction {
   ACTIVATE,
 }
 
-class BookViewModel extends StatefulWidget {
+@immutable
+class BookModel {
   final String id;
-  final String _name;
-  String get name => _name;
-  final BookChapter _chapter;
-  BookChapter get chapter => _chapter;
-  final OnTap<BookActionCallback> onTap = OnTap<BookActionCallback>();
-  late final Moment? _originalIgnoredUntil;
+  final String name;
+  final BookChapter chapter;
+  final Moment? ignoredUntil;
+  String get statusName => ignoredUntil != null ? "Desativado" : "Ativo";
+  bool get isIgnored => ignoredUntil != null;
 
-  _BookState? get _state => (key as GlobalKey<_BookState>).currentState;
-
-  Moment? get ignoreUntil {
-    if(_state != null) {
-      return _state!.ignoredUntil;
-    }
-    return _originalIgnoredUntil;
-  }
-
-  set ignoreUntil(Moment? value) {
-    _state?.ignoredUntil = value;
-  }
-
-  void save() => _state?.save();
-
-  BookViewModel(this._name, this._chapter, {Key? key, required this.id, Moment? ignoreUntil}) : super(key: key ?? GlobalKey<_BookState>()) {
-    _originalIgnoredUntil = ignoreUntil;
-  }
-
-  @override
-  _BookState createState() => _BookState(this._originalIgnoredUntil);
-}
-
-class _BookState extends State<BookViewModel> {
-  Moment? ignoredUntil;
-
-  _BookState(this.ignoredUntil);
-
-  EbisuMenuItem<BookAction> get stateItem {
-    if(ignoredUntil == null) {
-      return EbisuMenuItem(BookAction.POSTPONE, Row(children: [Icon(Icons.calendar_today, color: EColor.accent,), Text("     Adiar para depois")],));
-    }
-
-    return EbisuMenuItem(BookAction.ACTIVATE, Row(children: [Icon(Icons.play_arrow, color: EColor.secondary,), Text("     Ativar")],));
-  }
-
-  void save() => setState(() {
-
+  BookModel({
+    required this.id,
+    required this.name,
+    required this.chapter,
+    this.ignoredUntil,
   });
-
-  @override
-  Widget build(BuildContext context) => Tile(
-    titleText: "${widget._name}:  ",
-    accent: widget._chapter.value,
-    subtitleText: ignoredUntil != null ? "Desativado" : "Ativo",
-    trailing: SimpleMenu<BookAction>(
-        icon:  Icons.more_vert,
-        onSelected: (action) {
-          widget.onTap.action?.call(widget, action);
-        },
-        children: [
-          EbisuMenuItem(BookAction.MARK_AS_READ, Row(children: [Icon(Icons.check, color: EColor.success,), Text("     Marcar como lido")],)),
-          stateItem,
-        ]
-    ),
-  );
 }
 
+@immutable
 class BookChapter {
-  String _value;
+  final String value;
 
-  BookChapter(this._value);
+  BookChapter(this.value);
 
-  String get value => _value;
-
-  void increment() {
-    if(value.contains('.')) {
-      _value = (double.parse(_value) + 0.1).toString();
-      return;
+  BookChapter increment() {
+    if (value.contains('.')) {
+      return BookChapter((double.parse(value) + 0.1).toString());
     }
 
-    _value = (int.parse(_value) + 1).toString();
+    return BookChapter((int.parse(value) + 1).toString());
   }
 }
-
