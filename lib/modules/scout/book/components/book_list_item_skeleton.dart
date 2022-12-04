@@ -1,9 +1,5 @@
-import 'package:ebisu/modules/scout/book/models/book.dart';
 import 'package:ebisu/shared/UI/Components/Shimmer.dart';
-import 'package:ebisu/shared/state/async_component.dart';
-import 'package:ebisu/ui_components/chronos/list/tile.dart';
 import 'package:flutter/material.dart';
-import 'package:ebisu/ui_components/chronos/labels/label.dart';
 
 class BookListItemSkeleton extends StatelessWidget {
   const BookListItemSkeleton({super.key});
