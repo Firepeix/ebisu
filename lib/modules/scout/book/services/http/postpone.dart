@@ -1,26 +1,15 @@
+import 'package:ebisu/modules/scout/book/services/repository.dart';
 import 'package:ebisu/shared/http/request.dart';
 import 'package:ebisu/shared/http/response.dart';
 
-class PostponeRequestBody implements CommandCentralRequest<PostponeResponse> {
+class PostponeRequest extends Request<Success> {
   final String id;
 
-  PostponeRequestBody(this.id);
+  PostponeRequest(this.id);
 
   @override
-  Map<String, dynamic> json() {
-    return {
-      "id": id
-    };
-  }
-
-  @override
-  PostponeResponse createResponse(CommandResponse commandResponse) {
-    final response = commandResponse.decode();
-    return PostponeResponse(response['success'].toString(), response);
+  String endpoint() {
+    return Endpoint.Postpone.replaceFirst(":bookId", id);
   }
 }
 
-
-class PostponeResponse extends CommandCentralResponse {
-  PostponeResponse(String success, Map<String, dynamic> rawResponse) : super(success, rawResponse);
-}

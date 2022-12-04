@@ -35,13 +35,13 @@ class CardRepository implements CardRepositoryInterface {
 
   @override
   Future<Result<CardModel, ResultError>> getCard(String id) async {
-    final result = await _caron.get<CardModel>(_Endpoint.Card.replaceAll(":cardId", id), _mapper.fromJson);
+    final result = await _caron.getLegacy<CardModel>(_Endpoint.Card.replaceAll(":cardId", id), _mapper.fromJson);
     return result.map((value) => value.data);
   }
 
   @override
   Future<Result<Success, ResultError>> update(String id, SaveCardModel model) async {
     final endpoint = _Endpoint.Card.replaceAll(":cardId", id);
-    return await _caron.put<Success, SaveCardModel>(endpoint, model, _mapper.toJson);
+    return await _caron.putLegacy<Success, SaveCardModel>(endpoint, model, _mapper.toJson);
   }
 }

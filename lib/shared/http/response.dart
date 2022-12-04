@@ -1,49 +1,7 @@
-import 'dart:convert';
 
-enum CommandCentralCode {
-  error,
-  success,
-  in_progress
-}
+import 'package:ebisu/shared/http/request.dart';
 
-
-class CommandResponse {
-  final CommandCentralCode code;
-  final String response;
-
-  CommandResponse(this.code, this.response) {
-    _check();
-  }
-
-  void _check() {
-    if (code == CommandCentralCode.error) {
-      throw Error.safeToString(response);
-    }
-  }
-
-  Map<String, dynamic> decode() {
-    return jsonDecode(response);
-  }
-}
-
-abstract class CommandCentralResponse {
-  final String success;
-  final Map<String, dynamic> rawResponse;
-
-  CommandCentralResponse(this.success, this.rawResponse) {
-    _check();
-  }
-
-  void _check() {
-    if (success != "true") {
-      throw Error.safeToString(rawResponse["error"]);
-    }
-  }
-}
-
-abstract class Response {
-
-}
+abstract class Response {}
 
 abstract class GenericResponse extends Response {
   String message;
@@ -72,6 +30,16 @@ class DataResponse<T> extends Response {
   DataResponse(this.data);
 }
 
+typedef ListMapper<From, To> = To Function(From from);
+
 class ListResponse<T> extends DataResponse<List<T>> {
   ListResponse(List<T> items) : super(items);
+
+  ListResponse.raw(Map<String, dynamic> raw, ListMapper<Map<String, dynamic>, T> mapper)
+      : this((raw["data"] as List).map((value) => mapper(value as Json)).toList());
+
+      
+  ListResponse<To> map<To>(ListMapper<T, To> mapper) {
+    return ListResponse(data.map(mapper).toList());
+  }
 }

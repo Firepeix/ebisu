@@ -3,7 +3,6 @@ import 'package:ebisu/shared/UI/Components/Texts/HighlightTexts.dart';
 import 'package:ebisu/shared/UI/Components/Title.dart';
 import 'package:ebisu/shopping-list/Shared/UI/Components/PuchasesViewModel.dart';
 import 'package:ebisu/shopping-list/ShoppingList/Domain/ShoppingList.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class ShoppingListViewModelList extends StatelessWidget {

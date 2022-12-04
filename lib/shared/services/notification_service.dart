@@ -36,7 +36,7 @@ class NotificationService {
       messenger.showSnackBar(SnackBar(
         content: Text(message),
         backgroundColor: Colors.green,
-        duration: Duration(seconds: 4),
+        duration: Duration(seconds: 2),
         behavior: behavior,)
       );
     }

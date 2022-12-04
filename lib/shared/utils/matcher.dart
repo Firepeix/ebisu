@@ -22,6 +22,19 @@ class Matcher<T, R> {
     return found;
   }
 
+  static Future<R> matchAsyncWhen<T, R>(T value, Map<T, AsyncMatchFunction<R>> options, {AsyncMatchFunction<R>? base}) async {
+    final match = options[value];
+    if (match != null) {
+      return await match.call();
+    }
+    if (base != null) {
+      return await base.call();
+    }
+
+    throw Error.safeToString("Match deve ser exaustivo");
+  }
+
+
   Matcher or(MatchFunction<R> or) {
     _else = or;
     return this;

@@ -1,7 +1,9 @@
 import 'package:ebisu/modules/scout/book/interactor.dart';
 import 'package:ebisu/modules/scout/book/navigator.dart';
 import 'package:ebisu/modules/scout/book/views/books.dart';
-import 'package:ebisu/shared/dependency/dependency_container.dart';
+import 'package:ebisu/shared/exceptions/handler.dart';
+import 'package:ebisu/shared/exceptions/result.dart';
+import 'package:ebisu/shared/http/response.dart';
 import 'package:ebisu/shared/services/notification_service.dart';
 import 'package:ebisu/ui_components/chronos/colors/colors.dart';
 import 'package:ebisu/ui_components/chronos/dialogs/select_dialog.dart';
@@ -12,33 +14,20 @@ import 'models/book.dart';
 class BookPresenter {
   late final _navigator = BookNavigator(this);
   final NotificationService _notificationService;
+  final BookInteractorInterface _interactor;
+  final ExceptionHandlerInterface _exceptionHandler;
 
-  BookPresenter(this._notificationService);
+  BookPresenter(this._notificationService, this._interactor, this._exceptionHandler);
 
   void init() {
     _navigator.goToInitialRoute();
   }
 
-  Widget initWidget() => BooksView(DependencyManager.get<BookInteractorInterface>());
+  Widget initWidget() => BooksView(_interactor);
 
-  void setBooks(BookListState list, List<BookViewModel> books, {BookActionCallback? onBookTap}) {
-    final List<BookViewModel> _books = [];
-    books.sort((a, b) => int.parse(a.id).compareTo(int.parse(b.id)));
-    books.forEach((element) {
-      element.onTap.action = onBookTap;
-      _books.add(element);
-    });
-    list.books = _books;
-  }
-
-  void update(BookViewModel book) {
-    book.save();
-  }
-
-  Future<BookAction?> presentBookActions(BookViewModel book) async {
+  Future<BookAction?> presentBookActions(BookModel book) async {
     final postponeOption = SelectOption("Adiar", BookAction.POSTPONE, invert: true, icon: Icon(Icons.calendar_today, color: EColor.accent,));
     final activateOption = SelectOption("Ativar", BookAction.ACTIVATE, invert: true, icon: Icon(Icons.play_arrow, color: EColor.secondary,));
-
 
     final options = [
       SelectOption("Lido", BookAction.MARK_AS_READ, icon: Icon(Icons.check, color: EColor.success,)),
@@ -46,5 +35,17 @@ class BookPresenter {
     ];
 
     return await _notificationService.displaySelectDialog(book.name, options, appendix: book.statusName);
+  }
+
+  Future<Result<Success, ResultError>> presentAction(Future<Result<Success, ResultError>> Function() action) async {
+    _notificationService.displayLoading();
+    final result = await action();
+
+    if(result.isOk()) {
+      _notificationService.displaySuccess(message: result.unwrap().message);
+    }
+
+    _exceptionHandler.expect(result);
+    return result;
   }
 }
