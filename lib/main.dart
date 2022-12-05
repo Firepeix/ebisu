@@ -3,6 +3,7 @@ import 'package:ebisu/domain/travel/models/travel_day_model.dart';
 import 'package:ebisu/domain/travel/models/travel_expense_model.dart';
 import 'package:ebisu/modules/configuration/domain/repositories/config_repository.dart';
 import 'package:ebisu/modules/core/interactor.dart';
+import 'package:ebisu/modules/notification/domain/notification_listener_service.dart';
 import 'package:ebisu/modules/scout/book/book.dart';
 import 'package:ebisu/shared/Infrastructure/Ebisu.dart';
 import 'package:ebisu/shared/configuration/app_configuration.dart';
@@ -16,6 +17,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:http/http.dart';
 import 'package:injectable/injectable.dart';
 
 import 'firebase_options.dart';
@@ -36,9 +38,12 @@ void installDependencyInjection() {
 }
 
 void register() {
-  getIt<BookInterface>().register();
   Hive.registerAdapter(TravelDayModelAdapter());
   Hive.registerAdapter(TravelExpenseModelAdapter());
+}
+
+void installDependencies() async {
+  getIt<NotificationListenerService>().startListening();
 }
 
 void installExceptionHandler() {
@@ -54,8 +59,10 @@ void installExceptionHandler() {
 }
 
 Future<void> installRelease() async {
-  if(!kDebugMode) {
-    await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform,);
+  if (!kDebugMode) {
+    await Firebase.initializeApp(
+      options: DefaultFirebaseOptions.currentPlatform,
+    );
     await ConfigRepositoryInterface.install(FirebaseRemoteConfig.instance);
   }
 }
@@ -64,6 +71,7 @@ void main() async {
   await Hive.initFlutter();
   await installRelease();
   installDependencyInjection();
+  installDependencies();
   installExceptionHandler();
   runApp(MyApp(getIt<PageContainer>(), AppConfiguration()));
 }
@@ -82,21 +90,24 @@ class MyApp extends StatelessWidget {
       theme: _configuration.getTheme(),
       initialRoute: '/',
       routes: {
-        '/': (context) =>  MyHomePage(title: 'Home'),
+        '/': (context) => MyHomePage(title: 'Home'),
       },
       navigatorKey: _interactor.navigatorKey(),
       onGenerateRoute: (settings) {
         if (settings.name == "/configuration") {
-          return ConfigurationPage(getIt<ConfigRepositoryInterface>(), getIt<NotificationService>()).getRoute();
+          return ConfigurationPage(getIt<ConfigRepositoryInterface>(), getIt<NotificationService>())
+              .getRoute();
         }
 
         if (_pageContainer.hasPage(settings.name ?? '')) {
-          Map<String, dynamic> arguments = settings.arguments != null ? settings.arguments as Map<String, dynamic> : {};
+          Map<String, dynamic> arguments =
+              settings.arguments != null ? settings.arguments as Map<String, dynamic> : {};
           return _pageContainer.getPage(settings.name ?? '').getRoute(arguments);
         }
 
         if (settings.name != null && settings.name != "/") {
-          final Map<String, dynamic> arguments = settings.arguments != null ? settings.arguments as Map<String, dynamic> : {};
+          final Map<String, dynamic> arguments =
+              settings.arguments != null ? settings.arguments as Map<String, dynamic> : {};
           if (arguments.containsKey('navigator')) {
             final navigator = arguments['navigator'] as NavigatorInterface;
             arguments.remove('navigator');
@@ -124,12 +135,12 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 }
 
-void routeTo(BuildContext context, Widget view, { IntoViewAnimation? animation, OnReturnCallback? onReturn }) {
+void routeTo(BuildContext context, Widget view, {IntoViewAnimation? animation, OnReturnCallback? onReturn}) {
   getIt<NavigatorService>().routeTo(context, view, animation: animation, onReturn: onReturn);
 }
 
 void routeToPop(BuildContext context, Widget view, int times) {
-  for(int i = 0; i < times;i++) {
+  for (int i = 0; i < times; i++) {
     Navigator.pop(context);
   }
 
