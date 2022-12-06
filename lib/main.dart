@@ -4,7 +4,6 @@ import 'package:ebisu/domain/travel/models/travel_expense_model.dart';
 import 'package:ebisu/modules/configuration/domain/repositories/config_repository.dart';
 import 'package:ebisu/modules/core/interactor.dart';
 import 'package:ebisu/modules/notification/domain/notification_listener_service.dart';
-import 'package:ebisu/modules/scout/book/book.dart';
 import 'package:ebisu/shared/Infrastructure/Ebisu.dart';
 import 'package:ebisu/shared/configuration/app_configuration.dart';
 import 'package:ebisu/shared/exceptions/handler.dart';
@@ -17,7 +16,6 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:hive_flutter/hive_flutter.dart';
-import 'package:http/http.dart';
 import 'package:injectable/injectable.dart';
 
 import 'firebase_options.dart';
@@ -48,12 +46,12 @@ void installDependencies() async {
 
 void installExceptionHandler() {
   FlutterError.onError = (FlutterErrorDetails details) {
-    getIt<ExceptionHandlerInterface>().expect(Result(null, UnknownError(Details(data: details))));
+    getIt<ExceptionHandlerInterface>().expect(Result.err(UnknownError(Details(data: details))));
   };
 
   PlatformDispatcher.instance.onError = (error, stack) {
     final service = getIt<ExceptionHandlerInterface>();
-    service.expect(Result(null, service.parseError(error, alternativeStackTrace: stack)));
+    service.expect(Result.err(service.parseError(error, alternativeStackTrace: stack)));
     return true;
   };
 }

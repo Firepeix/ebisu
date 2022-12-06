@@ -13,7 +13,7 @@ import 'package:ebisu/src/UI/Components/Nav/MainButtonPage.dart';
 import 'package:ebisu/ui_components/chronos/layout/home_view.dart';
 import 'package:flutter/material.dart';
 
-class UpdateExpensePage extends StatefulWidget  implements MainButtonPage, HomeView {
+class UpdateExpensePage extends StatefulWidget implements MainButtonPage, HomeView {
   static const PAGE_INDEX = 3;
   @override
   int pageIndex() => 3;
@@ -24,7 +24,6 @@ class UpdateExpensePage extends StatefulWidget  implements MainButtonPage, HomeV
   final ChangeExistentIndex? onSaveExpense;
 
   UpdateExpensePage(this._expenseId, {this.onSaveExpense});
-
 
   @override
   FloatingActionButton getMainButton(BuildContext context, VoidCallback? onPressed) {
@@ -52,12 +51,8 @@ class _UpdateExpensePageState extends State<UpdateExpensePage> {
     _setInitialState();
   }
 
-  void _setInitialState () async {
-    await Future.wait([
-      _setCards(),
-      _setBeneficiaries(),
-      _setExpense()
-    ]);
+  void _setInitialState() async {
+    await Future.wait([_setCards(), _setBeneficiaries(), _setExpense()]);
 
     setState(() {
       if (expense != null) {
@@ -66,16 +61,16 @@ class _UpdateExpensePageState extends State<UpdateExpensePage> {
     });
   }
 
-  Future<void> _setCards () async {
-    cards = await widget.cardService.getCards();
+  Future<void> _setCards() async {
+    final result = await widget.cardService.getCards();
+    result.match(ok: (value) => cards = value);
   }
 
-
-  Future<void> _setBeneficiaries () async {
+  Future<void> _setBeneficiaries() async {
     beneficiaries = await widget.service.getSources();
   }
 
-  Future<void> _setExpense () async {
+  Future<void> _setExpense() async {
     final result = await widget.service.getExpense(widget._expenseId);
     if (result.isOk()) {
       expense = result.unwrap();
@@ -84,7 +79,7 @@ class _UpdateExpensePageState extends State<UpdateExpensePage> {
 
   Future<void> saveExpense(CreatesExpense model) async {
     final result = await widget.service.updateExpense(widget._expenseId, model);
-    if(result.isOk()) {
+    if (result.isOk()) {
       widget.onSaveExpense?.call(ListExpendituresPage.PAGE_INDEX);
     }
   }
@@ -94,7 +89,13 @@ class _UpdateExpensePageState extends State<UpdateExpensePage> {
     return NotificationListener<SaveExpenseNotification>(
       child: Padding(
         padding: EdgeInsets.symmetric(vertical: 20, horizontal: 10),
-        child: loaded ? ExpenseForm(cards, beneficiaries, model: expense,) : ExpenseFormSkeleton(),
+        child: loaded
+            ? ExpenseForm(
+                cards,
+                beneficiaries,
+                model: expense,
+              )
+            : ExpenseFormSkeleton(),
       ),
       onNotification: (notification) {
         saveExpense(notification.model);

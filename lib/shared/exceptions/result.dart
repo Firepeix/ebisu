@@ -1,6 +1,5 @@
 typedef ResultMapper<B, T> = T Function(B value);
 
-
 abstract class ResultError {
   final String? message;
   final String code;
@@ -10,7 +9,7 @@ abstract class ResultError {
 }
 
 class UnknownError extends ResultError {
-  const UnknownError(details) : super("Ops! Ocorreu um erro. Tente Novamente mais tarde.", "FU1", details) ;
+  const UnknownError(details) : super("Ops! Ocorreu um erro. Tente Novamente mais tarde.", "FU1", details);
 }
 
 class Details {
@@ -20,38 +19,83 @@ class Details {
   Details({this.messageAddon, this.data});
 }
 
+typedef MatchOk<T> = void Function(T value);
+typedef WillMatchOk<T> = Future<void> Function(T value);
+
+typedef MatchErr<E extends ResultError> = void Function(E error);
+typedef WillMatchErr<E extends ResultError> = Future<void> Function(E error);
+
+abstract class ResultValue {}
+
+class Ok<V> implements ResultValue {
+  final V value;
+
+  Ok(this.value);
+}
+
+class Err<E extends ResultError> implements ResultValue {
+  final E value;
+  Err(this.value);
+}
+
 class Result<V, E extends ResultError> {
-  V? _value;
-  E? _error;
+  ResultValue _value;
 
-  V? get value => _value;
+  ResultValue getValue() => _value;
 
-  E? get error => _error;
+  Result(this._value);
 
-  Result(this._value, this._error);
+  Result.ok(V _value) : this(Ok(_value));
 
-  bool hasError() {
-    return _error != null;
+  Result.err(E _error) : this(Err(_error));
+
+  bool hasError() => _value is Err;
+
+  bool isOk() => !hasError();
+
+  void match({MatchOk<V>? ok, MatchErr<E>? err}) {
+    assert(ok != null || err != null, "Ok ou Err deve ser mapeados para o Match");
+
+    if (ok != null && isOk()) {
+      ok.call((_value as Ok<V>).value);
+    }
+
+    if (err != null && hasError()) {
+      err.call((_value as Err<E>).value);
+    }
   }
 
-  bool isOk() {
-    return !hasError();
+  Future<void> willMatch({WillMatchOk<V>? ok, WillMatchErr<E>? err}) async {
+    assert(ok != null || err != null, "Ok ou Err deve ser mapeados para o Match");
+
+    if (ok != null && isOk()) {
+      await ok.call((_value as Ok<V>).value);
+    }
+
+    if (err != null && hasError()) {
+      await err.call((_value as Err<E>).value);
+    }
   }
 
   V unwrap() {
-    return _value!;
+    return (_value as Ok<V>).value;
   }
 
   Result<V, NewError> subError<NewError extends ResultError>(NewError error) {
-    return Result(_value, _error != null ? error : null);
+    if (_value is Err) {
+      return Result.err(error);
+    }
+
+    return Result(_value);
   }
 
   Result<B, E> map<B>(ResultMapper<V, B> mapper) {
     if (isOk()) {
-      return Result(mapper(_value!), _error);
+      final result = _value as Ok<V>;
+      return Result.ok(mapper(result.value));
     }
 
-    return Result(null, _error);
+    return Result(_value);
   }
 
   Result<B, E> mapTo<B>() {
@@ -60,9 +104,10 @@ class Result<V, E extends ResultError> {
 
   Result<V, B> mapError<B extends ResultError>(ResultMapper<E, B> mapper) {
     if (hasError()) {
-      return Result(null, mapper(_error!));
+      final result = _value as Err<E>;
+      return Result.err(mapper(result.value));
     }
-    return Result(_value, null);
+    return Result(_value);
   }
 
   Result<V, B> mapErrorTo<B extends ResultError>() {

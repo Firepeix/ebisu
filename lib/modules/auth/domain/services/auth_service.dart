@@ -35,10 +35,10 @@ class AuthService implements AuthServiceInterface {
     final result = await _client.post<TokenResponse, Map<dynamic, dynamic>>(_Endpoint.Login, { "email": email, "password": password }, (body) => body, decoder: (response) => TokenResponse(response["token"]));
     _exceptionHandler.expect(result);
 
-    if(result.isOk()) {
-      await _config.saveAuthToken(result.value!.token);
+    await result.willMatch(ok: (value) async {
+      await _config.saveAuthToken(value.token);
       _notificationService.displaySuccess(message: "Login realizado com sucesso!");
-    }
+    });
 
     _exceptionHandler.expect(result);
 

@@ -21,15 +21,17 @@ class ExceptionHandler implements ExceptionHandlerInterface {
 
   ExceptionHandler(this._notificationService, this._reporterService);
 
-  void _displayError (ResultError error, {behavior: SnackBarBehavior.fixed}) {
-      _notificationService.displayError(message: "${error.message ?? ""}${error.details?.messageAddon ?? ""}");
+  void _displayError(ResultError error, {behavior: SnackBarBehavior.fixed}) {
+    _notificationService.displayError(message: "${error.message ?? ""}${error.details?.messageAddon ?? ""}");
   }
 
   @override
   V? expect<V, E extends ResultError>(Result<V, E> result) {
     if (result.hasError()) {
-      _reporterService.reportError(result.error!);
-      _displayError(result.error!);
+      result.match(err: (error) {
+        _reporterService.reportError(error);
+        _displayError(error);
+      });
       return null;
     }
 
@@ -38,21 +40,21 @@ class ExceptionHandler implements ExceptionHandlerInterface {
 
   @override
   ResultError createError(Error error, {StackTrace? alternativeStackTrace, String? errorContext}) {
-    return UnknownError(Details(data: FlutterErrorDetails(
-        exception: error,
-        stack: error.stackTrace ?? alternativeStackTrace,
-        library: "Ebisu",
-        context: errorContext != null ? ErrorDescription(errorContext) : null
-    )));
+    return UnknownError(Details(
+        data: FlutterErrorDetails(
+            exception: error,
+            stack: error.stackTrace ?? alternativeStackTrace,
+            library: "Ebisu",
+            context: errorContext != null ? ErrorDescription(errorContext) : null)));
   }
 
   @override
   UnknownError createUnknownError(Object error, {StackTrace? alternativeStackTrace, String? errorContext}) {
-    return UnknownError(Details(data: FlutterErrorDetails(
-        exception: error,
-        stack: alternativeStackTrace,
-        context: errorContext != null ? ErrorDescription(errorContext) : null
-    )));
+    return UnknownError(Details(
+        data: FlutterErrorDetails(
+            exception: error,
+            stack: alternativeStackTrace,
+            context: errorContext != null ? ErrorDescription(errorContext) : null)));
   }
 
   @override
@@ -61,6 +63,7 @@ class ExceptionHandler implements ExceptionHandlerInterface {
       return createError(error, alternativeStackTrace: alternativeStackTrace, errorContext: errorContext);
     }
 
-    return createUnknownError(error, alternativeStackTrace: alternativeStackTrace, errorContext: errorContext);
+    return createUnknownError(error,
+        alternativeStackTrace: alternativeStackTrace, errorContext: errorContext);
   }
 }

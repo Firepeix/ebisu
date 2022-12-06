@@ -166,10 +166,10 @@ class Caron {
 
   Result<R, ResultError> _parse<R>(Request<R> request, http.Response response) {
     if (response.statusCode.toString().startsWith("2")) {
-      return Result(request.createResponse(jsonDecode(response.body)), null);
+      return Result.ok(request.createResponse(jsonDecode(response.body)));
     }
 
-    return Result(null, _loadError(request, response));
+    return Result.err(_loadError(request, response));
   }
 
   ResultError _loadError(Request request, http.Response response) {
@@ -195,12 +195,11 @@ class Caron {
       {DecodeJson<V>? decoder, DecodeError? errorDecoder, R? successResponse}) {
     if (response.statusCode.toString().startsWith("2")) {
       if (successResponse != null) {
-        return Result(successResponse, null);
+        return Result.ok(successResponse);
       }
 
-      final ResultError? error = null;
       final payload = _mapper.fromResponse<R, V>(jsonDecode(response.body), decoder);
-      return Result(payload as R, error);
+      return Result.ok(payload as R);
     }
 
     return _parseError(response: response, errorDecoder: errorDecoder);
@@ -214,23 +213,21 @@ class Caron {
         if (context != null) {
           routeTo(context, LoginPage(_authService));
         }
-        return Result(null, HttpError.unauthorized());
+        return Result.err(HttpError.unauthorized());
       }
 
       final errorResponse = _mapper.fromErrorJson(jsonDecode(response.body), response.statusCode);
 
-      return Result(
-          null,
-          errorDecoder?.call(errorResponse) ??
+      return Result.err(errorDecoder?.call(errorResponse) ??
               HttpError.server(
                   Details(messageAddon: "${errorResponse.message}", data: jsonDecode(response.body))));
     }
 
     if (error != null) {
-      return Result(null, _handler.parseError(error));
+      return Result.err(_handler.parseError(error));
     }
 
-    return Result(null, HttpError.unknown());
+    return Result.err(HttpError.unknown());
   }
 
   /// Esse método existe para que no futuro se necessário

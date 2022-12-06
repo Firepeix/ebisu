@@ -14,11 +14,15 @@ class Moment {
     return this;
   }
 
-  static Moment now () {
+  DateTime toDateTime() {
+    return _value;
+  }
+
+  static Moment now() {
     return Moment(DateTime.now());
   }
 
-  static Moment parse (String from) {
+  static Moment parse(String from) {
     final dates = from.split("/").reversed.join("-");
     return Moment(DateTime.parse(dates));
   }

@@ -62,7 +62,8 @@ class _CreateExpenditurePageState extends State<CreateExpenditurePage> {
   }
 
   Future<void> _setCards () async {
-    cards = await widget.cardService.getCards();
+    final result = await widget.cardService.getCards();
+    result.match(ok: (value) => cards = value);
   }
 
 

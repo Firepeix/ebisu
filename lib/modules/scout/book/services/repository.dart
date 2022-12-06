@@ -43,7 +43,7 @@ class BookRepository implements BookRepositoryInterface {
       final request = GetBooksRequest(includeIgnored: includeAll);
       return await _tank.get(request);
     } catch (error) {
-      return Result(null, UnknownError(error));
+      return Result.err(UnknownError(error));
     }
   }
 

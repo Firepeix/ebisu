@@ -18,9 +18,7 @@ class ExpensePurchaseService implements ExpensePurchaseServiceInterface {
   @override
   Future<List<CreditExpensePurchaseSummaryModel>> getPurchaseCreditSummary() async {
     final result = await _repository.getPurchaseCreditSummary();
-    if (result.isOk()) {
-      await _repository.setLocalCreditSummaryQuantity(result.value!.length);
-    }
+    result.willMatch(ok: (value) async => await _repository.setLocalCreditSummaryQuantity(value.length));
     return _exceptionHandler.expect(result) ?? [];
   }
 
