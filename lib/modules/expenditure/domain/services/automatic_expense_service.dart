@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:ebisu/modules/card/domain/services/card_service.dart';
+import 'package:ebisu/modules/card/models/card.dart';
 import 'package:ebisu/modules/expenditure/domain/services/expense_notification_parser_service.dart';
 import 'package:ebisu/modules/expenditure/infrastructure/transfer_objects/creates_expense.dart';
 import 'package:ebisu/shared/exceptions/result.dart';
@@ -20,11 +21,35 @@ class AutomaticExpenseServiceImpl implements AutomaticExpenseService {
 
   @override
   Future<Result<CreatesExpense?, ResultError>> createOnNotification(NotificationEvent event) async {
-    final cards = await _cardService.getCards(display: false);
-    if (cards.hasError()) {
-      return Result(cards.getValue());
-    }
+    final result = _parserService.parse(event.packageName ?? "", event.message ?? "");
 
-    return _parserService.parse(event.packageName ?? "", event.message ?? "", cards.unwrap());
+    return await result.willMatch(
+      ok: (incomplete) async {
+        return incomplete != null ? await _complete(incomplete) : Result.ok(null);
+      },
+      err: (error) async => Result.err(error),
+    );
+  }
+
+  Future<Result<CreatesExpense, ResultError>> _complete(IncompleteNotificationExpense incomplete) async {
+    final cards = await _cardService.getCards(display: false);
+
+    final isCard = (CardModel? model) => model?.name.contains(incomplete.cardName);
+
+    return cards.match(
+      err: (error) => Result.err(error),
+      ok: (cards) {
+        final card = cards.cast<CardModel?>().firstWhere(
+              (element) => isCard(element) ?? false,
+              orElse: () => null,
+            );
+
+        if (card == null) {
+          return Result.err(NotificationParserError.validCardNotFoundForExpense(incomplete.cardName));
+        }
+
+        return Result.ok(incomplete.complete(card));
+      },
+    );
   }
 }

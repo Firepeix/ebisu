@@ -1,7 +1,5 @@
-import 'package:ebisu/modules/card/models/card.dart';
 import 'package:ebisu/modules/expenditure/domain/services/expense_notification_parser_service.dart';
 import 'package:ebisu/shared/exceptions/result.dart';
-import 'package:ebisu/modules/expenditure/infrastructure/transfer_objects/creates_expense.dart';
 import 'package:ebisu/ui_components/chronos/labels/money.dart';
 import 'package:ebisu/ui_components/chronos/time/moment.dart';
 
@@ -16,13 +14,8 @@ class NubankNotificationParser implements NotificationExpenseParser {
   }
 
   @override
-  Result<CreatesExpense, ResultError> parse(String message, List<CardModel> cards) {
-    final card = cards.cast<CardModel?>().firstWhere((element) => element?.name.contains("Nubank") ?? false, orElse: () => null,);
-    
-    if (card == null) {
-      return Result.err(NotificationParserError.validCardNotFoundForExpense("Nubank"));
-    } 
-
+  Result<IncompleteNotificationExpense, ResultError> parse(String message) {
+  
     final name = nameMatcher.firstMatch(message)?[0];
 
     if (name == null) {
@@ -41,12 +34,11 @@ class NubankNotificationParser implements NotificationExpenseParser {
       return Result.err(NotificationParserError.couldNotParseAmount(message));
     }
 
-    final expense = NotificationExpense(
+    return Result.ok(IncompleteNotificationExpense(
         name: name.replaceAll("em ", ""),
         amount: parsedAmount,
         date: Moment.now(),
-        card: cards.firstWhere((element) => element.name.contains("Nubank")));
-
-    return Result.ok(expense);
+        cardName: "Nubank"
+    ));
   }
 }

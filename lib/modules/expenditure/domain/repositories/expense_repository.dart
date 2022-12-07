@@ -16,7 +16,7 @@ class ExpenseError extends ResultError {
 }
 
 abstract class ExpenseRepositoryInterface {
-  Future<Result<Success, ExpenseError>> insert(CreatesExpense expenditure);
+  Future<Result<Success, ResultError>> insert(CreatesExpense expenditure);
   Future<Result<List<ExpenseModel>, ExpenseError>> getCurrentExpenses();
   Future<Result<void, ResultError>> deleteExpense(String id);
   Future<Result<ExpenseModel, ResultError>> getExpense(String id);
@@ -41,9 +41,8 @@ class ExpenseRepository implements ExpenseRepositoryInterface {
   }
 
   @override
-  Future<Result<Success, ExpenseError>> insert(CreatesExpense expenditure) async {
-   final result = await _caron.post<Success, CreatesExpense>(_Endpoint.ExpensesIndex, expenditure, _mapper.toJson, errorDecoder: _mapErrors);
-   return result.mapErrorTo<ExpenseError>();
+  Future<Result<Success, ResultError>> insert(CreatesExpense expenditure) async {
+   return await _caron.post<Success, CreatesExpense>(_Endpoint.ExpensesIndex, expenditure, _mapper.toJson, errorDecoder: _mapErrors);
   }
 
   ExpenseError _mapErrors(ErrorResponse response) {

@@ -15,7 +15,7 @@ import 'package:injectable/injectable.dart';
 import 'package:notifications/notifications.dart';
 
 abstract class ExpenseServiceInterface implements ListenNotification {
-  Future<Result<void, ExpenseError>> createExpense(CreatesExpense builder);
+  Future<Result<void, ResultError>> createExpense(CreatesExpense builder);
   Future<List<ExpenseModel>> getCurrentExpenses();
   Future<Result<void, ResultError>> deleteExpense(ExpenseModel model);
   Future<List<ExpenseSourceModel>> getSources();
@@ -40,7 +40,7 @@ class ExpenseService implements ExpenseServiceInterface {
       this._userServiceInterface, this._establishmentServiceInterface, this._automaticExpenseService);
 
   @override
-  Future<Result<void, ExpenseError>> createExpense(CreatesExpense builder) async {
+  Future<Result<void, ResultError>> createExpense(CreatesExpense builder) async {
     _notificationService.displayLoading();
     final result = await _storeExpense(builder);
 
@@ -52,7 +52,7 @@ class ExpenseService implements ExpenseServiceInterface {
     return result;
   }
 
-  Future<Result<Success, ExpenseError>> _storeExpense(CreatesExpense builder) async {
+  Future<Result<Success, ResultError>> _storeExpense(CreatesExpense builder) async {
     return await _repository.insert(builder);
   }
 
@@ -102,7 +102,7 @@ class ExpenseService implements ExpenseServiceInterface {
     _automaticExpenseService.createOnNotification(event).then((expense) {
       expense.match(ok: (value) {
         if (value != null) {
-          _storeExpense(value);
+          _storeExpense(value).then((value) => print("Despesa criada com Sucesso!"));
         }
       });
     });

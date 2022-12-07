@@ -19,11 +19,11 @@ class Details {
   Details({this.messageAddon, this.data});
 }
 
-typedef MatchOk<T> = void Function(T value);
-typedef WillMatchOk<T> = Future<void> Function(T value);
+typedef MatchOk<T, R> = R Function(T value);
+typedef WillMatchOk<T, R> = Future<R> Function(T value);
 
-typedef MatchErr<E extends ResultError> = void Function(E error);
-typedef WillMatchErr<E extends ResultError> = Future<void> Function(E error);
+typedef MatchErr<E extends ResultError, R> = R Function(E error);
+typedef WillMatchErr<E extends ResultError, R> = Future<R> Function(E error);
 
 abstract class ResultValue {}
 
@@ -49,32 +49,40 @@ class Result<V, E extends ResultError> {
 
   Result.err(E _error) : this(Err(_error));
 
+  Result<T, Er> to<T, Er extends ResultError>() {
+    return Result(_value);
+  }
+
   bool hasError() => _value is Err;
 
   bool isOk() => !hasError();
 
-  void match({MatchOk<V>? ok, MatchErr<E>? err}) {
+  R match<R>({MatchOk<V, R>? ok, MatchErr<E, R>? err}) {
     assert(ok != null || err != null, "Ok ou Err deve ser mapeados para o Match");
 
     if (ok != null && isOk()) {
-      ok.call((_value as Ok<V>).value);
+      return ok.call((_value as Ok<V>).value);
     }
 
     if (err != null && hasError()) {
-      err.call((_value as Err<E>).value);
+      return err.call((_value as Err<E>).value);
     }
+
+    return null as R;
   }
 
-  Future<void> willMatch({WillMatchOk<V>? ok, WillMatchErr<E>? err}) async {
+  Future<R> willMatch<R>({WillMatchOk<V, R>? ok, WillMatchErr<E, R>? err}) async {
     assert(ok != null || err != null, "Ok ou Err deve ser mapeados para o Match");
 
     if (ok != null && isOk()) {
-      await ok.call((_value as Ok<V>).value);
+      return await ok.call((_value as Ok<V>).value);
     }
 
     if (err != null && hasError()) {
-      await err.call((_value as Err<E>).value);
+      return await err.call((_value as Err<E>).value);
     }
+
+    return Future.value(null);
   }
 
   V unwrap() {
