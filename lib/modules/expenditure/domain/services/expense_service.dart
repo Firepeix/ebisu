@@ -12,7 +12,6 @@ import 'package:ebisu/shared/exceptions/result.dart';
 import 'package:ebisu/shared/http/response.dart';
 import 'package:ebisu/shared/services/notification_service.dart';
 import 'package:injectable/injectable.dart';
-import 'package:notifications/notifications.dart';
 
 abstract class ExpenseServiceInterface implements ListenNotification {
   Future<Result<void, ResultError>> createExpense(CreatesExpense builder);

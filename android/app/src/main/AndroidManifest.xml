@@ -1,6 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.tutufernandes.ebisu">
     <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <application
         android:label="Ebisu"
         android:icon="@mipmap/ic_launcher">
@@ -48,5 +49,6 @@
             <action android:name="android.service.notification.NotificationListenerService" />
         </intent-filter>
     </service>    
+    <service android:name="com.tutufernandes.ebisu.background.BackgroundService" android:enabled="true" android:exported="false" />
    </application>
 </manifest>

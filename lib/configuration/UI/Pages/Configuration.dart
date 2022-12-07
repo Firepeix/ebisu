@@ -1,15 +1,18 @@
 import 'package:ebisu/configuration/UI/Components/CleanCredentials.dart';
 import 'package:ebisu/configuration/UI/Components/SheetIdConfiguration.dart';
+import 'package:ebisu/modules/configuration/components/background_configuration.dart';
 import 'package:ebisu/modules/configuration/components/endpoint_configuration.dart';
 import 'package:ebisu/modules/configuration/domain/repositories/config_repository.dart';
+import 'package:ebisu/modules/configuration/domain/services/background_service.dart';
 import 'package:ebisu/shared/services/notification_service.dart';
 import 'package:flutter/material.dart';
 
 class ConfigurationPage extends StatelessWidget {
   final ConfigRepositoryInterface _repository;
+  final BackgroundServiceInterface _backgroundService;
   final NotificationService _notificationService;
 
-  ConfigurationPage(this._repository, this._notificationService, {Key? key}) : super(key: key);
+  ConfigurationPage(this._repository, this._notificationService, this._backgroundService, {Key? key}) : super(key: key);
 
   Route getRoute() {
     return PageRouteBuilder(
@@ -43,6 +46,7 @@ class ConfigurationPage extends StatelessWidget {
         children: <Widget>[
           Padding(padding: EdgeInsets.only(top: 0), child: SheetIdConfiguration(),),
           Padding(padding: EdgeInsets.only(top: 10), child: EndpointConfiguration(_repository, _notificationService),),
+          Padding(padding: EdgeInsets.only(top: 10), child: BackgroundConfiguration(_backgroundService),),
           CleanCredentials()
         ],
       ),

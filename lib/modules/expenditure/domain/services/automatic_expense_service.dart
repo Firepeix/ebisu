@@ -4,9 +4,9 @@ import 'package:ebisu/modules/card/domain/services/card_service.dart';
 import 'package:ebisu/modules/card/models/card.dart';
 import 'package:ebisu/modules/expenditure/domain/services/expense_notification_parser_service.dart';
 import 'package:ebisu/modules/expenditure/infrastructure/transfer_objects/creates_expense.dart';
+import 'package:ebisu/modules/notification/domain/notification_listener_service.dart';
 import 'package:ebisu/shared/exceptions/result.dart';
 import 'package:injectable/injectable.dart';
-import 'package:notifications/notifications.dart';
 
 abstract class AutomaticExpenseService {
   Future<Result<CreatesExpense?, ResultError>> createOnNotification(NotificationEvent event);
@@ -21,7 +21,7 @@ class AutomaticExpenseServiceImpl implements AutomaticExpenseService {
 
   @override
   Future<Result<CreatesExpense?, ResultError>> createOnNotification(NotificationEvent event) async {
-    final result = _parserService.parse(event.packageName ?? "", event.message ?? "");
+    final result = _parserService.parse(event.packageName, event.message);
 
     return await result.willMatch(
       ok: (incomplete) async {

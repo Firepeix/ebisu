@@ -2,6 +2,7 @@ import 'package:ebisu/configuration/UI/Pages/Configuration.dart';
 import 'package:ebisu/domain/travel/models/travel_day_model.dart';
 import 'package:ebisu/domain/travel/models/travel_expense_model.dart';
 import 'package:ebisu/modules/configuration/domain/repositories/config_repository.dart';
+import 'package:ebisu/modules/configuration/domain/services/background_service.dart';
 import 'package:ebisu/modules/core/interactor.dart';
 import 'package:ebisu/modules/notification/domain/notification_listener_service.dart';
 import 'package:ebisu/shared/Infrastructure/Ebisu.dart';
@@ -41,7 +42,7 @@ void register() {
 }
 
 void installDependencies() async {
-  getIt<NotificationListenerService>().startListening();
+  getIt<NotificationListenerServiceInterface>().install();
 }
 
 void installExceptionHandler() {
@@ -66,6 +67,7 @@ Future<void> installRelease() async {
 }
 
 void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
   await Hive.initFlutter();
   await installRelease();
   installDependencyInjection();
@@ -93,8 +95,11 @@ class MyApp extends StatelessWidget {
       navigatorKey: _interactor.navigatorKey(),
       onGenerateRoute: (settings) {
         if (settings.name == "/configuration") {
-          return ConfigurationPage(getIt<ConfigRepositoryInterface>(), getIt<NotificationService>())
-              .getRoute();
+          return ConfigurationPage(
+            getIt<ConfigRepositoryInterface>(), 
+            getIt<NotificationService>(),
+            getIt<BackgroundServiceInterface>()
+          ).getRoute();
         }
 
         if (_pageContainer.hasPage(settings.name ?? '')) {

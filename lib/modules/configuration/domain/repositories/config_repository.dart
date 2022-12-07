@@ -15,7 +15,6 @@ enum Application {
     return "${ConfigRepository.LOCAL_ENDPOINT_CONFIG_KEY}/$name";
   }
 
-  
   String get shouldUseLocalEndpointKey {
     return "${ConfigRepository.SHOULD_USE_LOCAL_ENDPOINT_KEY}/$name";
   }
@@ -40,6 +39,9 @@ abstract class ConfigRepositoryInterface {
 
   Future<bool> shouldUseLocalEndpoint(Application app);
   Future<void> saveUseLocalEndpoint(Application app, bool should);
+
+  Future<T> getConfig<T>(String name, { T? base });
+  Future<void> setConfig<T>(String name, T value);
 }
 
 @Injectable(as: ConfigRepositoryInterface)
@@ -66,9 +68,7 @@ class ConfigRepository implements ConfigRepositoryInterface {
 
     final endpoint = _remoteConfig?.getString(app.endpointKey);
 
-    return endpoint != null && endpoint == ''
-        ? await getLocalEndpoint(app)
-        : endpoint!;
+    return endpoint != null && endpoint == '' ? await getLocalEndpoint(app) : endpoint!;
   }
 
   @override
@@ -79,8 +79,7 @@ class ConfigRepository implements ConfigRepositoryInterface {
 
   @override
   Future<String> getAuthToken() async {
-    final token = const String.fromEnvironment(AUTH_TOKEN_CONFIG_KEY,
-        defaultValue: "EMPTY");
+    final token = const String.fromEnvironment(AUTH_TOKEN_CONFIG_KEY, defaultValue: "EMPTY");
     final prefs = await SharedPreferences.getInstance();
     return prefs.getString(AUTH_TOKEN_CONFIG_KEY) ?? token;
   }
@@ -101,5 +100,27 @@ class ConfigRepository implements ConfigRepositoryInterface {
   Future<bool> shouldUseLocalEndpoint(Application app) async {
     final prefs = await SharedPreferences.getInstance();
     return prefs.getBool(app.shouldUseLocalEndpointKey) ?? false;
+  }
+
+  @override
+  Future<T> getConfig<T>(String name, {T? base}) async {
+    final prefs = await SharedPreferences.getInstance();
+    final name = T.toString();
+
+    if (name.startsWith("bool")) {
+      return (prefs.getBool(name) ?? base) as T;
+    }
+
+    return null as T;
+  }
+
+    @override
+  Future<void> setConfig<T>(String name, T value) async {
+    final prefs = await SharedPreferences.getInstance();
+    final name = T.toString();
+
+    if (name.startsWith("bool")) {
+      prefs.setBool(name, value as bool);
+    }
   }
 }

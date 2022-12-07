@@ -1,11 +1,18 @@
 import 'package:ebisu/modules/expenditure/domain/services/expense_service.dart';
 import 'package:injectable/injectable.dart';
-import 'package:flutter/material.dart';
 import 'dart:async';
-import 'package:notifications/notifications.dart';
+import 'package:notifications/notifications.dart' as NotificationPlugin;
 
-abstract class NotificationListenerService {
-  void startListening();
+class NotificationEvent {
+  final String packageName;
+  final String message;
+
+  NotificationEvent(this.message, this.packageName);
+}
+
+abstract class NotificationListenerServiceInterface {
+  void install();
+  void uninstall();
 }
 
 abstract class ListenNotification {
@@ -13,28 +20,32 @@ abstract class ListenNotification {
   void listen(NotificationEvent event);
 }
 
-@Singleton(as: NotificationListenerService)
-class NotificationListener implements NotificationListenerService {
-  Notifications? _notifications;
-  Map<String, StreamSubscription<NotificationEvent>?> _subscriptions = {};
+@Singleton(as: NotificationListenerServiceInterface)
+class NotificationListener implements NotificationListenerServiceInterface {
+  NotificationPlugin.Notifications? _stream;
+  List<ListenNotification> _listeners = [];
+  StreamSubscription<NotificationPlugin.NotificationEvent>? _subscription;
   bool started = false;
 
-  void startListening() {
-    _notifications = Notifications();
-    _registerServices();
-    started = true;
+  Future<void> install() async {
+    if (!started) {
+      _stream = NotificationPlugin.Notifications();
+      _registerListeners();
+      _subscription = _stream?.notificationStream?.listen((data) {
+        final event = map(data);
+        _listeners.forEach((listener) => listener.listen(event));
+      });
+      started = true;
+    }
   }
 
-  void _register(ListenNotification listener) {
-    _subscriptions[listener.name()] = _notifications?.notificationStream?.listen(listener.listen);
+  void uninstall() {}
+
+  void _registerListeners() {
+    _listeners.add(ExpenseServiceInterface.registerListenerForNotification());
   }
 
-  void _registerServices() {
-    final services = [ExpenseServiceInterface.registerListenerForNotification()];
-    services.forEach((element) => _register(element));
-  }
-
-  void stopListening(String listenerName) {
-    _subscriptions[listenerName]?.cancel();
+  NotificationEvent map(NotificationPlugin.NotificationEvent event) {
+    return NotificationEvent(event.message ?? "", event.packageName ?? "");
   }
 }
