@@ -9,6 +9,7 @@ import 'package:ebisu/shared/Infrastructure/Ebisu.dart';
 import 'package:ebisu/shared/configuration/app_configuration.dart';
 import 'package:ebisu/shared/exceptions/handler.dart';
 import 'package:ebisu/shared/exceptions/result.dart';
+import 'package:ebisu/shared/exceptions/result_error.dart';
 import 'package:ebisu/shared/navigator/navigator_interface.dart';
 import 'package:ebisu/shared/services/notification_service.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -47,12 +48,12 @@ void installDependencies() async {
 
 void installExceptionHandler() {
   FlutterError.onError = (FlutterErrorDetails details) {
-    getIt<ExceptionHandlerInterface>().expect(Result.err(UnknownError(Details(data: details))));
+    getIt<ExceptionHandlerInterface>().expect(Err(UnknownError(Details(data: details))));
   };
 
   PlatformDispatcher.instance.onError = (error, stack) {
     final service = getIt<ExceptionHandlerInterface>();
-    service.expect(Result.err(service.parseError(error, alternativeStackTrace: stack)));
+    service.expect(Err(service.parseError(error, alternativeStackTrace: stack)));
     return true;
   };
 }

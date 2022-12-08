@@ -8,6 +8,7 @@ import 'package:ebisu/modules/expenditure/domain/notification_parsers/nubank.dar
 import 'package:ebisu/modules/expenditure/enums/expense_type.dart';
 import 'package:ebisu/modules/expenditure/infrastructure/transfer_objects/creates_expense.dart';
 import 'package:ebisu/shared/exceptions/result.dart';
+import 'package:ebisu/shared/exceptions/result_error.dart';
 import 'package:ebisu/ui_components/chronos/time/moment.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:injectable/injectable.dart';
@@ -80,7 +81,7 @@ class ExpenseNotificationParser implements ExpenseNotificationParserService {
         return parser.parse(message);
       }
     }
-    return Result.ok(null);
+    return Ok(null);
   }
 }
 

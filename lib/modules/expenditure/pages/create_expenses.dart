@@ -63,7 +63,7 @@ class _CreateExpenditurePageState extends State<CreateExpenditurePage> {
 
   Future<void> _setCards () async {
     final result = await widget.cardService.getCards();
-    result.match(ok: (value) => cards = value);
+    result.let(ok: (value) => cards = value);
   }
 
 
@@ -73,9 +73,7 @@ class _CreateExpenditurePageState extends State<CreateExpenditurePage> {
 
   Future<void> saveExpense(CreatesExpense model) async {
     final result = await widget.service.createExpense(model);
-    if(result.isOk()) {
-      widget.onSaveExpense?.call(HomePage.PAGE_INDEX);
-    }
+    result.let(ok: (_) => widget.onSaveExpense?.call(HomePage.PAGE_INDEX));
   }
 
   @override

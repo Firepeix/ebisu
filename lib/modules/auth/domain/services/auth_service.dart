@@ -1,6 +1,7 @@
 import 'package:ebisu/modules/configuration/domain/repositories/config_repository.dart';
 import 'package:ebisu/shared/exceptions/handler.dart';
 import 'package:ebisu/shared/exceptions/result.dart';
+import 'package:ebisu/shared/exceptions/result_error.dart';
 import 'package:ebisu/shared/http/client.dart';
 import 'package:ebisu/shared/http/response.dart';
 import 'package:ebisu/shared/services/notification_service.dart';
@@ -35,7 +36,7 @@ class AuthService implements AuthServiceInterface {
     final result = await _client.post<TokenResponse, Map<dynamic, dynamic>>(_Endpoint.Login, { "email": email, "password": password }, (body) => body, decoder: (response) => TokenResponse(response["token"]));
     _exceptionHandler.expect(result);
 
-    await result.willMatch(ok: (value) async {
+    await result.willLet(ok: (value) async {
       await _config.saveAuthToken(value.token);
       _notificationService.displaySuccess(message: "Login realizado com sucesso!");
     });

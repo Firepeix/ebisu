@@ -1,5 +1,6 @@
 import 'package:ebisu/modules/expenditure/domain/services/expense_notification_parser_service.dart';
 import 'package:ebisu/shared/exceptions/result.dart';
+import 'package:ebisu/shared/exceptions/result_error.dart';
 import 'package:ebisu/shared/utils/let.dart';
 import 'package:ebisu/ui_components/chronos/labels/money.dart';
 import 'package:ebisu/ui_components/chronos/time/moment.dart';
@@ -25,22 +26,22 @@ class CaixaNotificationParser implements NotificationExpenseParser {
     final name = Let.match(configuration.nameMatcher.firstMatch(message), 1);
 
     if (name == null) {
-      return Result.err(NotificationParserError.nameNotFound(message));
+      return Err(NotificationParserError.nameNotFound(message));
     }
 
     final amount = Let.match(configuration.amountMatcher.firstMatch(message), 1);
 
     if (amount == null) {
-      return Result.err(NotificationParserError.amountNotFound(message));
+      return Err(NotificationParserError.amountNotFound(message));
     }
 
     final parsedAmount = Money.parse(amount);
 
     if (parsedAmount == null) {
-      return Result.err(NotificationParserError.couldNotParseAmount(message));
+      return Err(NotificationParserError.couldNotParseAmount(message));
     }
 
-    return Result.ok(IncompleteNotificationExpense(
+    return Ok(IncompleteNotificationExpense(
         name: name, amount: (parsedAmount / 2).ceil(), date: Moment.now(), cardName: "Caixa"
     ));
   }

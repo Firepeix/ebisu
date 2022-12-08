@@ -2,6 +2,7 @@ import 'package:ebisu/modules/card/domain/mappers/card_mapper.dart';
 import 'package:ebisu/modules/card/infrastructure/transfer_objects/SaveCardModel.dart';
 import 'package:ebisu/modules/card/models/card.dart';
 import 'package:ebisu/shared/exceptions/result.dart';
+import 'package:ebisu/shared/exceptions/result_error.dart';
 import 'package:ebisu/shared/http/client.dart';
 import 'package:ebisu/shared/http/response.dart';
 import 'package:injectable/injectable.dart';
@@ -30,7 +31,7 @@ class CardRepository implements CardRepositoryInterface {
   @override
   Future<Result<List<CardModel>, CardError>> getCards() async {
     final result = await _caron.getList<CardModel>(_Endpoint.CardsIndex, _mapper.fromJson);
-    return result.map((value) => value.data).subError(CardError.getCards());
+    return result.map((value) => value.data).mapErr((_) => CardError.getCards());
   }
 
   @override

@@ -3,6 +3,7 @@ import 'package:ebisu/modules/scout/book/navigator.dart';
 import 'package:ebisu/modules/scout/book/views/books.dart';
 import 'package:ebisu/shared/exceptions/handler.dart';
 import 'package:ebisu/shared/exceptions/result.dart';
+import 'package:ebisu/shared/exceptions/result_error.dart';
 import 'package:ebisu/shared/http/response.dart';
 import 'package:ebisu/shared/services/notification_service.dart';
 import 'package:ebisu/ui_components/chronos/colors/colors.dart';
@@ -26,24 +27,37 @@ class BookPresenter {
   Widget initWidget() => BooksView(_interactor);
 
   Future<BookAction?> presentBookActions(BookModel book) async {
-    final postponeOption = SelectOption("Adiar", BookAction.POSTPONE, invert: true, icon: Icon(Icons.calendar_today, color: EColor.accent,));
-    final activateOption = SelectOption("Ativar", BookAction.ACTIVATE, invert: true, icon: Icon(Icons.play_arrow, color: EColor.secondary,));
+    final postponeOption = SelectOption("Adiar", BookAction.POSTPONE,
+        invert: true,
+        icon: Icon(
+          Icons.calendar_today,
+          color: EColor.accent,
+        ));
+    final activateOption = SelectOption("Ativar", BookAction.ACTIVATE,
+        invert: true,
+        icon: Icon(
+          Icons.play_arrow,
+          color: EColor.secondary,
+        ));
 
     final options = [
-      SelectOption("Lido", BookAction.MARK_AS_READ, icon: Icon(Icons.check, color: EColor.success,)),
+      SelectOption("Lido", BookAction.MARK_AS_READ,
+          icon: Icon(
+            Icons.check,
+            color: EColor.success,
+          )),
       book.isIgnored ? activateOption : postponeOption
     ];
 
     return await _notificationService.displaySelectDialog(book.name, options, appendix: book.statusName);
   }
 
-  Future<Result<Success, ResultError>> presentAction(Future<Result<Success, ResultError>> Function() action) async {
+  Future<Result<Success, ResultError>> presentAction(
+      Future<Result<Success, ResultError>> Function() action) async {
     _notificationService.displayLoading();
     final result = await action();
 
-    if(result.isOk()) {
-      _notificationService.displaySuccess(message: result.unwrap().message);
-    }
+    result.let(ok: (value) => _notificationService.displaySuccess(message: value.message));
 
     _exceptionHandler.expect(result);
     return result;

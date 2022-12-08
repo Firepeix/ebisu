@@ -1,14 +1,12 @@
 import 'package:ebisu/shared/exceptions/reporter.dart';
 import 'package:ebisu/shared/exceptions/result.dart';
+import 'package:ebisu/shared/exceptions/result_error.dart';
 import 'package:ebisu/shared/services/notification_service.dart';
 import 'package:flutter/material.dart';
 import 'package:injectable/injectable.dart';
 
 abstract class ExceptionHandlerInterface {
   V? expect<V, E extends ResultError>(Result<V, E> result);
-  // TODO ADD UNWRAP
-  // TODO ADD IGNORE
-  // TODO ADD GET ERROR
   ResultError createError(Error error, {StackTrace? alternativeStackTrace, String? errorContext});
   UnknownError createUnknownError(Object error, {StackTrace? alternativeStackTrace, String? errorContext});
   ResultError parseError(Object error, {StackTrace? alternativeStackTrace, String? errorContext});
@@ -27,15 +25,13 @@ class ExceptionHandler implements ExceptionHandlerInterface {
 
   @override
   V? expect<V, E extends ResultError>(Result<V, E> result) {
-    if (result.hasError()) {
-      result.match(err: (error) {
-        _reporterService.reportError(error);
-        _displayError(error);
-      });
-      return null;
-    }
-
-    return result.unwrap();
+    return result.match(
+        err: (error) {
+          _reporterService.reportError(error);
+          _displayError(error);
+          return null;
+        },
+        ok: (value) => value);
   }
 
   @override

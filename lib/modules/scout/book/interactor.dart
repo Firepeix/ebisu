@@ -61,25 +61,17 @@ class BookInteractor implements BookInteractorInterface {
 
   Future<BookModel> _activateBook(BookModel book) async {
     final result = await _presenter.presentAction(() async => await _repository.expedite(book));
-    if (result.isOk()) {
-      return _service.activate(book);
-    }
-    return book;
+    return result.to(ok: _service.activate(book), err: book);
   }
 
   Future<BookModel> _readChapter(BookModel book) async {
     final result = await _presenter.presentAction(() async => await _repository.readChapter(book));
-    if (result.isOk()) {
-      return _service.readChapter(book);
-    }
-    return book;
+
+    return result.to(ok: _service.readChapter(book), err: book);
   }
 
   Future<BookModel> _postpone(BookModel book) async {
     final result = await _presenter.presentAction(() async => await _repository.postpone(book));
-    if (result.isOk()) {
-      return _service.postpone(book);
-    }
-    return book;
+    return result.to(ok: _service.postpone(book), err: book);
   }
 }

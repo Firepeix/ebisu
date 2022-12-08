@@ -21,7 +21,7 @@ class ExceptionHandlerService implements ExceptionHandlerServiceInterface {
       return callback();
     } catch (error) {
       final _error = _handler.parseError(error, errorContext: errorContext);
-      _handler.expect(Result.err(_error));
+      _handler.expect(Err(_error));
     }
   }
 
@@ -31,7 +31,7 @@ class ExceptionHandlerService implements ExceptionHandlerServiceInterface {
       return await callback();
     } catch (error) {
       final _error = _handler.parseError(error, errorContext: errorContext);
-      _handler.expect(Result.err(_error));
+      _handler.expect(Err(_error));
     }
   }
 

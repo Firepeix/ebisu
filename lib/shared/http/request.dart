@@ -1,4 +1,5 @@
 import 'package:ebisu/shared/exceptions/result.dart';
+import 'package:ebisu/shared/exceptions/result_error.dart';
 import 'package:ebisu/shared/http/response.dart';
 
 typedef Json = Map<String, dynamic>;

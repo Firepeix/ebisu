@@ -9,6 +9,7 @@ import 'package:ebisu/modules/notification/domain/notification_listener_service.
 import 'package:ebisu/modules/user/domain/services/user_service.dart';
 import 'package:ebisu/shared/exceptions/handler.dart';
 import 'package:ebisu/shared/exceptions/result.dart';
+import 'package:ebisu/shared/exceptions/result_error.dart';
 import 'package:ebisu/shared/http/response.dart';
 import 'package:ebisu/shared/services/notification_service.dart';
 import 'package:injectable/injectable.dart';
@@ -43,9 +44,7 @@ class ExpenseService implements ExpenseServiceInterface {
     _notificationService.displayLoading();
     final result = await _storeExpense(builder);
 
-    if (result.isOk()) {
-      _notificationService.displaySuccess(message: result.unwrap().message);
-    }
+    result.let(ok: (response) => _notificationService.displaySuccess(message: response.message));
 
     _exceptionHandler.expect(result);
     return result;
@@ -88,9 +87,7 @@ class ExpenseService implements ExpenseServiceInterface {
     _notificationService.displayLoading();
     final result = await _repository.update(id, builder);
 
-    if (result.isOk()) {
-      _notificationService.displaySuccess(message: result.unwrap().message);
-    }
+    result.let(ok: (response) => _notificationService.displaySuccess(message: response.message));
 
     _exceptionHandler.expect(result);
     return result;
@@ -99,7 +96,7 @@ class ExpenseService implements ExpenseServiceInterface {
   @override
   void listen(NotificationEvent event) {
     _automaticExpenseService.createOnNotification(event).then((expense) {
-      expense.match(ok: (value) {
+      expense.let(ok: (value) {
         if (value != null) {
           _storeExpense(value).then((value) => print("Despesa criada com Sucesso!"));
         }

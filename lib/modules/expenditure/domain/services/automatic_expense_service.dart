@@ -5,6 +5,7 @@ import 'package:ebisu/modules/expenditure/domain/services/expense_notification_p
 import 'package:ebisu/modules/expenditure/infrastructure/transfer_objects/creates_expense.dart';
 import 'package:ebisu/modules/notification/domain/notification_listener_service.dart';
 import 'package:ebisu/shared/exceptions/result.dart';
+import 'package:ebisu/shared/exceptions/result_error.dart';
 import 'package:ebisu/ui_components/chronos/time/moment.dart';
 import 'package:injectable/injectable.dart';
 
@@ -30,16 +31,13 @@ class AutomaticExpenseServiceImpl implements AutomaticExpenseService {
   Future<Result<CreatesExpense?, ResultError>> createOnNotification(NotificationEvent event) async {
     final result = _parserService.parse(event.packageName, event.message);
 
-    return await result.willMatch(
-      ok: (incomplete) async {
-        if (incomplete == null) {
-          return Result.ok(null);
-        }
-        return (await _validate(incomplete))
-        .match(ok: (value) async => await _complete(value), err: (error) => Result.err(error),);
-      },
-      err: (error) async => Result.err(error),
-    );
+    return await result.willThen((incomplete) async {
+      if (incomplete == null) {
+        return Ok(null);
+      }
+
+      return (await _validate(incomplete)).willThen((value) async => await _complete(value));
+    });
   }
 
   Future<Result<IncompleteNotificationExpense, ResultError>> _validate(Expense expense) async {
@@ -47,7 +45,7 @@ class AutomaticExpenseServiceImpl implements AutomaticExpenseService {
     final goodAction = () async {
       final ttl = Moment.now().add(Duration(seconds: 10)).toLocalDateTimeString();
       await _configRepository.setConfig("LAST_EXPENSE", "${expense.encode()}.$ttl");
-      return Result.ok(expense);
+      return Ok(expense);
     };
 
     if (encondedExpense == null) {
@@ -61,7 +59,7 @@ class AutomaticExpenseServiceImpl implements AutomaticExpenseService {
     }
 
     if (expense.isSameAsEncondedExpense(decodedExpense.sublist(0, decodedExpense.length - 1))) {
-      return Result.err(AutomaticExpenseError.alreadyExists());
+      return Err(AutomaticExpenseError.alreadyExists());
     }
 
     return await goodAction();
@@ -73,7 +71,7 @@ class AutomaticExpenseServiceImpl implements AutomaticExpenseService {
     final isCard = (CardModel? model) => model?.name == incomplete.cardName;
 
     return cards.match(
-      err: (error) => Result.err(error),
+      err: (error) => Err(error),
       ok: (cards) {
         final card = cards.cast<CardModel?>().firstWhere(
               (element) => isCard(element),
@@ -81,10 +79,10 @@ class AutomaticExpenseServiceImpl implements AutomaticExpenseService {
             );
 
         if (card == null) {
-          return Result.err(NotificationParserError.validCardNotFoundForExpense(incomplete.cardName));
+          return Err(NotificationParserError.validCardNotFoundForExpense(incomplete.cardName));
         }
 
-        return Result.ok(incomplete.complete(card));
+        return Ok(incomplete.complete(card));
       },
     );
   }

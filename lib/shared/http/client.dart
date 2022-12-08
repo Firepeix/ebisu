@@ -7,6 +7,7 @@ import 'package:ebisu/modules/configuration/domain/repositories/config_repositor
 import 'package:ebisu/shared/dependency/dependency_container.dart';
 import 'package:ebisu/shared/exceptions/handler.dart';
 import 'package:ebisu/shared/exceptions/result.dart';
+import 'package:ebisu/shared/exceptions/result_error.dart';
 import 'package:ebisu/shared/http/codes.dart';
 import 'package:ebisu/shared/http/mapper.dart';
 import 'package:ebisu/shared/http/request.dart';
@@ -166,10 +167,10 @@ class Caron {
 
   Result<R, ResultError> _parse<R>(Request<R> request, http.Response response) {
     if (response.statusCode.toString().startsWith("2")) {
-      return Result.ok(request.createResponse(jsonDecode(response.body)));
+      return Ok(request.createResponse(jsonDecode(response.body)));
     }
 
-    return Result.err(_loadError(request, response));
+    return Err(_loadError(request, response));
   }
 
   ResultError _loadError(Request request, http.Response response) {
@@ -195,11 +196,11 @@ class Caron {
       {DecodeJson<V>? decoder, DecodeError? errorDecoder, R? successResponse}) {
     if (response.statusCode.toString().startsWith("2")) {
       if (successResponse != null) {
-        return Result.ok(successResponse);
+        return Ok(successResponse);
       }
 
       final payload = _mapper.fromResponse<R, V>(jsonDecode(response.body), decoder);
-      return Result.ok(payload as R);
+      return Ok(payload as R);
     }
 
     return _parseError(response: response, errorDecoder: errorDecoder);
@@ -213,21 +214,21 @@ class Caron {
         if (context != null) {
           routeTo(context, LoginPage(_authService));
         }
-        return Result.err(HttpError.unauthorized());
+        return Err(HttpError.unauthorized());
       }
 
       final errorResponse = _mapper.fromErrorJson(jsonDecode(response.body), response.statusCode);
 
-      return Result.err(errorDecoder?.call(errorResponse) ??
+      return Err(errorDecoder?.call(errorResponse) ??
               HttpError.server(
                   Details(messageAddon: "${errorResponse.message}", data: jsonDecode(response.body))));
     }
 
     if (error != null) {
-      return Result.err(_handler.parseError(error));
+      return Err(_handler.parseError(error));
     }
 
-    return Result.err(HttpError.unknown());
+    return Err(HttpError.unknown());
   }
 
   /// Esse método existe para que no futuro se necessário
