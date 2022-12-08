@@ -13,12 +13,12 @@ class CaixaNotificationParser implements NotificationExpenseParser {
   CaixaNotificationParser(this.configuration);
 
   static ParserConfiguration getDefaultConfiguration() {
-    return ParserConfiguration(r".*\.messag", r"Aprovada (.*) R\$", r"R\$ (\d*,\d*)");
+    return ParserConfiguration(r".*\.messag", r"Aprovada (.*) R\$", r"R\$ (\d*,\d*)", r"final (6171|9279|8212|5461|2326). C");
   }
 
     @override
-  bool shouldParse(String parserId) {
-    return configuration.packageMatcher.hasMatch(parserId);
+  bool shouldParse(String parserId, String message) {
+    return configuration.packageMatcher.hasMatch(parserId) && configuration.extraMatcher.hasMatch(message);
   }
 
   @override

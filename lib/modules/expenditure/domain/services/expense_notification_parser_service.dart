@@ -4,7 +4,9 @@ import 'package:ebisu/modules/card/models/card.dart';
 import 'package:ebisu/modules/configuration/domain/repositories/config_repository.dart';
 import 'package:ebisu/modules/expenditure/domain/expense_source.dart';
 import 'package:ebisu/modules/expenditure/domain/notification_parsers/caixa.dart';
+import 'package:ebisu/modules/expenditure/domain/notification_parsers/caixa_sim.dart';
 import 'package:ebisu/modules/expenditure/domain/notification_parsers/nubank.dart';
+import 'package:ebisu/modules/expenditure/domain/notification_parsers/picpay.dart';
 import 'package:ebisu/modules/expenditure/enums/expense_type.dart';
 import 'package:ebisu/modules/expenditure/infrastructure/transfer_objects/creates_expense.dart';
 import 'package:ebisu/shared/exceptions/result.dart';
@@ -28,10 +30,12 @@ class ParserConfiguration {
   final RegExp packageMatcher;
   final RegExp nameMatcher;
   final RegExp amountMatcher;
+  final RegExp extraMatcher;
 
-  ParserConfiguration(String _packageMatcher, String _nameMatcher, String _amountMatcher)
+  ParserConfiguration(String _packageMatcher, String _nameMatcher, String _amountMatcher, String _extraMatcher)
       : packageMatcher = RegExp(_packageMatcher),
         nameMatcher = RegExp(_nameMatcher),
+        extraMatcher = RegExp(_extraMatcher),
         amountMatcher = RegExp(_amountMatcher);
 }
 
@@ -40,19 +44,19 @@ abstract class ExpenseNotificationParserService {
 }
 
 abstract class NotificationExpenseParser {
-  bool shouldParse(String parserId);
+  bool shouldParse(String parserId, String message);
   Result<IncompleteNotificationExpense, ResultError> parse(String message);
 }
 
 @Injectable(as: ExpenseNotificationParserService)
 class ExpenseNotificationParser implements ExpenseNotificationParserService {
   final ConfigRepositoryInterface _configRepository;
-  final _parsers = [];
+  final List<NotificationExpenseParser> _parsers = [];
 
   ExpenseNotificationParser(this._configRepository) {
     final decoder = (String serialized) {
       final map = jsonDecode(serialized);
-      return ParserConfiguration(map["packageMatcher"], map["nameMatcher"], map["amountMatcher"]);
+      return ParserConfiguration(map["packageMatcher"], map["nameMatcher"], map["amountMatcher"], map["extraMatcher"]);
     };
 
     _parsers.add(NubankNotificationParser(
@@ -72,12 +76,30 @@ class ExpenseNotificationParser implements ExpenseNotificationParserService {
         )
       )
     );
+
+    _parsers.add(PicpayNotificationParser(
+      _configRepository.getRemoveConfig(
+          PicpayNotificationParser.NAME, 
+          PicpayNotificationParser.getDefaultConfiguration(),
+          decoder: decoder
+        )
+      )
+    );
+
+     _parsers.add(CaixaSimNotificationParser(
+      _configRepository.getRemoveConfig(
+          CaixaSimNotificationParser.NAME, 
+          CaixaSimNotificationParser.getDefaultConfiguration(),
+          decoder: decoder
+        )
+      )
+    );
   }
 
   @override
   Result<IncompleteNotificationExpense?, ResultError> parse(String id, String message) {
     for (final parser in _parsers) {
-      if (parser.shouldParse(id)) {
+      if (parser.shouldParse(id, message)) {
         return parser.parse(message);
       }
     }

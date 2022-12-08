@@ -5,15 +5,15 @@ import 'package:ebisu/shared/utils/let.dart';
 import 'package:ebisu/ui_components/chronos/labels/money.dart';
 import 'package:ebisu/ui_components/chronos/time/moment.dart';
 
-class NubankNotificationParser implements NotificationExpenseParser {
-  static const NAME = "NUBANK_PARSER_CONFIG";
+class PicpayNotificationParser implements NotificationExpenseParser {
+  static const NAME = "PICPAY_PARSER_CONFIG";
 
   final ParserConfiguration configuration;
 
-  NubankNotificationParser(this.configuration);
+  PicpayNotificationParser(this.configuration);
 
   static ParserConfiguration getDefaultConfiguration() {
-    return ParserConfiguration(r".*nubank", r"em (.*$)", r"R\$ (\d*,\d*)", "");
+    return ParserConfiguration(r".*picpay", r"em (.*) foi A", r"R\$ (\d*,\d*)", "");
   }
 
   @override
@@ -42,6 +42,6 @@ class NubankNotificationParser implements NotificationExpenseParser {
     }
 
     return Ok(IncompleteNotificationExpense(
-        name: name, amount: parsedAmount, date: Moment.now(), cardName: "Nubank"));
+        name: name, amount: parsedAmount, date: Moment.now(), cardName: "Picpay"));
   }
 }
