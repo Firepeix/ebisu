@@ -50,10 +50,19 @@ class IncompleteNotificationExpense {
   final int amount;
   final Moment date;
 
-  IncompleteNotificationExpense({required this.name, required this.amount, required this.date, required this.cardName});
+  IncompleteNotificationExpense(
+      {required this.name, required this.amount, required this.date, required this.cardName});
 
   CreatesExpense complete(CardModel card) {
     return NotificationExpense(name: name, amount: amount, date: date, card: card);
+  }
+
+  bool isSameAsEncondedExpense(List<String> _encondedExpense) {
+    return _encondedExpense.join(".") == encode();
+  }
+
+  String encode() {
+    return [name, cardName, amount].join(".");
   }
 }
 

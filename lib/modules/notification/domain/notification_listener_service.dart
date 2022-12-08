@@ -2,12 +2,20 @@ import 'package:ebisu/modules/expenditure/domain/services/expense_service.dart';
 import 'package:injectable/injectable.dart';
 import 'dart:async';
 import 'package:notifications/notifications.dart' as NotificationPlugin;
+//import 'package:telephony/telephony.dart';
+
+enum NotificationEventType { Push, Sms }
+
+onBackgroundMessage(NotificationEvent event, List<ListenNotification> listeners) {
+  listeners.forEach((listener) => listener.listen(event));
+}
 
 class NotificationEvent {
   final String packageName;
   final String message;
+  final NotificationEventType type;
 
-  NotificationEvent(this.message, this.packageName);
+  NotificationEvent(this.message, this.packageName, this.type);
 }
 
 abstract class NotificationListenerServiceInterface {
@@ -23,21 +31,50 @@ abstract class ListenNotification {
 @Singleton(as: NotificationListenerServiceInterface)
 class NotificationListener implements NotificationListenerServiceInterface {
   NotificationPlugin.Notifications? _stream;
+  bool notificationListenerStatus = false;
+
+  //Telephony? _telephony;
+  bool telephonyStatus = false;
+
   List<ListenNotification> _listeners = [];
+
   StreamSubscription<NotificationPlugin.NotificationEvent>? _subscription;
-  bool started = false;
 
   Future<void> install() async {
-    if (!started) {
+    _registerListeners();
+    _installNotificationListener();
+    //_instalSMSListener();
+  }
+
+  Future<void> _installNotificationListener() async {
+    if (!notificationListenerStatus) {
       _stream = NotificationPlugin.Notifications();
-      _registerListeners();
       _subscription = _stream?.notificationStream?.listen((data) {
         final event = map(data);
         _listeners.forEach((listener) => listener.listen(event));
       });
-      started = true;
+      notificationListenerStatus = true;
     }
   }
+
+  //Future<void> _instalSMSListener() async {
+  //  if (!telephonyStatus) {
+  //    _telephony = Telephony.instance;
+  //    bool? result = await _telephony?.requestPhoneAndSmsPermissions;
+//
+  //    if (result == false) {
+  //      result = await _telephony?.requestPhoneAndSmsPermissions;
+  //    }
+//
+  //    if (result == true) {
+  //      _telephony?.listenIncomingSms(
+  //        listenInBackground: false,
+  //          onNewMessage: (event) => onBackgroundMessage(mapSms(event), _listeners), 
+  //          //onBackgroundMessage: (event) => onBackgroundMessage(mapSms(event), _listeners)
+  //      );
+  //    }
+  //  }
+  //}
 
   void uninstall() {}
 
@@ -46,6 +83,10 @@ class NotificationListener implements NotificationListenerServiceInterface {
   }
 
   NotificationEvent map(NotificationPlugin.NotificationEvent event) {
-    return NotificationEvent(event.message ?? "", event.packageName ?? "");
+    return NotificationEvent(event.message ?? "", event.packageName ?? "", NotificationEventType.Push);
   }
+
+  //NotificationEvent mapSms(SmsMessage event) {
+  //  return NotificationEvent(event.body ?? "", event.address ?? "", NotificationEventType.Sms);
+  //}
 }

@@ -9,13 +9,20 @@ class Moment {
     return "${_enforceDoubleDigits(_value.day)}/${_enforceDoubleDigits(_value.month)}/${_value.year}";
   }
 
+  String toLocalDateTimeString() {
+    return "${_enforceDoubleDigits(_value.day)}/${_enforceDoubleDigits(_value.month)}/${_value.year} ${_value.hour}:${_value.minute}:${_value.second}";
+  }
+
   Moment add(Duration duration) {
-    this._value.add(duration);
-    return this;
+    return Moment(_value.add(duration));
   }
 
   DateTime toDateTime() {
     return _value;
+  }
+
+  bool isPast() {
+    return _value.isBefore(DateTime.now());
   }
 
   static Moment now() {
@@ -23,7 +30,9 @@ class Moment {
   }
 
   static Moment parse(String from) {
-    final dates = from.split("/").reversed.join("-");
-    return Moment(DateTime.parse(dates));
+    final timestamp = from.split(" ");
+    final date = timestamp[0].split("/").reversed.join("-");
+    final format = "$date${timestamp.length > 1 ? " ${timestamp[1]}" : ""}";
+    return Moment(DateTime.parse(format));
   }
 }

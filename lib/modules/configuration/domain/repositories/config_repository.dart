@@ -105,10 +105,14 @@ class ConfigRepository implements ConfigRepositoryInterface {
   @override
   Future<T> getConfig<T>(String name, {T? base}) async {
     final prefs = await SharedPreferences.getInstance();
-    final name = T.toString();
+    final varname = T.toString();
 
-    if (name.startsWith("bool")) {
+    if (varname.startsWith("bool")) {
       return (prefs.getBool(name) ?? base) as T;
+    }
+
+    if (varname.startsWith("String")) {
+      return (prefs.getString(name) ?? base) as T;
     }
 
     return null as T;
@@ -117,10 +121,14 @@ class ConfigRepository implements ConfigRepositoryInterface {
     @override
   Future<void> setConfig<T>(String name, T value) async {
     final prefs = await SharedPreferences.getInstance();
-    final name = T.toString();
+    final varname = T.toString();
 
-    if (name.startsWith("bool")) {
+    if (varname.startsWith("bool")) {
       prefs.setBool(name, value as bool);
+    }
+
+    if (varname.startsWith("String")) {
+      prefs.setString(name, value as String);
     }
   }
 }
