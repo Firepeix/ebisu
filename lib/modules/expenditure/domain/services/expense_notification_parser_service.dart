@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:ebisu/modules/card/models/card.dart';
 import 'package:ebisu/modules/configuration/domain/repositories/config_repository.dart';
 import 'package:ebisu/modules/expenditure/domain/expense_source.dart';
+import 'package:ebisu/modules/expenditure/domain/notification_parsers/caixa.dart';
 import 'package:ebisu/modules/expenditure/domain/notification_parsers/nubank.dart';
 import 'package:ebisu/modules/expenditure/enums/expense_type.dart';
 import 'package:ebisu/modules/expenditure/infrastructure/transfer_objects/creates_expense.dart';
@@ -53,9 +54,23 @@ class ExpenseNotificationParser implements ExpenseNotificationParserService {
       return ParserConfiguration(map["packageMatcher"], map["nameMatcher"], map["amountMatcher"]);
     };
 
-    _parsers.add(NubankNotificationParser(_configRepository.getRemoveConfig(
-        NubankNotificationParser.NAME, NubankNotificationParser.getDefaultConfiguration(),
-        decoder: decoder)));
+    _parsers.add(NubankNotificationParser(
+      _configRepository.getRemoveConfig(
+          NubankNotificationParser.NAME, 
+          NubankNotificationParser.getDefaultConfiguration(),
+          decoder: decoder
+        )
+      )
+    );
+
+    _parsers.add(CaixaNotificationParser(
+      _configRepository.getRemoveConfig(
+          CaixaNotificationParser.NAME, 
+          CaixaNotificationParser.getDefaultConfiguration(),
+          decoder: decoder
+        )
+      )
+    );
   }
 
   @override

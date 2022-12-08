@@ -10,7 +10,9 @@ class Moment {
   }
 
   String toLocalDateTimeString() {
-    return "${_enforceDoubleDigits(_value.day)}/${_enforceDoubleDigits(_value.month)}/${_value.year} ${_value.hour}:${_value.minute}:${_value.second}";
+    final timestamp = _value.toIso8601String().split("T");
+    final date = timestamp[0].split("/").reversed.join("-");
+    return "$date ${timestamp[1].split(".")[0]}";
   }
 
   Moment add(Duration duration) {

@@ -4,18 +4,18 @@ import 'package:ebisu/shared/utils/let.dart';
 import 'package:ebisu/ui_components/chronos/labels/money.dart';
 import 'package:ebisu/ui_components/chronos/time/moment.dart';
 
-class NubankNotificationParser implements NotificationExpenseParser {
-  static const NAME = "NUBANK_PARSER_CONFIG";
-
+class CaixaNotificationParser implements NotificationExpenseParser {
+  static const NAME = "CAIXA_PARSER_CONFIG";
+  
   final ParserConfiguration configuration;
 
-  NubankNotificationParser(this.configuration);
+  CaixaNotificationParser(this.configuration);
 
   static ParserConfiguration getDefaultConfiguration() {
-    return ParserConfiguration(r"com.android.shell", r"em (.*$)", r"R\$ (\d*,\d*)");
+    return ParserConfiguration(r".*\.messag", r"Aprovada (.*) R\$", r"R\$ (\d*,\d*)");
   }
 
-  @override
+    @override
   bool shouldParse(String parserId) {
     return configuration.packageMatcher.hasMatch(parserId);
   }
@@ -41,6 +41,7 @@ class NubankNotificationParser implements NotificationExpenseParser {
     }
 
     return Result.ok(IncompleteNotificationExpense(
-        name: name, amount: parsedAmount, date: Moment.now(), cardName: "Nubank"));
+        name: name, amount: (parsedAmount / 2).ceil(), date: Moment.now(), cardName: "Caixa"
+    ));
   }
 }

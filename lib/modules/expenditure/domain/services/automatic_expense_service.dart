@@ -70,13 +70,13 @@ class AutomaticExpenseServiceImpl implements AutomaticExpenseService {
   Future<Result<CreatesExpense, ResultError>> _complete(IncompleteNotificationExpense incomplete) async {
     final cards = await _cardService.getCards(display: false);
 
-    final isCard = (CardModel? model) => model?.name.contains(incomplete.cardName);
+    final isCard = (CardModel? model) => model?.name == incomplete.cardName;
 
     return cards.match(
       err: (error) => Result.err(error),
       ok: (cards) {
         final card = cards.cast<CardModel?>().firstWhere(
-              (element) => isCard(element) ?? false,
+              (element) => isCard(element),
               orElse: () => null,
             );
 

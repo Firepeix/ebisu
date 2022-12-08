@@ -24,11 +24,11 @@ _release-tutu:
 push type:
   just _push-{{type}}
 
-_push-nubank title="Nova Compra" content="Compra de R$60,00 APROVADA em Picpay *RecargaCel.":
+_push-nubank title="Nova Compra" content="Compra de R$ 60,00 APROVADA em Picpay *RecargaCel.":
   just send-push '{{title}}' '{{content}}'
 
 _push-caixa:
-  just send-push "Nova Compra" "CAIXA: Compra Aprovada Uber *Uber R$24,94 04/12 as 00:44, VISA VIRTUAL final 6171. Caso nao reconheca a transacao, envie BL6171 p/ cancelar cartao"
+  just send-push "Nova Compra" "CAIXA: Compra Aprovada Uber *Uber R$ 24,94 04/12 as 00:44, VISA VIRTUAL final 6171. Caso nao reconheca a transacao, envie BL6171 p/ cancelar cartao"
 
 send-push title="Nova Notificacao" content="Conteudo novo yada":
   D:\Languages\Android\Sdk\platform-tools\adb shell cmd notification post -S bigtext -t '{{title}}' 'Notification' '{{content}}'  
