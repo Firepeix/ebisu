@@ -1,4 +1,7 @@
+import 'dart:convert';
+
 import 'package:ebisu/modules/card/models/card.dart';
+import 'package:ebisu/modules/configuration/domain/repositories/config_repository.dart';
 import 'package:ebisu/modules/expenditure/domain/expense_source.dart';
 import 'package:ebisu/modules/expenditure/domain/notification_parsers/nubank.dart';
 import 'package:ebisu/modules/expenditure/enums/expense_type.dart';
@@ -19,6 +22,17 @@ class NotificationParserError extends ResultError {
       : super("Não foi possivel tranformar valor monetario", "ENP4", Details(data: message));
 }
 
+class ParserConfiguration {
+  final RegExp packageMatcher;
+  final RegExp nameMatcher;
+  final RegExp amountMatcher;
+
+  ParserConfiguration(String _packageMatcher, String _nameMatcher, String _amountMatcher)
+      : packageMatcher = RegExp(_packageMatcher),
+        nameMatcher = RegExp(_nameMatcher),
+        amountMatcher = RegExp(_amountMatcher);
+}
+
 abstract class ExpenseNotificationParserService {
   Result<IncompleteNotificationExpense?, ResultError> parse(String id, String message);
 }
@@ -30,7 +44,19 @@ abstract class NotificationExpenseParser {
 
 @Injectable(as: ExpenseNotificationParserService)
 class ExpenseNotificationParser implements ExpenseNotificationParserService {
-  final _parsers = [NubankNotificationParser()];
+  final ConfigRepositoryInterface _configRepository;
+  final _parsers = [];
+
+  ExpenseNotificationParser(this._configRepository) {
+    final decoder = (String serialized) {
+      final map = jsonDecode(serialized);
+      return ParserConfiguration(map["packageMatcher"], map["nameMatcher"], map["amountMatcher"]);
+    };
+
+    _parsers.add(NubankNotificationParser(_configRepository.getRemoveConfig(
+        NubankNotificationParser.NAME, NubankNotificationParser.getDefaultConfiguration(),
+        decoder: decoder)));
+  }
 
   @override
   Result<IncompleteNotificationExpense?, ResultError> parse(String id, String message) {

@@ -3,6 +3,8 @@ import 'package:flutter/foundation.dart';
 import 'package:injectable/injectable.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+typedef RemoteConfigDecoder<T> = T Function(String value);
+
 enum Application {
   Ebisu(ConfigRepository.EBISU_ENDPOINT_CONFIG_KEY),
   Scout(ConfigRepository.SCOUT_ENDPOINT_CONFIG_KEY);
@@ -40,7 +42,8 @@ abstract class ConfigRepositoryInterface {
   Future<bool> shouldUseLocalEndpoint(Application app);
   Future<void> saveUseLocalEndpoint(Application app, bool should);
 
-  Future<T> getConfig<T>(String name, { T? base });
+  Future<T> getConfig<T>(String name, {T? base});
+  T getRemoveConfig<T>(String name, T base, {RemoteConfigDecoder<T>? decoder});
   Future<void> setConfig<T>(String name, T value);
 }
 
@@ -118,7 +121,7 @@ class ConfigRepository implements ConfigRepositoryInterface {
     return null as T;
   }
 
-    @override
+  @override
   Future<void> setConfig<T>(String name, T value) async {
     final prefs = await SharedPreferences.getInstance();
     final varname = T.toString();
@@ -130,5 +133,27 @@ class ConfigRepository implements ConfigRepositoryInterface {
     if (varname.startsWith("String")) {
       prefs.setString(name, value as String);
     }
+  }
+
+  T getRemoveConfig<T>(String name, T base, {RemoteConfigDecoder<T>? decoder}) {
+    final varname = T.toString();
+
+    if (varname.startsWith("bool")) {
+      final config = _remoteConfig?.getBool(name) ?? base;
+      return config as T;
+    }
+
+    if (varname.startsWith("String")) {
+      final config = _remoteConfig?.getString(name) ?? "";
+      return config != "" ? config as T : base;
+    }
+
+    final config = _remoteConfig?.getString(name) ?? "";
+
+    if (config == "") {
+      return base;
+    }
+
+    return decoder == null ? base : decoder(config);
   }
 }
