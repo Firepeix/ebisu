@@ -1,6 +1,10 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.tutufernandes.ebisu">
     <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.SEND_SMS"/>
+    <uses-permission android:name="android.permission.READ_SMS"/>
+
     <application
         android:label="Ebisu"
         android:icon="@mipmap/ic_launcher">
@@ -40,5 +44,15 @@
         <meta-data
             android:name="flutterEmbedding"
             android:value="2" />
+    <service android:exported="true"
+        android:label="notifications"
+        android:name="dk.cachet.notifications.NotificationListener"
+        android:permission="android.permission.BIND_NOTIFICATION_LISTENER_SERVICE">
+        <intent-filter>
+            <action android:name="android.service.notification.NotificationListenerService" />
+        </intent-filter>
+    </service>    
+    <service android:name="com.tutufernandes.ebisu.background.BackgroundService" android:enabled="true" android:exported="false" />
+    
    </application>
 </manifest>

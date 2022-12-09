@@ -3,11 +3,12 @@ import 'package:ebisu/modules/card/infrastructure/transfer_objects/SaveCardModel
 import 'package:ebisu/modules/card/models/card.dart';
 import 'package:ebisu/shared/exceptions/handler.dart';
 import 'package:ebisu/shared/exceptions/result.dart';
+import 'package:ebisu/shared/exceptions/result_error.dart';
 import 'package:ebisu/shared/services/notification_service.dart';
 import 'package:injectable/injectable.dart';
 
 abstract class CardServiceInterface {
-  Future<List<CardModel>> getCards();
+  Future<Result<List<CardModel>, CardError>> getCards({bool display = true});
   Future<Result<CardModel, ResultError>> getCard(String id);
   Future<Result<void, ResultError>> updateCard(String id, SaveCardModel model);
 }
@@ -21,10 +22,14 @@ class CardService implements CardServiceInterface {
   CardService(this._repository, this._exceptionHandler, this._notificationService);
 
   @override
-  Future<List<CardModel>> getCards() async {
+  Future<Result<List<CardModel>, CardError>> getCards({bool display = true}) async {
     final result = await _repository.getCards();
-    return _exceptionHandler.expect(result) ?? [];
 
+    if (display) {
+      _exceptionHandler.expect(result);
+    }
+
+    return result;
   }
 
   @override
@@ -39,9 +44,7 @@ class CardService implements CardServiceInterface {
     _notificationService.displayLoading();
     final result = await _repository.update(id, model);
 
-    if(result.isOk()) {
-      _notificationService.displaySuccess(message: result.unwrap().message);
-    }
+    result.let(ok: (value) => _notificationService.displaySuccess(message: value.message));
 
     _exceptionHandler.expect(result);
     return result;

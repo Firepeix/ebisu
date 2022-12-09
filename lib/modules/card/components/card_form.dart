@@ -18,7 +18,7 @@ class CardForm extends StatefulWidget {
   final CardServiceInterface? service;
   final String? cardId;
   final OnTap<VoidCallback>? submit;
-  CardForm ({Key? key, this.cardId, this.service, this.submit}) : super(key: key);
+  CardForm({Key? key, this.cardId, this.service, this.submit}) : super(key: key);
 
   @override
   State<CardForm> createState() => _CardFormState();
@@ -42,7 +42,6 @@ class _CardViewModel implements SaveCardModel {
   @override
   DateTime? getCloseDate() => closeDate;
 
-
   _CardViewModel({
     this.name,
     this.budget,
@@ -54,22 +53,21 @@ class _CardViewModel implements SaveCardModel {
 class _CardFormValidator extends InputValidator {
   const _CardFormValidator();
 
-  String? name (String? value) {
+  String? name(String? value) {
     if (this.isRequired(value) || value!.length < 3) {
       return 'Nome do cartão é obrigatório';
     }
     return null;
   }
 
-
-  String? date (String? value) {
+  String? date(String? value) {
     if (isRequired(value)) {
       return 'Obrigatório';
     }
     return null;
   }
 
-  String? amount (String? value) {
+  String? amount(String? value) {
     if (!this.isRequired(value)) {
       int? amount = Money.parse(value ?? "");
       if (amount != null) {
@@ -79,7 +77,6 @@ class _CardFormValidator extends InputValidator {
     return 'Orçamento é obrigatório';
   }
 }
-
 
 class _CardFormState extends State<CardForm> with TickerProviderStateMixin {
   _CardViewModel model = _CardViewModel();
@@ -107,18 +104,16 @@ class _CardFormState extends State<CardForm> with TickerProviderStateMixin {
     if (widget.cardId != null && widget.service != null) {
       isLoading = true;
       final result = await widget.service!.getCard(widget.cardId!);
-      if(result.isOk()) {
-        final card = result.unwrap();
-        setState((){
+      result.let(ok: (card) {
+        setState(() {
           isLoading = false;
           model = _CardViewModel(
               name: card.getName(),
               budget: card.getBudget(),
               dueDate: card.getDueDate(),
-              closeDate: card.getCloseDate()
-          );
+              closeDate: card.getCloseDate());
         });
-      }
+      });
     }
   }
 
@@ -148,25 +143,30 @@ class _CardFormState extends State<CardForm> with TickerProviderStateMixin {
               padding: EdgeInsets.only(top: 16),
               child: Row(
                 children: [
-                  Expanded(flex: 10, child: NumberInput(
-                    label: "Dia de Fechamento",
-                    initialValue: model.closeDate?.day ?? 0,
-                    validator: widget.validator.date,
-                    onChanged: (value) {
-                      final now = DateTime.now();
-                      model.closeDate = DateTime(now.year, now.month, value?.toInt() ?? 0);
-                    },
-                  ),),
+                  Expanded(
+                    flex: 10,
+                    child: NumberInput(
+                      label: "Dia de Fechamento",
+                      initialValue: model.closeDate?.day ?? 0,
+                      validator: widget.validator.date,
+                      onChanged: (value) {
+                        final now = DateTime.now();
+                        model.closeDate = DateTime(now.year, now.month, value?.toInt() ?? 0);
+                      },
+                    ),
+                  ),
                   Spacer(),
-                  Expanded(flex: 10, child: NumberInput(
-                    label: "Dia de Vencimento",
-                    initialValue: model.dueDate?.day ?? 0,
-                    validator: widget.validator.date,
-                    onChanged: (value) {
-                      final now = DateTime.now();
-                      model.closeDate = DateTime(now.year, now.month, value?.toInt() ?? 0);
-                    },
-                  ))
+                  Expanded(
+                      flex: 10,
+                      child: NumberInput(
+                        label: "Dia de Vencimento",
+                        initialValue: model.dueDate?.day ?? 0,
+                        validator: widget.validator.date,
+                        onChanged: (value) {
+                          final now = DateTime.now();
+                          model.closeDate = DateTime(now.year, now.month, value?.toInt() ?? 0);
+                        },
+                      ))
                 ],
               ),
             ),

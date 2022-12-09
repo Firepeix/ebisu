@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "816599142567",
+    "project_id": "ebisu-mobile",
+    "storage_bucket": "ebisu-mobile.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:816599142567:android:a6301b3ad8fd6598440b82",
+        "android_client_info": {
+          "package_name": "com.tutufernandes.ebisu"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "816599142567-3blm0pi1io6qcdalglpqnkhj0pa6oqmf.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDUi8IIf2k21W-dbZtsZAz_vnl4_NiR19A"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "816599142567-3blm0pi1io6qcdalglpqnkhj0pa6oqmf.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

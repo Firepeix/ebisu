@@ -1,6 +1,7 @@
 import 'package:ebisu/modules/establishment/domain/mappers/establishment_mapper.dart';
 import 'package:ebisu/modules/establishment/models/establishment_model.dart';
 import 'package:ebisu/shared/exceptions/result.dart';
+import 'package:ebisu/shared/exceptions/result_error.dart';
 import 'package:ebisu/shared/http/client.dart';
 import 'package:injectable/injectable.dart';
 
@@ -25,6 +26,6 @@ class EstablishmentRepository implements EstablishmentRepositoryInterface {
   @override
   Future<Result<List<EstablishmentModel>, EstablishmentError>> getEstablishments() async {
     final result = await _caron.getList<EstablishmentModel>(_Endpoint.EstablishmentsIndex, _mapper.fromJson);
-    return result.map((value) => value.data).subError(EstablishmentError.getEstablishments());
+    return result.map((value) => value.data).mapErr((_) => EstablishmentError.getEstablishments());
   }
 }

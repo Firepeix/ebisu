@@ -32,10 +32,8 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   Future<void> _login() async {
-      final result = await widget.service.login(email!, password!);
-      if (result.isOk()) {
-        routeToBack(context);
-      }
+    final result = await widget.service.login(email!, password!);
+    result.let(ok: (_) => routeToBack(context));
   }
 
   @override
@@ -64,13 +62,12 @@ class _LoginPageState extends State<LoginPage> {
               Padding(
                 padding: EdgeInsets.only(top: 10),
                 child: Button(
-                  text: "Login",
+                    text: "Login",
                     onPressed: () {
                       _form?.currentState?.validate();
                       _form?.currentState?.save();
                       _login();
-                    }
-                ),
+                    }),
               )
             ],
           ),

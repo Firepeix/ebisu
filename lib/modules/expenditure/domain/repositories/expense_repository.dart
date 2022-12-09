@@ -2,6 +2,7 @@ import 'package:ebisu/modules/expenditure/domain/mappers/expense_mapper.dart';
 import 'package:ebisu/modules/expenditure/infrastructure/transfer_objects/creates_expense.dart';
 import 'package:ebisu/modules/expenditure/models/expense/expenditure_model.dart';
 import 'package:ebisu/shared/exceptions/result.dart';
+import 'package:ebisu/shared/exceptions/result_error.dart';
 import 'package:ebisu/shared/http/client.dart';
 import 'package:ebisu/shared/http/codes.dart';
 import 'package:ebisu/shared/http/response.dart';
@@ -16,7 +17,7 @@ class ExpenseError extends ResultError {
 }
 
 abstract class ExpenseRepositoryInterface {
-  Future<Result<Success, ExpenseError>> insert(CreatesExpense expenditure);
+  Future<Result<Success, ResultError>> insert(CreatesExpense expenditure);
   Future<Result<List<ExpenseModel>, ExpenseError>> getCurrentExpenses();
   Future<Result<void, ResultError>> deleteExpense(String id);
   Future<Result<ExpenseModel, ResultError>> getExpense(String id);
@@ -37,13 +38,12 @@ class ExpenseRepository implements ExpenseRepositoryInterface {
   @override
   Future<Result<List<ExpenseModel>, ExpenseError>> getCurrentExpenses() async {
     final result = await _caron.getList<ExpenseModel>(_Endpoint.ExpensesIndex, _mapper.fromJson);
-    return result.map((value) => value.data).subError(ExpenseError.getExpenses());
+    return result.map((value) => value.data).mapErr((_) => ExpenseError.getExpenses());
   }
 
   @override
-  Future<Result<Success, ExpenseError>> insert(CreatesExpense expenditure) async {
-   final result = await _caron.post<Success, CreatesExpense>(_Endpoint.ExpensesIndex, expenditure, _mapper.toJson, errorDecoder: _mapErrors);
-   return result.mapErrorTo<ExpenseError>();
+  Future<Result<Success, ResultError>> insert(CreatesExpense expenditure) async {
+   return await _caron.post<Success, CreatesExpense>(_Endpoint.ExpensesIndex, expenditure, _mapper.toJson, errorDecoder: _mapErrors);
   }
 
   ExpenseError _mapErrors(ErrorResponse response) {

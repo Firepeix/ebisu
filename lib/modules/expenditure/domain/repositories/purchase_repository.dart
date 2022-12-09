@@ -1,6 +1,7 @@
 import 'package:ebisu/modules/expenditure/domain/mappers/purchase_mapper.dart';
 import 'package:ebisu/modules/expenditure/models/purchase/credit_expense_purchase_summary.dart';
 import 'package:ebisu/shared/exceptions/result.dart';
+import 'package:ebisu/shared/exceptions/result_error.dart';
 import 'package:ebisu/shared/http/client.dart';
 import 'package:injectable/injectable.dart';
 import 'package:shared_preferences/shared_preferences.dart';

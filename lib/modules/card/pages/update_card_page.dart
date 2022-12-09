@@ -17,11 +17,9 @@ class UpdateCardPage extends StatelessWidget {
 
   UpdateCardPage(this._id, this._name, {Key? key}) : super(key: key);
 
-  Future<void> updateCard(BuildContext context, SaveCardModel model)  async {
+  Future<void> updateCard(BuildContext context, SaveCardModel model) async {
     final result = await service.updateCard(_id, model);
-    if (result.isOk()) {
-      routeToBack(context);
-    }
+    result.let(ok: (_) => routeToBack(context));
   }
 
   @override
@@ -29,17 +27,17 @@ class UpdateCardPage extends StatelessWidget {
     return ViewBody(
       title: "Editar Cartão $_name",
       child: NotificationListener<SaveCardNotification>(
-        child: CardForm(cardId: _id, service: service, submit: _onSubmit,),
+        child: CardForm(
+          cardId: _id,
+          service: service,
+          submit: _onSubmit,
+        ),
         onNotification: (notification) {
           updateCard(context, notification.model);
           return true;
         },
       ),
-      fab: CFloatActionButton(
-          button: SimpleFAB.save(() => {
-            _onSubmit.action?.call()
-          })
-      ),
+      fab: CFloatActionButton(button: SimpleFAB.save(() => {_onSubmit.action?.call()})),
     );
   }
 }

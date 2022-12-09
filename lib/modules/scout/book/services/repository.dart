@@ -4,6 +4,7 @@ import 'package:ebisu/modules/scout/book/services/http/expedite.dart';
 import 'package:ebisu/modules/scout/book/services/http/postpone.dart';
 import 'package:ebisu/modules/scout/book/services/http/read_book.dart';
 import 'package:ebisu/shared/exceptions/result.dart';
+import 'package:ebisu/shared/exceptions/result_error.dart';
 import 'package:ebisu/shared/http/client.dart';
 import 'package:ebisu/shared/http/response.dart';
 import 'package:injectable/injectable.dart';
@@ -43,7 +44,7 @@ class BookRepository implements BookRepositoryInterface {
       final request = GetBooksRequest(includeIgnored: includeAll);
       return await _tank.get(request);
     } catch (error) {
-      return Result(null, UnknownError(error));
+      return Err(UnknownError(error));
     }
   }
 

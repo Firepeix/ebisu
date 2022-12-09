@@ -1,6 +1,7 @@
 import 'package:ebisu/modules/user/domain/mappers/user_mapper.dart';
 import 'package:ebisu/modules/user/models/user_model.dart';
 import 'package:ebisu/shared/exceptions/result.dart';
+import 'package:ebisu/shared/exceptions/result_error.dart';
 import 'package:ebisu/shared/http/client.dart';
 import 'package:injectable/injectable.dart';
 
@@ -25,6 +26,6 @@ class CardRepository implements UserRepositoryInterface {
   @override
   Future<Result<List<UserModel>, UserError>> getFriends() async {
     final result = await _caron.getList<UserModel>(_Endpoint.FriendsIndex, _mapper.fromJson);
-    return result.map((value) => value.data).subError(UserError.getFriends());
+    return result.map((value) => value.data).mapErrTo(UserError.getFriends());
   }
 }
