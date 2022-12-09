@@ -38,3 +38,5 @@ send-push title="Nova Notificacao" content="Conteudo novo yada":
 
 log: 
   @D:\Languages\Android\Sdk\platform-tools\adb logcat
+device: 
+  @D:\Languages\Android\Sdk\platform-tools\adb devices  

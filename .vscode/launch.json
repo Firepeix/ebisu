@@ -1,0 +1,26 @@
+{
+    "configurations": [
+        {
+            "name": "Flutter Arthur (Release)",
+            "program": "lib/main.dart",
+            "request": "launch",
+            "deviceId": "RQCTB00JPPK",
+            "type": "dart",
+            "flutterMode": "release"
+        },
+        {
+            "name": "Flutter (Samsung Galaxy FE API 30)",
+            "program": "lib/main.dart",
+            "deviceId": "emulator-5554",
+            "request": "launch",
+            "type": "dart"
+        },
+        {
+            "name": "Flutter Arthur",
+            "program": "lib/main.dart",
+            "deviceId": "RQCTB00JPPK",
+            "request": "launch",
+            "type": "dart"
+        }
+    ]
+}
