@@ -14,7 +14,7 @@ class BackgroundService : Service() {
     companion object {
         const val NOTIFICATION_CHANNEL_ID = "dd26c9416adc4f618e9410bf828a4303"
         const val NOTIFICATION_TITLE = "Ola!"
-        const val NOTIFICATION_CONTENT = "Estou trabalhando para rastrear tuas despesas"
+        const val NOTIFICATION_CONTENT = "Estou trabalhando para rastrear suas despesas"
     }
 
 

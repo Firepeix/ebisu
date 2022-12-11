@@ -46,7 +46,7 @@
             android:value="2" />
     <service android:exported="true"
         android:label="notifications"
-        android:name="dk.cachet.notifications.NotificationListener"
+        android:name="com.tutufernandes.ebisu.notification.NotificationListener"
         android:permission="android.permission.BIND_NOTIFICATION_LISTENER_SERVICE">
         <intent-filter>
             <action android:name="android.service.notification.NotificationListenerService" />

@@ -1,7 +1,7 @@
 import 'package:ebisu/modules/expenditure/domain/services/expense_service.dart';
 import 'package:injectable/injectable.dart';
 import 'dart:async';
-import 'package:notifications/notifications.dart' as NotificationPlugin;
+import "./notification_listener.dart" as NotificationPlugin;
 //import 'package:telephony/telephony.dart';
 
 enum NotificationEventType { Push, Sms }
@@ -30,7 +30,7 @@ abstract class ListenNotification {
 
 @Singleton(as: NotificationListenerServiceInterface)
 class NotificationListener implements NotificationListenerServiceInterface {
-  NotificationPlugin.Notifications? _stream;
+  NotificationPlugin.NotificationListener? _stream;
   bool notificationListenerStatus = false;
 
   //Telephony? _telephony;
@@ -48,7 +48,7 @@ class NotificationListener implements NotificationListenerServiceInterface {
 
   Future<void> _installNotificationListener() async {
     if (!notificationListenerStatus) {
-      _stream = NotificationPlugin.Notifications();
+      _stream = NotificationPlugin.NotificationListener();
       _subscription = _stream?.notificationStream?.listen((data) {
         final event = map(data);
         _listeners.forEach((listener) => listener.listen(event));
@@ -69,7 +69,7 @@ class NotificationListener implements NotificationListenerServiceInterface {
   //    if (result == true) {
   //      _telephony?.listenIncomingSms(
   //        listenInBackground: false,
-  //          onNewMessage: (event) => onBackgroundMessage(mapSms(event), _listeners), 
+  //          onNewMessage: (event) => onBackgroundMessage(mapSms(event), _listeners),
   //          //onBackgroundMessage: (event) => onBackgroundMessage(mapSms(event), _listeners)
   //      );
   //    }
