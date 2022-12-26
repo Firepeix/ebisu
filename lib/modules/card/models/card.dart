@@ -67,6 +67,6 @@ class CardModel implements CanBePutInSelectBox, SaveCardModel {
   }
 
   int get sharedAmount {
-    return sisters.length + 1;
+    return isShared ? sisters.length + 1 : 0;
   }
 }

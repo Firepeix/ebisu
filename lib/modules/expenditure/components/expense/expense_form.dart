@@ -158,7 +158,9 @@ class _ExpenseFormState extends State<ExpenseForm> with TickerProviderStateMixin
   void _onCardChanged(CardModel? card) {
     model.card = card;
     if (card?.isShared ?? false) {
-      isSharedExpense = true;
+      setState(() {
+        isSharedExpense = true;
+      });
       sharedController.forward();
       return;
     }
