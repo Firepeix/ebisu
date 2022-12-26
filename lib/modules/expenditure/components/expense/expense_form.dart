@@ -7,6 +7,7 @@ import 'package:ebisu/modules/expenditure/infrastructure/transfer_objects/create
 import 'package:ebisu/shared/UI/Components/Shimmer.dart';
 import 'package:ebisu/src/UI/Components/Form/InputValidator.dart';
 import 'package:ebisu/src/UI/Components/General/KeyboardAvoider.dart';
+import 'package:ebisu/ui_components/chronos/cards/doc_note.dart';
 import 'package:ebisu/ui_components/chronos/form/inputs/amount_input.dart';
 import 'package:ebisu/ui_components/chronos/form/inputs/date_input.dart';
 import 'package:ebisu/ui_components/chronos/form/inputs/input.dart';
@@ -16,7 +17,7 @@ import 'package:ebisu/ui_components/chronos/form/radio/radio_input.dart';
 import 'package:ebisu/ui_components/chronos/labels/money.dart';
 import 'package:flutter/material.dart';
 
-enum _ExpensePaymentType implements CanBePutInSelectBox{
+enum _ExpensePaymentType implements CanBePutInSelectBox {
   UNIT("Única"),
   FOREVER("Assinatura"),
   INSTALLMENT("Parcelada");
@@ -40,21 +41,23 @@ class ExpenseForm extends StatefulWidget {
   final List<ExpenseSourceModel> beneficiaries;
   final CreatesExpense? model;
 
-  const ExpenseForm (this.cards, this.beneficiaries, {Key? key, this.model}) : super(key: key);
+  const ExpenseForm(this.cards, this.beneficiaries, {Key? key, this.model}) : super(key: key);
 
   @override
   State<ExpenseForm> createState() => _ExpenseFormState();
 }
 
-class _ExpenseFormState extends State<ExpenseForm> with TickerProviderStateMixin{
+class _ExpenseFormState extends State<ExpenseForm> with TickerProviderStateMixin {
   _ExpenseViewModel model = _ExpenseViewModel(date: DateTime.now());
   _ExpensePaymentType? _paymentType;
   late AnimationController cardOptionsController;
   late AnimationController installmentOptionsController;
+  late AnimationController sharedController;
   GlobalKey<FormFieldState<dynamic>>? _cardState;
   GlobalKey<FormFieldState<dynamic>>? _currentInstallmentState;
   GlobalKey<FormFieldState<dynamic>>? _totalInstallmentState;
   GlobalKey<FormState>? _form;
+  bool isSharedExpense = false;
 
   @override
   void initState() {
@@ -62,6 +65,7 @@ class _ExpenseFormState extends State<ExpenseForm> with TickerProviderStateMixin
     setMainButtonAction(context);
     cardOptionsController = AnimationController(vsync: this, duration: Duration(milliseconds: 500));
     installmentOptionsController = AnimationController(vsync: this, duration: Duration(milliseconds: 500));
+    sharedController = AnimationController(vsync: this, duration: Duration(milliseconds: 500));
     _cardState = GlobalKey<FormFieldState<dynamic>>();
     _currentInstallmentState = GlobalKey<FormFieldState<dynamic>>();
     _totalInstallmentState = GlobalKey<FormFieldState<dynamic>>();
@@ -89,14 +93,14 @@ class _ExpenseFormState extends State<ExpenseForm> with TickerProviderStateMixin
           date: widget.model!.getDate(),
           currentInstallment: widget.model!.getCurrentInstallment(),
           installmentTotal: widget.model!.getTotalInstallments(),
-          beneficiary: widget.model!.getBeneficiary()
-      );
+          beneficiary: widget.model!.getBeneficiary());
 
       _showCards(model.type);
       if (model.installmentTotal != null) {
         _paymentType = _ExpensePaymentType.INSTALLMENT;
       } else {
-        _paymentType = model.currentInstallment != null ? _ExpensePaymentType.FOREVER : _ExpensePaymentType.UNIT;
+        _paymentType =
+            model.currentInstallment != null ? _ExpensePaymentType.FOREVER : _ExpensePaymentType.UNIT;
       }
 
       _showInstallments(_paymentType);
@@ -107,6 +111,7 @@ class _ExpenseFormState extends State<ExpenseForm> with TickerProviderStateMixin
   void dispose() {
     cardOptionsController.dispose();
     installmentOptionsController.dispose();
+    sharedController.dispose();
     _cardState = null;
     _currentInstallmentState = null;
     _totalInstallmentState = null;
@@ -124,7 +129,7 @@ class _ExpenseFormState extends State<ExpenseForm> with TickerProviderStateMixin
   }
 
   void _showCards(ExpenseType? value) {
-    if(value != null && !value.isDebit()) {
+    if (value != null && !value.isDebit()) {
       cardOptionsController.forward();
       return;
     }
@@ -143,11 +148,40 @@ class _ExpenseFormState extends State<ExpenseForm> with TickerProviderStateMixin
   }
 
   void _showInstallments(_ExpensePaymentType? value) {
-    if(value != null && _paymentType != _ExpensePaymentType.UNIT) {
+    if (value != null && _paymentType != _ExpensePaymentType.UNIT) {
       installmentOptionsController.forward();
       return;
     }
     installmentOptionsController.reverse();
+  }
+
+  void _onCardChanged(CardModel? card) {
+    model.card = card;
+    if (card?.isShared ?? false) {
+      isSharedExpense = true;
+      sharedController.forward();
+      return;
+    }
+
+    isSharedExpense = false;
+    sharedController.reverse();
+  }
+
+  Widget _sharedCardWarning() {
+    return SizeTransition(
+      axisAlignment: 1.0,
+      sizeFactor: CurvedAnimation(
+        parent: sharedController,
+        curve: Curves.fastOutSlowIn,
+      ),
+      child: Padding(
+        padding: EdgeInsets.only(top: 6),
+        child: DocNote(
+           "Atenção",
+          "Este cartão é compartilhado, o valor inserido irá ser dividido entre ${model.card?.sharedAmount ?? 0} pessoas",
+            DocNoteType.Warning),
+      ),
+    );
   }
 
   @override
@@ -172,8 +206,18 @@ class _ExpenseFormState extends State<ExpenseForm> with TickerProviderStateMixin
               child: RadioGroup(
                 validator: () => widget.validator.type(model.type),
                 children: [
-                  RadioInput<ExpenseType>(label: ExpenseType.CREDIT.label, value: ExpenseType.CREDIT, groupValue: model.type, onChanged: _handleTypeChange,),
-                  RadioInput<ExpenseType>(label: ExpenseType.DEBIT.label, value: ExpenseType.DEBIT, groupValue: model.type, onChanged: _handleTypeChange,)
+                  RadioInput<ExpenseType>(
+                    label: ExpenseType.CREDIT.label,
+                    value: ExpenseType.CREDIT,
+                    groupValue: model.type,
+                    onChanged: _handleTypeChange,
+                  ),
+                  RadioInput<ExpenseType>(
+                    label: ExpenseType.DEBIT.label,
+                    value: ExpenseType.DEBIT,
+                    groupValue: model.type,
+                    onChanged: _handleTypeChange,
+                  )
                 ],
               ),
             ),
@@ -190,9 +234,10 @@ class _ExpenseFormState extends State<ExpenseForm> with TickerProviderStateMixin
                     child: SelectInput<CardModel>(
                       value: model.card,
                       inputKey: _cardState,
-                      onChanged: (c) => model.card = c,
+                      onChanged: _onCardChanged,
                       label: "Cartão",
-                      validator: (value) => widget.validator.card(value, model.type != null && !model.type!.isDebit()),
+                      validator: (value) =>
+                          widget.validator.card(value, model.type != null && !model.type!.isDebit()),
                       items: widget.cards,
                     ),
                   ),
@@ -236,21 +281,27 @@ class _ExpenseFormState extends State<ExpenseForm> with TickerProviderStateMixin
                           inputKey: _currentInstallmentState,
                           label: "Parcela Atual",
                           onSaved: (value) => model.currentInstallment = value,
-                          validator: (value) => widget.validator.activeInstallment(value, _paymentType != _ExpensePaymentType.UNIT),
+                          validator: (value) => widget.validator
+                              .activeInstallment(value, _paymentType != _ExpensePaymentType.UNIT),
                         )),
-                    Visibility(visible: _paymentType == _ExpensePaymentType.INSTALLMENT, child: Spacer(flex: 1,),),
+                    Visibility(
+                      visible: _paymentType == _ExpensePaymentType.INSTALLMENT,
+                      child: Spacer(
+                        flex: 1,
+                      ),
+                    ),
                     Visibility(
                         visible: _paymentType == _ExpensePaymentType.INSTALLMENT,
-                        child: Expanded(flex: 10,
+                        child: Expanded(
+                            flex: 10,
                             child: NumberInput(
                               initialValue: model.installmentTotal,
                               inputKey: _totalInstallmentState,
                               label: "Total de Parcelas",
                               onSaved: (value) => model.installmentTotal = value,
-                              validator: (value) => widget.validator.totalInstallments(value, _paymentType == _ExpensePaymentType.INSTALLMENT),
-                            )
-                        )
-                    ),
+                              validator: (value) => widget.validator
+                                  .totalInstallments(value, _paymentType == _ExpensePaymentType.INSTALLMENT),
+                            ))),
                   ],
                 ),
               ),
@@ -263,6 +314,7 @@ class _ExpenseFormState extends State<ExpenseForm> with TickerProviderStateMixin
                 validator: (value) => widget.validator.amount(value),
               ),
             ),
+            _sharedCardWarning(),
             Padding(
               padding: EdgeInsets.only(top: 16),
               child: SelectInput<ExpenseSourceModel>(
@@ -323,70 +375,69 @@ class _ExpenseViewModel implements CreatesExpense {
   @override
   ExpenseSourceModel? getSource() => null;
 
-  _ExpenseViewModel({
-    this.name,
-    this.type,
-    this.amount,
-    this.card,
-    this.date,
-    this.currentInstallment,
-    this.installmentTotal,
-    this.beneficiary
-  });
+  _ExpenseViewModel(
+      {this.name,
+      this.type,
+      this.amount,
+      this.card,
+      this.date,
+      this.currentInstallment,
+      this.installmentTotal,
+      this.beneficiary});
 }
 
 class _ExpenditureFormValidator extends InputValidator {
   const _ExpenditureFormValidator();
-  String? name (String? value) {
+  String? name(String? value) {
     if (this.isRequired(value) || value!.length < 3) {
       return 'Nome dá despesa é obrigatório';
     }
     return null;
   }
 
-  String? type (ExpenseType? value) {
+  String? type(ExpenseType? value) {
     if (this.isRequired(value)) {
       return 'Classe da despesa é obrigatório';
     }
     return null;
   }
 
-  String? card (CardModel? value, bool required) {
+  String? card(CardModel? value, bool required) {
     if (required && isRequired(value)) {
       return 'Cartão da Despesa é obrigatório';
     }
     return null;
   }
 
-  String? expenditureType (_ExpensePaymentType? value) {
+  String? expenditureType(_ExpensePaymentType? value) {
     if (isRequired(value)) {
       return 'Tipo de pagamento de despesa é obrigatório';
     }
     return null;
   }
 
-  String? activeInstallment (String? value, bool required) {
+  String? activeInstallment(String? value, bool required) {
     if (required && this.isRequired(value)) {
       return 'Obrigatório';
     }
     return null;
   }
 
-  String? date (DateTime? value) {
+  String? date(DateTime? value) {
     if (isRequired(value)) {
       return 'Obrigatório';
     }
     return null;
   }
 
-  String? totalInstallments (String? value, bool required) {
+  String? totalInstallments(String? value, bool required) {
     if (required && this.isRequired(value)) {
       return 'Obrigatório';
     }
     return null;
   }
 
-  String? amount (String? value) {
+  String? amount(String? value) {
     if (!this.isRequired(value)) {
       int? amount = Money.parse(value ?? "");
       if (amount != null) {
@@ -401,56 +452,68 @@ class ExpenseFormSkeleton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Shimmer(
-      child: ShimmerLoading(isLoading: true, child: Column(
-        children: [
-          Container(
-            width: 351,
-            height: 51,
-            decoration: const BoxDecoration(
-              color: Colors.black,
-              borderRadius: BorderRadius.all(Radius.circular(8)),
-              shape: BoxShape.rectangle,
-            ),
-          ),
-          Padding(
-            padding: EdgeInsets.only(right: 16, top: 10),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: [
-                Row(children: [
-                  Container(
-                    width: 48,
-                    height: 20,
-                    decoration: const BoxDecoration(
-                      color: Colors.grey,
-                      shape: BoxShape.circle,
+      child: ShimmerLoading(
+          isLoading: true,
+          child: Column(
+            children: [
+              Container(
+                width: 351,
+                height: 51,
+                decoration: const BoxDecoration(
+                  color: Colors.black,
+                  borderRadius: BorderRadius.all(Radius.circular(8)),
+                  shape: BoxShape.rectangle,
+                ),
+              ),
+              Padding(
+                padding: EdgeInsets.only(right: 16, top: 10),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: [
+                    Row(
+                      children: [
+                        Container(
+                          width: 48,
+                          height: 20,
+                          decoration: const BoxDecoration(
+                            color: Colors.grey,
+                            shape: BoxShape.circle,
+                          ),
+                        ),
+                        Text(
+                          'Credito',
+                          style: TextStyle(color: Colors.grey, fontSize: 16),
+                        )
+                      ],
                     ),
-                  ),
-                  Text('Credito', style: TextStyle(color: Colors.grey, fontSize: 16),)
-                ],),
-                Row(children: [
-                  Container(
-                    width: 48,
-                    height: 20,
-                    decoration: const BoxDecoration(
-                      color: Colors.grey,
-                      shape: BoxShape.circle,
-                    ),
-                  ),
-                  Text('Debito', style: TextStyle(color: Colors.grey, fontSize: 16),)
-                ],)
-              ],
-            ),
-          ),
-          Padding(
-            padding: EdgeInsets.only(top: 16),
-            child: AmountInput(
-              enabled: false,
-              value: 0,
-            ),
-          )
-        ],
-      )),
+                    Row(
+                      children: [
+                        Container(
+                          width: 48,
+                          height: 20,
+                          decoration: const BoxDecoration(
+                            color: Colors.grey,
+                            shape: BoxShape.circle,
+                          ),
+                        ),
+                        Text(
+                          'Debito',
+                          style: TextStyle(color: Colors.grey, fontSize: 16),
+                        )
+                      ],
+                    )
+                  ],
+                ),
+              ),
+              Padding(
+                padding: EdgeInsets.only(top: 16),
+                child: AmountInput(
+                  enabled: false,
+                  value: 0,
+                ),
+              )
+            ],
+          )),
     );
   }
 }

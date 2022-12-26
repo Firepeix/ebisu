@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 @immutable
 class CardModel implements CanBePutInSelectBox, SaveCardModel {
   final String id;
+  final List<CardModel> sisters;
 
   final String name;
   @override
@@ -27,14 +28,15 @@ class CardModel implements CanBePutInSelectBox, SaveCardModel {
   @override
   DateTime? getCloseDate() => closeDate;
 
-  CardModel({
-    required this.id,
-    required this.name,
-    required this.color,
-    required this.budget,
-    this.dueDate,
-    this.closeDate
-  });
+  CardModel(
+      {required this.id,
+      required this.name,
+      required this.color,
+      required this.budget,
+      this.dueDate,
+      this.closeDate,
+      List<CardModel>? sisters})
+      : this.sisters = sisters ?? [];
 
   @override
   Color? selectBoxColor() {
@@ -58,5 +60,13 @@ class CardModel implements CanBePutInSelectBox, SaveCardModel {
   @override
   int get hashCode {
     return name.hashCode + color.hashCode;
+  }
+
+  bool get isShared {
+    return sisters.isNotEmpty;
+  }
+
+  int get sharedAmount {
+    return sisters.length + 1;
   }
 }
