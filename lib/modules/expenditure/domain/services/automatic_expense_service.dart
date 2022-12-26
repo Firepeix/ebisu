@@ -11,8 +11,15 @@ import 'package:injectable/injectable.dart';
 
 typedef Expense = IncompleteNotificationExpense;
 
-class AutomaticExpenseError extends ResultError {
-  const AutomaticExpenseError.alreadyExists() : super("Despesa ja cadastrada", "AEE1", null);
+enum AutomaticExpenseError implements ResultError {
+  AlreadyExists("Despesa ja cadastrada", "AEE1", null);
+
+  final String message;
+  final String code;
+  final Details? details;
+  final Intrisincs? intrisincs = null;
+
+  const AutomaticExpenseError(this.message, this.code, this.details);
 }
 
 abstract class AutomaticExpenseService {
@@ -59,7 +66,7 @@ class AutomaticExpenseServiceImpl implements AutomaticExpenseService {
     }
 
     if (expense.isSameAsEncondedExpense(decodedExpense.sublist(0, decodedExpense.length - 1))) {
-      return Err(AutomaticExpenseError.alreadyExists());
+      return Err(AutomaticExpenseError.AlreadyExists);
     }
 
     return await goodAction();

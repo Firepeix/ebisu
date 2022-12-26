@@ -18,14 +18,14 @@ import 'package:injectable/injectable.dart';
 
 import 'response.dart';
 
-typedef DecodeJson<R> = R Function(Map<dynamic, dynamic>);
+typedef DecodeJson<R> = R Function(Map<String, dynamic>);
 typedef EncodeJson<B> = Map<dynamic, dynamic> Function(B body);
 typedef DecodeError = ResultError Function(ErrorResponse response);
 
 class HttpError extends ResultError {
-  const HttpError.unknown() : super("Ops! Ocorreu um erro. Tente Novamente mais tarde.", "U1", null);
-  const HttpError.server(details) : super(null, "U2", details);
-  const HttpError.unauthorized() : super("Acesso negado ao acessar o servidor", "U3", null);
+  HttpError.unknown() : super("Ops! Ocorreu um erro. Tente Novamente mais tarde.", "U1", null);
+  HttpError.server(details) : super(null, "U2", details);
+  HttpError.unauthorized() : super("Acesso negado ao acessar o servidor", "U3", null);
 }
 
 @singleton

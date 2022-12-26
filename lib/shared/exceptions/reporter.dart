@@ -15,7 +15,7 @@ class ReporterService implements ReporterServiceInterface {
       printError(error);
     }
 
-    if(!kDebugMode && error.details?.data != null && error.details?.data is FlutterErrorDetails) {
+    if (!kDebugMode && error.details?.data != null && error.details?.data is FlutterErrorDetails) {
       FirebaseCrashlytics.instance.recordFlutterFatalError(error.details!.data);
     }
   }
@@ -23,11 +23,16 @@ class ReporterService implements ReporterServiceInterface {
   void printError(ResultError error) {
     // ignore: avoid_print
     print('======== TUTU DEU BUG =====================================================');
-    final message = "${error.message ?? ''}${error.message != null && error.details?.messageAddon != null ? " " : ''}${error.details?.messageAddon ?? ''}";
+    final message =
+        "${error.message ?? ''}${error.message != null && error.details?.messageAddon != null ? " " : ''}${error.details?.messageAddon ?? ''}";
     // ignore: avoid_print
     print('O seguinte erro foi pego: ${error.runtimeType} - $message - ${error.code}');
 
-    if(error.details?.data != null && error.details?.data is FlutterErrorDetails) {
+    if (error.intrisincs != null) {
+      print("Intrisincs: ${error.intrisincs?.messageOverride}");
+    }
+
+    if (error.details?.data != null && error.details?.data is FlutterErrorDetails) {
       final details = error.details?.data as FlutterErrorDetails;
 
       // If available, give a reason to the exception.
@@ -58,6 +63,7 @@ class ReporterService implements ReporterServiceInterface {
     }
 
     // ignore: avoid_print
-    print('====================================================================================================');
+    print(
+        '====================================================================================================');
   }
 }

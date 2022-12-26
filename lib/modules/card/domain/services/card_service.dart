@@ -8,7 +8,7 @@ import 'package:ebisu/shared/services/notification_service.dart';
 import 'package:injectable/injectable.dart';
 
 abstract class CardServiceInterface {
-  Future<Result<List<CardModel>, CardError>> getCards({bool display = true});
+  Future<Result<List<CardModel>, ResultError>> getCards({bool display = true});
   Future<Result<CardModel, ResultError>> getCard(String id);
   Future<Result<void, ResultError>> updateCard(String id, SaveCardModel model);
 }
@@ -22,7 +22,7 @@ class CardService implements CardServiceInterface {
   CardService(this._repository, this._exceptionHandler, this._notificationService);
 
   @override
-  Future<Result<List<CardModel>, CardError>> getCards({bool display = true}) async {
+  Future<Result<List<CardModel>, ResultError>> getCards({bool display = true}) async {
     final result = await _repository.getCards();
 
     if (display) {

@@ -10,10 +10,10 @@ import 'package:ebisu/shared/utils/matcher.dart';
 import 'package:injectable/injectable.dart';
 
 class ExpenseError extends ResultError {
-  const ExpenseError.getExpenses() : super("Não foi possível buscar despesas", "E1", null);
-  const ExpenseError.invalidData(Details details) : super("Dados invalidos: ", "E2", null);
-  const ExpenseError.notFound(Details details) : super(null, "E3", details) ;
-  const ExpenseError.createExpense(Details details) : super(null, "E4", details) ;
+  ExpenseError.getExpenses() : super("Não foi possível buscar despesas", "E1", null);
+  ExpenseError.invalidData(Details details) : super("Dados invalidos: ", "E2", null);
+  ExpenseError.notFound(Details details) : super(null, "E3", details) ;
+  ExpenseError.createExpense(Details details) : super(null, "E4", details) ;
 }
 
 abstract class ExpenseRepositoryInterface {

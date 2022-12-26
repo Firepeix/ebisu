@@ -9,9 +9,9 @@ typedef MatchErr<E extends ResultError, R> = R Function(E error);
 typedef WillMatchErr<E extends ResultError, R> = Future<R> Function(E error);
 
 abstract class Result<V, E extends ResultError> {
-  R let<R>({MatchOk<V, R>? ok, MatchErr<E, R>? err});
+  void let<R>({MatchOk<V, R>? ok, MatchErr<E, R>? err});
 
-  Future<R> willLet<R>({WillMatchOk<V, R>? ok, WillMatchErr<E, R>? err});
+  Future<void> willLet<R>({WillMatchOk<V, R>? ok, WillMatchErr<E, R>? err});
 
   R match<R>({required MatchOk<V, R> ok, required MatchErr<E, R> err});
 
@@ -30,31 +30,29 @@ abstract class Result<V, E extends ResultError> {
   Result<B, ME> mapErrTo<B, ME extends ResultError>(ME mapper);
 
   R to<R>({required R ok, required R err});
+
+  Result<V, E> message(String message);
 }
 
-class Ok<V, E extends ResultError> implements Result<V, E > {
+class Ok<V, E extends ResultError> implements Result<V, E> {
   V _value;
 
   Ok(this._value);
 
-  R let<R>({MatchOk<V, R>? ok, MatchErr<E, R>? err}) {
+  void let<R>({MatchOk<V, R>? ok, MatchErr<E, R>? err}) {
     assert(ok != null || err != null, "Ok ou Err deve ser mapeados para o Match");
 
     if (ok != null) {
-      return ok.call(_value);
+      ok.call(_value);
     }
-
-    return null as R;
   }
 
-  Future<R> willLet<R>({WillMatchOk<V, R>? ok, WillMatchErr<E, R>? err}) async {
+  Future<void> willLet<R>({WillMatchOk<V, R>? ok, WillMatchErr<E, R>? err}) async {
     assert(ok != null || err != null, "Ok ou Err deve ser mapeados para o Match");
 
     if (ok != null) {
-      return await ok.call(_value);
+      await ok.call(_value);
     }
-
-    return Future.value(null);
   }
 
   R match<R>({required MatchOk<V, R> ok, required MatchErr<E, R> err}) {
@@ -97,6 +95,11 @@ class Ok<V, E extends ResultError> implements Result<V, E > {
   R to<R>({required R ok, required R err}) {
     return ok;
   }
+
+  @override
+  Result<V, E> message(String message) {
+    return this;
+  }
 }
 
 class Err<V, E extends ResultError> implements Result<V, E> {
@@ -104,24 +107,20 @@ class Err<V, E extends ResultError> implements Result<V, E> {
 
   Err(this._value);
 
-  R let<R>({MatchOk<V, R>? ok, MatchErr<E, R>? err}) {
+  void let<R>({MatchOk<V, R>? ok, MatchErr<E, R>? err}) {
     assert(ok != null || err != null, "Ok ou Err deve ser mapeados para o Match");
 
     if (err != null) {
-      return err.call(_value);
+      err.call(_value);
     }
-
-    return null as R;
   }
 
-  Future<R> willLet<R>({WillMatchOk<V, R>? ok, WillMatchErr<E, R>? err}) async {
+  Future<void> willLet<R>({WillMatchOk<V, R>? ok, WillMatchErr<E, R>? err}) async {
     assert(ok != null || err != null, "Ok ou Err deve ser mapeados para o Match");
 
     if (err != null) {
-      return await err.call(_value);
+      await err.call(_value);
     }
-
-    return Future.value(null);
   }
 
   R match<R>({required MatchOk<V, R> ok, required MatchErr<E, R> err}) {
@@ -161,5 +160,11 @@ class Err<V, E extends ResultError> implements Result<V, E> {
 
   R to<R>({required R ok, required R err}) {
     return err;
+  }
+
+  @override
+  Result<V, E> message(String message) {
+    _value.intrisincs?.messageOverride = message;
+    return this;
   }
 }

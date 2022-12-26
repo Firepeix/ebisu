@@ -3,6 +3,7 @@ import 'package:ebisu/domain/travel/models/travel_day_model.dart';
 import 'package:ebisu/domain/travel/models/travel_expense_model.dart';
 import 'package:ebisu/modules/configuration/domain/repositories/config_repository.dart';
 import 'package:ebisu/modules/configuration/domain/services/background_service.dart';
+import 'package:ebisu/modules/configuration/domain/services/cache_service.dart';
 import 'package:ebisu/modules/core/interactor.dart';
 import 'package:ebisu/modules/notification/domain/notification_listener_service.dart';
 import 'package:ebisu/shared/Infrastructure/Ebisu.dart';
@@ -99,7 +100,8 @@ class MyApp extends StatelessWidget {
           return ConfigurationPage(
             getIt<ConfigRepositoryInterface>(), 
             getIt<NotificationService>(),
-            getIt<BackgroundServiceInterface>()
+            getIt<BackgroundServiceInterface>(),
+            getIt<CacheServiceInterface>()
           ).getRoute();
         }
 

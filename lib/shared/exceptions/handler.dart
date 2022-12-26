@@ -20,7 +20,8 @@ class ExceptionHandler implements ExceptionHandlerInterface {
   ExceptionHandler(this._notificationService, this._reporterService);
 
   void _displayError(ResultError error, {behavior: SnackBarBehavior.fixed}) {
-    _notificationService.displayError(message: "${error.message ?? ""}${error.details?.messageAddon ?? ""}");
+    final message = error.intrisincs?.messageOverride ?? error.message;
+    _notificationService.displayError(message: "${message ?? ""}${error.details?.messageAddon ?? ""}");
   }
 
   @override
