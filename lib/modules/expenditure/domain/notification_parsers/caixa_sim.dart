@@ -42,7 +42,7 @@ class CaixaSimNotificationParser implements NotificationExpenseParser {
     }
 
     return Ok(IncompleteNotificationExpense(
-        name: name, amount: (parsedAmount / 2).ceil(), date: Moment.now(), cardName: "Caixa SIM"
+        name: name, amount: parsedAmount, date: Moment.now(), cardName: "Caixa SIM"
     ));
   }
 }

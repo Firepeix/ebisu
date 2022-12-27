@@ -1,4 +1,3 @@
-
 import 'package:ebisu/shared/http/request.dart';
 
 abstract class Response {}
@@ -38,8 +37,11 @@ class ListResponse<T> extends DataResponse<List<T>> {
   ListResponse.raw(Map<String, dynamic> raw, ListMapper<Map<String, dynamic>, T> mapper)
       : this((raw["data"] as List).map((value) => mapper(value as Json)).toList());
 
-      
   ListResponse<To> map<To>(ListMapper<T, To> mapper) {
     return ListResponse(data.map(mapper).toList());
+  }
+
+  Map<String, dynamic> toJson() {
+    return {"data": data};
   }
 }

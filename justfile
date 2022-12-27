@@ -37,3 +37,11 @@ log:
   @D:\Languages\Android\Sdk\platform-tools\adb logcat
 device: 
   @D:\Languages\Android\Sdk\platform-tools\adb devices  
+
+send-sms:
+  @D:\Languages\Android\Sdk\platform-tools\adb shell service call isms 5 i32 0 s16 "com.android.mms" s16 "null" s16 "+5531991896142" s16 "null" s16 "Teste" s16 "null" s16 "null" i32 0 i64 0
+list-services:
+  @D:\Languages\Android\Sdk\platform-tools\adb shell service list  
+
+emulator-send:
+  @D:\Languages\Android\Sdk\platform-tools\adb shell service call isms 5 i32 0 s16 "com.android.mms" s16 "null" s16 "+16505556789" s16 "null" s16 "Ola" s16 "null" s16 "null" i32 0 i64 0  

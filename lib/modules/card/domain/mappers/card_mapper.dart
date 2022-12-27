@@ -1,11 +1,13 @@
 import 'package:ebisu/modules/card/infrastructure/transfer_objects/SaveCardModel.dart';
 import 'package:ebisu/modules/card/models/card.dart';
+import 'package:ebisu/shared/http/request.dart';
+import 'package:ebisu/shared/utils/scope.dart';
 import 'package:flutter/material.dart';
 import 'package:injectable/injectable.dart';
 
 @injectable
 class CardMapper {
-  CardModel fromJson(Map<dynamic, dynamic> json) {
+  CardModel fromJson(Json json) {
     final rgb = json["color"];
     return CardModel(
         id: json["id"],
@@ -14,7 +16,20 @@ class CardMapper {
         color: Color.fromARGB(255, rgb["red"], rgb["green"], rgb["blue"]),
         dueDate: json["due_date"] != null ? DateTime.parse(json["due_date"]) : null,
         closeDate: json["close_date"] != null ? DateTime.parse(json["close_date"]) : null,
+        sisters: scope<List<dynamic>>(json["sisters"])?.run((it) => it.map((json) => fromJson(json)).toList())
     );
+  }
+
+  Map<String, dynamic> toMap(CardModel model) {
+    return {
+      "id": model.id,
+      "name": model.name,
+      "budget": model.budget,
+      "color": {"red": model.color.red, "green": model.color.green, "blue": model.color.blue},
+      "due_date": scope(model.dueDate)?.run((it) => it.toIso8601String()),
+      "close_date": scope(model.closeDate)?.run((it) => it.toIso8601String()),
+      "sisters": model.sisters.map(toMap).toList(),
+    };
   }
 
   Map<dynamic, dynamic> toJson(SaveCardModel model) {
@@ -26,7 +41,7 @@ class CardMapper {
     };
   }
 
-  List<CardModel> fromJsonList(Map<dynamic, dynamic> json) {
+  List<CardModel> fromJsonList(Map<String, dynamic> json) {
     return (json["data"] as List<dynamic>).map((e) => fromJson(e)).toList();
   }
 

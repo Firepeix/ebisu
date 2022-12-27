@@ -83,6 +83,7 @@ class NotificationListener implements NotificationListenerServiceInterface {
   }
 
   NotificationEvent map(NotificationPlugin.NotificationEvent event) {
+    print("Nova notificação: package=${event.packageName}");
     return NotificationEvent(event.message ?? "", event.packageName ?? "", NotificationEventType.Push);
   }
 
