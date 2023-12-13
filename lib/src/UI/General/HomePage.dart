@@ -15,13 +15,13 @@ class HomePage extends StatefulWidget implements HomeView {
 }
 
 class _HomeState extends State<HomePage>{
-  bool? isSetup;
+  bool? isSetup = true;
 
 
   @override
   void initState() {
     super.initState();
-    _checkSetup();
+    //_checkSetup();
   }
 
   void _checkSetup () async {

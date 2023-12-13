@@ -1,3 +1,4 @@
+
 package com.tutufernandes.ebisu
 
 import com.tutufernandes.ebisu.background.BackgroundPlugin
@@ -5,7 +6,6 @@ import com.tutufernandes.ebisu.notification.EbisuNotificationPlugin
 import io.flutter.Log
 import io.flutter.embedding.android.FlutterActivity
 import io.flutter.embedding.engine.FlutterEngine
-import io.flutter.plugins.GeneratedPluginRegistrant
 
 class MainActivity : FlutterActivity() {
     override fun configureFlutterEngine(flutterEngine: FlutterEngine) {

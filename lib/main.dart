@@ -70,7 +70,6 @@ Future<void> installRelease() async {
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Hive.initFlutter();
   await installRelease();
   installDependencyInjection();
   installDependencies();
