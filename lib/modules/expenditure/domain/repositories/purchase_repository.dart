@@ -3,6 +3,7 @@ import 'package:ebisu/modules/expenditure/models/purchase/credit_expense_purchas
 import 'package:ebisu/modules/purchases/debit/core/domain/debit_summary.dart';
 import 'package:ebisu/modules/purchases/debit/dataprovider/client/api/mapper/purchases/debit_mapper.dart';
 import 'package:ebisu/modules/purchases/debit/dataprovider/client/api/request/purchases/debit/get_debit_summary_request.dart';
+import 'package:ebisu/modules/purchases/debit/dataprovider/client/api/request/purchases/debit/get_future_debit_summary_request.dart';
 import 'package:ebisu/shared/exceptions/result.dart';
 import 'package:ebisu/shared/exceptions/result_error.dart';
 import 'package:ebisu/shared/http/client.dart';
@@ -16,6 +17,7 @@ class _Endpoint {
 class PurchaseEndpoints {
   static const PurchaseCreditSummary = "purchases/credit/summary";
   static const PurchaseDebitSummary = "purchases/debit/summary";
+  static const PurchaseFutureSummary = "purchases/debit/summary/simulate";
 }
 
 class _CachedKeys {
@@ -25,6 +27,7 @@ class _CachedKeys {
 abstract class PurchaseRepositoryInterface {
   Future<Result<List<CreditExpensePurchaseSummaryModel>, ResultError>> getPurchaseCreditSummary();
   Future<Result<DebitSummary, ResultError>> getDebitSummary();
+  Future<Result<DebitSummary, ResultError>> getFutureDebitSummary();
   Future<int> getLocalCreditSummaryQuantity();
   Future<void> setLocalCreditSummaryQuantity(int quantity);
 }
@@ -56,6 +59,13 @@ class PurchaseRepository implements PurchaseRepositoryInterface {
   @override
   Future<Result<DebitSummary, ResultError>> getDebitSummary() async {
     final request = GetDebitSummaryRequest();
+    final result = await _caron.get(request);
+    return result.map((value) => value.toDebitSummary());
+  }
+
+  @override
+  Future<Result<DebitSummary, ResultError>> getFutureDebitSummary() async {
+    final request = GetFutureDebitSummaryRequest(1);
     final result = await _caron.get(request);
     return result.map((value) => value.toDebitSummary());
   }

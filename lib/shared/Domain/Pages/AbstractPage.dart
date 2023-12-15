@@ -1,4 +1,6 @@
 import 'package:ebisu/modules/core/core.dart';
+import 'package:ebisu/modules/user/entry/component/user_context.dart';
+import 'package:ebisu/shared/configuration/app_configuration.dart';
 import 'package:ebisu/shared/dependency/dependency_container.dart';
 import 'package:flutter/material.dart';
 
@@ -22,7 +24,7 @@ abstract class AbstractPage extends StatelessWidget  {
     }
   }
 
-  Route getRoute(Map<String, dynamic> arguments) {
+  Route getRoute(Map<String, dynamic> arguments, AppTheme userTheme, ThemeData theme) {
     _parseArguments(arguments);
     return PageRouteBuilder(
         pageBuilder: (context, animation, secondaryAnimation) => this,
@@ -39,7 +41,7 @@ abstract class AbstractPage extends StatelessWidget  {
 
           return SlideTransition(
             position: tween.animate(curvedAnimation),
-            child: child,
+            child: UserContext(id: userTheme, child: child, theme: theme,),
           );
         });
   }

@@ -6,14 +6,15 @@ import 'abstract_button.dart';
 class AccentButton extends StatelessAbstractButton {
   final String? text;
   final IconData? icon;
+  final Widget? child;
 
-  const AccentButton({Key? key, required VoidCallback onPressed, this.text, this.icon}) : super(key: key, onPressed: onPressed);
+  const AccentButton({super.key, required super.onPressed, this.text, this.icon, this.child});
 
   @override
   Widget build(BuildContext context) => ElevatedButton(
       onPressed: onPressed,
-      style: ElevatedButton.styleFrom(primary: EColor.main, minimumSize: const Size(0, 25)),
-      child: Row(
+      style: ElevatedButton.styleFrom(primary: EColor.main, minimumSize: const Size(0, 25), elevation: 0, shadowColor: Colors.transparent),
+      child: child ?? Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         mainAxisSize: MainAxisSize.min,
         children: [

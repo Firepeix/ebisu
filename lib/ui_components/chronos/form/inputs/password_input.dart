@@ -15,7 +15,7 @@ class PasswordInput extends StatelessWidget {
       ),
       Padding(
           padding: EdgeInsets.only(top: 7),
-          child: Label(text: "Esqueci minha senha"),
+          child: Label.accent(text: "Esqueci minha senha"),
       )
     ],
   );

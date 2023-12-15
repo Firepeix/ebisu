@@ -29,7 +29,7 @@ class ExpenseListCard extends StatelessWidget implements DecoratedTile  {
           borderRadius: BorderRadius.all(Radius.circular(5))),
       elevation: 0,
       child: TransparentButton(
-        () => onClick?.call(model),
+        onPressed: () => onClick?.call(model),
         child: Padding(
           padding: EdgeInsets.all(10),
           child: _getViewModel(),

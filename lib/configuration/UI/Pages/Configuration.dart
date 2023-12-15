@@ -6,6 +6,8 @@ import 'package:ebisu/modules/configuration/components/endpoint_configuration.da
 import 'package:ebisu/modules/configuration/domain/repositories/config_repository.dart';
 import 'package:ebisu/modules/configuration/domain/services/background_service.dart';
 import 'package:ebisu/modules/configuration/domain/services/cache_service.dart';
+import 'package:ebisu/modules/user/entry/component/user_context.dart';
+import 'package:ebisu/shared/configuration/app_configuration.dart';
 import 'package:ebisu/shared/services/notification_service.dart';
 import 'package:flutter/material.dart';
 
@@ -17,7 +19,7 @@ class ConfigurationPage extends StatelessWidget {
 
   ConfigurationPage(this._repository, this._notificationService, this._backgroundService, this._cacheService, {Key? key}) : super(key: key);
 
-  Route getRoute() {
+  Route getRoute(AppTheme userTheme, ThemeData theme) {
     return PageRouteBuilder(
         pageBuilder: (context, animation, secondaryAnimation) => this,
         transitionsBuilder: (context, animation, secondaryAnimation, child) {
@@ -33,7 +35,7 @@ class ConfigurationPage extends StatelessWidget {
 
           return SlideTransition(
             position: tween.animate(curvedAnimation),
-            child: child,
+            child: UserContext(id: userTheme, child: child, theme: theme,),
           );
         });
   }

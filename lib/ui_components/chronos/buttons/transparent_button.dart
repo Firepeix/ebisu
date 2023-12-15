@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 
 class TransparentButton extends StatelessAbstractButton {
   final Widget child;
-  const TransparentButton(onPressed, {required this.child, Key? key}) : super(key: key, onPressed: onPressed);
+  const TransparentButton({required this.child, required super.onPressed, super.key});
 
   @override
   Widget build(BuildContext context) {

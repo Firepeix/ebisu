@@ -142,9 +142,10 @@ class _ShimmerLoadingState extends State<ShimmerLoading> {
     // Collect ancestor shimmer info.
     final shimmer = Shimmer.of(context)!;
     if (!shimmer.isSized) {
+      // AQUIIIIIIIIIIIIIII CASO TIVER DOIDERAS DE ALTURA
       // The ancestor Shimmer widget has not laid
       // itself out yet. Return an empty box.
-      return const SizedBox();
+      return const SizedBox(height: 103,);
     }
     final shimmerSize = shimmer.size;
     final gradient = shimmer.gradient;

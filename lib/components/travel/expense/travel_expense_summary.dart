@@ -2,6 +2,8 @@ import 'package:ebisu/shared/utils/matcher.dart';
 import 'package:ebisu/ui_components/chronos/labels/money.dart';
 import 'package:flutter/material.dart';
 
+import '../../../modules/common/core/domain/money.dart' as V;
+
 class TravelExpenseSummary extends StatelessWidget {
   final Money budget;
   final Money spent;
@@ -9,9 +11,9 @@ class TravelExpenseSummary extends StatelessWidget {
   Money get difference => budget - spent;
   Color get color {
     return Matcher.matchWhen(difference.strata, {
-      MoneyStrata.positive: Colors.green,
-      MoneyStrata.negative: Colors.red,
-      MoneyStrata.zeroed: Colors.blue,
+      V.MoneyStrata.positive: Colors.green,
+      V.MoneyStrata.negative: Colors.red,
+      V.MoneyStrata.zeroed: Colors.blue,
     });
   }
 

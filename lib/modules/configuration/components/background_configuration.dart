@@ -1,6 +1,4 @@
-import 'package:ebisu/modules/configuration/domain/repositories/config_repository.dart';
 import 'package:ebisu/modules/configuration/domain/services/background_service.dart';
-import 'package:ebisu/ui_components/chronos/form/inputs/input.dart';
 import 'package:ebisu/ui_components/chronos/labels/label.dart';
 import 'package:flutter/material.dart';
 
@@ -59,7 +57,7 @@ class _BackgroundState extends State<_Background> {
     final color = Theme.of(context).colorScheme.primary;
     return ListTile(
       title: Row(children: [
-        Label(
+        Label.accent(
           text: "Rastrear Despesas",
           accent: null,
         ),

@@ -1,12 +1,7 @@
 import 'package:ebisu/modules/common/core/domain/money.dart' as V;
+import 'package:ebisu/modules/common/core/domain/money.dart';
 import 'package:ebisu/shared/utils/matcher.dart';
 import 'package:flutter/material.dart';
-
-enum MoneyStrata {
-  positive,
-  zeroed,
-  negative
-}
 
 class Money extends StatelessWidget {
   final int value;

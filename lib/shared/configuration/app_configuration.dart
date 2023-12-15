@@ -56,22 +56,23 @@ class AppConfiguration {
   }
   
   ThemeData getTheme() {
-    return theme == AppTheme.tutu ? _tutuTheme() : _weweTheme();
+    return theme == AppTheme.tutu ? tutuTheme() : weweTheme();
   }
 
-  ThemeData _tutuTheme() {
+  static ThemeData tutuTheme() {
     return ThemeData(
       primaryColor: Colors.red,
+      primaryColorLight: Colors.red.shade300,
       colorScheme: ColorScheme.fromSeed(
           primaryContainer: Colors.red[700],
           seedColor: Colors.red,
           primary: Colors.red,
-          secondary: Colors.redAccent
+          secondary: Colors.redAccent,
       ),
     );
   }
   
-  ThemeData _weweTheme() {
+  static ThemeData weweTheme() {
     return ThemeData(
       colorScheme: ColorScheme.fromSeed(
           primaryContainer: Colors.blue[700],

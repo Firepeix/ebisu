@@ -59,9 +59,15 @@ class SummarySection extends StatelessWidget {
 }
 
 class SummaryDivider extends StatelessWidget {
+  final double width;
+
+  const SummaryDivider({super.key, this.width = 3});
+
+
+
   @override
   Widget build(BuildContext context) => Container(
-    height: 3,
+    height: width,
     decoration: BoxDecoration(
       color: Theme.of(context).primaryColor,
       shape: BoxShape.rectangle,
@@ -76,7 +82,7 @@ class EbisuDivider extends SummaryDivider {
 class VerticalSummaryDivider extends StatelessWidget {
   final double height;
 
-  VerticalSummaryDivider({this.height: 3});
+  VerticalSummaryDivider({this.height = 3});
 
   @override
   Widget build(BuildContext context) => Container(

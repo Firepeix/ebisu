@@ -2,6 +2,7 @@ import 'package:ebisu/domain/travel/entities/travel_day.dart';
 import 'package:ebisu/domain/travel/entities/travel_expense.dart';
 import 'package:ebisu/domain/travel/travel_expense_service.dart';
 import 'package:ebisu/main.dart';
+import 'package:ebisu/modules/common/core/domain/money.dart' as V;
 import 'package:ebisu/shared/utils/matcher.dart';
 import 'package:ebisu/ui_components/chronos/labels/money.dart';
 import 'package:flutter/material.dart';
@@ -29,9 +30,9 @@ class TravelDaySummaryState extends State<TravelDaySummary> {
 
   Color get color {
     return Matcher.matchWhen(difference.strata, {
-      MoneyStrata.positive: Colors.green,
-      MoneyStrata.negative: Colors.red,
-      MoneyStrata.zeroed: Colors.blue,
+      V.MoneyStrata.positive: Colors.green,
+      V.MoneyStrata.negative: Colors.red,
+      V.MoneyStrata.zeroed: Colors.blue,
     });
   }
 

@@ -108,7 +108,7 @@ class _EndpointState extends State<_Endpoint> {
         ),
         ListTile(
           title: Row(children: [
-            Label(
+            Label.accent(
               text: "Usar Local",
               accent: null,
             ),

@@ -1,11 +1,12 @@
 import 'package:ebisu/modules/card/models/card.dart';
+import 'package:ebisu/modules/common/core/domain/money.dart';
 
 class CreditExpensePurchaseSummaryModel {
   final CardModel card;
-  final int spent;
-  final int planned;
-  final int difference;
-  final int previousInstallmentSpent;
+  final Money spent;
+  final Money planned;
+  final Money difference;
+  final Money previousInstallmentSpent;
 
   CreditExpensePurchaseSummaryModel({
     required this.card,

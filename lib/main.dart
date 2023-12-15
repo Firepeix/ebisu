@@ -6,6 +6,7 @@ import 'package:ebisu/modules/configuration/domain/services/background_service.d
 import 'package:ebisu/modules/configuration/domain/services/cache_service.dart';
 import 'package:ebisu/modules/core/interactor.dart';
 import 'package:ebisu/modules/notification/domain/notification_listener_service.dart';
+import 'package:ebisu/modules/user/entry/component/user_context.dart';
 import 'package:ebisu/shared/Infrastructure/Ebisu.dart';
 import 'package:ebisu/shared/configuration/app_configuration.dart';
 import 'package:ebisu/shared/exceptions/handler.dart';
@@ -86,12 +87,19 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final userTheme = _configuration.theme;
+    final theme = _configuration.getTheme();
+
     return MaterialApp(
       title: 'Ebisu',
-      theme: _configuration.getTheme(),
+      theme: theme,
       initialRoute: '/',
       routes: {
-        '/': (context) => MyHomePage(title: 'Home'),
+        '/': (context) => UserContext(
+          id: userTheme,
+          theme: theme,
+          child: MyHomePage(title: 'Home')
+        ),
       },
       navigatorKey: _interactor.navigatorKey(),
       onGenerateRoute: (settings) {
@@ -101,26 +109,24 @@ class MyApp extends StatelessWidget {
             getIt<NotificationService>(),
             getIt<BackgroundServiceInterface>(),
             getIt<CacheServiceInterface>()
-          ).getRoute();
+          ).getRoute(userTheme, theme);
         }
 
         if (_pageContainer.hasPage(settings.name ?? '')) {
-          Map<String, dynamic> arguments =
-              settings.arguments != null ? settings.arguments as Map<String, dynamic> : {};
-          return _pageContainer.getPage(settings.name ?? '').getRoute(arguments);
+          Map<String, dynamic> arguments = settings.arguments != null ? settings.arguments as Map<String, dynamic> : {};
+          return _pageContainer.getPage(settings.name ?? '').getRoute(arguments, userTheme, theme);
         }
 
         if (settings.name != null && settings.name != "/") {
-          final Map<String, dynamic> arguments =
-              settings.arguments != null ? settings.arguments as Map<String, dynamic> : {};
+          final Map<String, dynamic> arguments = settings.arguments != null ? settings.arguments as Map<String, dynamic> : {};
           if (arguments.containsKey('navigator')) {
             final navigator = arguments['navigator'] as NavigatorInterface;
             arguments.remove('navigator');
-            return navigator.route(settings.name!, arguments);
+            return navigator.route(settings.name!, arguments, userTheme, theme);
           }
         }
         // Unknown route
-        return MaterialPageRoute(builder: (_) => MyHomePage(title: 'Home'));
+        return MaterialPageRoute(builder: (_) => UserContext(id: userTheme, child: MyHomePage(title: 'Home'), theme: theme));
       },
     );
   }

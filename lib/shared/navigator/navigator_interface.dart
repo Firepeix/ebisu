@@ -1,4 +1,6 @@
 import 'package:ebisu/main.dart';
+import 'package:ebisu/modules/user/entry/component/user_context.dart';
+import 'package:ebisu/shared/configuration/app_configuration.dart';
 import 'package:ebisu/shared/utils/matcher.dart';
 import 'package:flutter/material.dart';
 import 'package:injectable/injectable.dart';
@@ -30,7 +32,7 @@ class NavigatorService {
 abstract class NavigatorInterface {
   late final Map<String, Function> routes;
 
-  Route route(String name, Map<String, dynamic> arguments) {
+  Route route(String name, Map<String, dynamic> arguments, AppTheme userTheme, ThemeData theme) {
     return PageRouteBuilder(
         pageBuilder: (context, animation, secondaryAnimation) => view(name, arguments),
         transitionsBuilder: (context, animation, secondaryAnimation, child) {
@@ -46,7 +48,7 @@ abstract class NavigatorInterface {
 
           return SlideTransition(
             position: tween.animate(curvedAnimation),
-            child: child,
+            child: UserContext(id: userTheme, child: child, theme: theme,),
           );
         });
   }

@@ -46,7 +46,7 @@ class DebitSummaryCard extends StatelessWidget {
     return GeneralCard(
       hasOwnPadding: true,
       child: TransparentButton(
-              () => routeTo(context, UpdateCardPage("1", "asd"), animation: IntoViewAnimation.pop),
+              onPressed: () => routeTo(context, UpdateCardPage("1", "asd"), animation: IntoViewAnimation.pop),
           child: Column(
             children: [
               availableAmount(),
@@ -72,7 +72,7 @@ class DebitSummaryCardSkeleton extends StatelessWidget {
             child: Padding(
               padding: EdgeInsets.all(4),
               child: Container(
-                height: 90,
+                height: 95,
                 decoration: const BoxDecoration(
                   color: Colors.black,
                   borderRadius: BorderRadius.all(Radius.circular(5)),

@@ -1,5 +1,6 @@
 import 'package:ebisu/domain/travel/entities/travel_day.dart';
 import 'package:ebisu/main.dart';
+import 'package:ebisu/modules/common/core/domain/money.dart' as V;
 import 'package:ebisu/pages/travel/expenses/travel_expenses_page.dart';
 import 'package:ebisu/shared/navigator/navigator_interface.dart';
 import 'package:ebisu/shared/utils/matcher.dart';
@@ -18,9 +19,9 @@ class TravelDayListItem extends StatelessWidget implements DecoratedTile {
   Color color() {
     final difference = travelDay.budget - spent;
     return Matcher.matchWhen(difference.strata, {
-      MoneyStrata.positive: Colors.green,
-      MoneyStrata.negative: Colors.red,
-      MoneyStrata.zeroed: Colors.blue,
+      V.MoneyStrata.positive: Colors.green,
+      V.MoneyStrata.negative: Colors.red,
+      V.MoneyStrata.zeroed: Colors.blue,
     });
   }
 

@@ -5,13 +5,17 @@ import 'package:ebisu/shared/exceptions/result_error.dart';
 import 'package:injectable/injectable.dart';
 
 @injectable
-class GetDebitSummaryUseCase {
+class SummarizeDebitUseCase {
 
   PurchaseRepositoryInterface _repositoryInterface;
 
-  GetDebitSummaryUseCase(this._repositoryInterface);
+  SummarizeDebitUseCase(this._repositoryInterface);
 
   Future<Result<DebitSummary, ResultError>> getDebitSummary() async {
     return await _repositoryInterface.getDebitSummary();
+  }
+
+  Future<Result<DebitSummary, ResultError>> getFutureDebitSummary() async {
+    return await _repositoryInterface.getFutureDebitSummary();
   }
 }

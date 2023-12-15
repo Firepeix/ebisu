@@ -15,8 +15,42 @@ class Moment {
     return "$date ${timestamp[1].split(".")[0]}";
   }
 
+  String toLocalDateString() {
+    final timestamp = _value.toIso8601String().split("T");
+    return timestamp[0].split("/").reversed.join("-");
+  }
+
+  int days() {
+    if (_value.month == DateTime.february) {
+      return 29;
+    }
+
+    final thirtyDaysMonths = [
+      DateTime.april,
+      DateTime.june,
+      DateTime.september,
+      DateTime.november
+    ];
+
+    if(thirtyDaysMonths.contains(_value.month)) {
+      return 30;
+    }
+
+    return 31;
+  }
+
   Moment add(Duration duration) {
     return Moment(_value.add(duration));
+  }
+
+  Moment addMonths(int months) {
+    Moment moment = Moment(_value);
+
+    for(int i = 0; i < months; i++) {
+      moment = moment.add(Duration(days: days()));
+    }
+
+    return moment;
   }
 
   DateTime toDateTime() {

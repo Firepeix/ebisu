@@ -1,8 +1,8 @@
 import 'package:ebisu/modules/scout/book/models/book.dart';
 import 'package:ebisu/shared/state/async_component.dart';
+import 'package:ebisu/ui_components/chronos/labels/label.dart';
 import 'package:ebisu/ui_components/chronos/list/tile.dart';
 import 'package:flutter/material.dart';
-import 'package:ebisu/ui_components/chronos/labels/label.dart';
 
 typedef BookActionCallback = Future<BookModel> Function(BookModel book);
 
@@ -37,7 +37,7 @@ class _BookListItemState extends State<BookListItem> with AsyncComponent<BookLis
     return Tile(
       titleText: "${book.name}:  ",
       subtitleText: book.isIgnored ? "Desativado" : "Ativo",
-      trailing: Label.main(
+      trailing: Label(
         text: book.chapter.value,
         size: 18,
       ),

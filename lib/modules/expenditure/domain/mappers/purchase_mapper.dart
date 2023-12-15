@@ -1,4 +1,5 @@
 import 'package:ebisu/modules/card/domain/mappers/card_mapper.dart';
+import 'package:ebisu/modules/common/core/domain/money.dart';
 import 'package:ebisu/modules/expenditure/models/purchase/credit_expense_purchase_summary.dart';
 import 'package:injectable/injectable.dart';
 
@@ -11,10 +12,10 @@ class PurchaseMapper {
   CreditExpensePurchaseSummaryModel fromJson(Map<dynamic, dynamic> json) {
     return CreditExpensePurchaseSummaryModel(
         card: _cardMapper.fromJson(json["card"]),
-        spent: json["spent"],
-        planned: json["planned"],
-        difference: json["difference"],
-        previousInstallmentSpent: json["previous_installment_spent"]
+        spent: Money(json["spent"]),
+        planned: Money(json["planned"]),
+        difference: Money(json["difference"]),
+        previousInstallmentSpent: Money(json["previous_installment_spent"])
     );
   }
 
