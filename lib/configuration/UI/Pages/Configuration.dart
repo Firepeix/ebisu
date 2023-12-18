@@ -1,5 +1,6 @@
 import 'package:ebisu/configuration/UI/Components/CleanCredentials.dart';
 import 'package:ebisu/configuration/UI/Components/SheetIdConfiguration.dart';
+import 'package:ebisu/main.dart';
 import 'package:ebisu/modules/configuration/components/background_configuration.dart';
 import 'package:ebisu/modules/configuration/components/clear_cache_configuration.dart';
 import 'package:ebisu/modules/configuration/components/endpoint_configuration.dart';
@@ -12,12 +13,12 @@ import 'package:ebisu/shared/services/notification_service.dart';
 import 'package:flutter/material.dart';
 
 class ConfigurationPage extends StatelessWidget {
-  final ConfigRepositoryInterface _repository;
-  final BackgroundServiceInterface _backgroundService;
-  final NotificationService _notificationService;
-  final CacheServiceInterface _cacheService;
+  final _repository = getIt<ConfigRepositoryInterface>();
+  final _backgroundService = getIt<BackgroundServiceInterface>();
+  final _notificationService = getIt<NotificationService>();
+  final _cacheService = getIt<CacheServiceInterface>();
 
-  ConfigurationPage(this._repository, this._notificationService, this._backgroundService, this._cacheService, {Key? key}) : super(key: key);
+  ConfigurationPage({super.key});
 
   Route getRoute(AppTheme userTheme, ThemeData theme) {
     return PageRouteBuilder(

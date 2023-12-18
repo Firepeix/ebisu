@@ -6,8 +6,14 @@ import 'package:ebisu/ui_components/chronos/time/moment.dart';
 import 'package:flutter/material.dart' as M;
 
 enum ExpenseType {
-  CREDIT,
-  DEBIT
+  CREDIT("Credito"),
+  DEBIT("Debito");
+
+  final String label;
+
+  const ExpenseType(this.label);
+
+  bool isDebit() => this == ExpenseType.DEBIT;
 }
 
 class Expense implements Row {

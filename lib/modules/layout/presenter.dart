@@ -1,5 +1,5 @@
-import 'package:ebisu/modules/core/components/drawer.dart';
-import 'package:ebisu/modules/core/navigator.dart';
+import 'package:ebisu/modules/layout/components/drawer.dart';
+import 'package:ebisu/modules/layout/navigator.dart';
 import 'package:flutter/material.dart';
 
 class CorePresenter {

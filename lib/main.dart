@@ -1,19 +1,15 @@
-import 'package:ebisu/configuration/UI/Pages/Configuration.dart';
+import 'package:ebisu/Ebisu.dart';
 import 'package:ebisu/domain/travel/models/travel_day_model.dart';
 import 'package:ebisu/domain/travel/models/travel_expense_model.dart';
 import 'package:ebisu/modules/configuration/domain/repositories/config_repository.dart';
-import 'package:ebisu/modules/configuration/domain/services/background_service.dart';
-import 'package:ebisu/modules/configuration/domain/services/cache_service.dart';
-import 'package:ebisu/modules/core/interactor.dart';
+import 'package:ebisu/modules/layout/interactor.dart';
 import 'package:ebisu/modules/notification/domain/notification_listener_service.dart';
 import 'package:ebisu/modules/user/entry/component/user_context.dart';
-import 'package:ebisu/shared/Infrastructure/Ebisu.dart';
 import 'package:ebisu/shared/configuration/app_configuration.dart';
 import 'package:ebisu/shared/exceptions/handler.dart';
 import 'package:ebisu/shared/exceptions/result.dart';
 import 'package:ebisu/shared/exceptions/result_error.dart';
 import 'package:ebisu/shared/navigator/navigator_interface.dart';
-import 'package:ebisu/shared/services/notification_service.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_remote_config/firebase_remote_config.dart';
 import 'package:flutter/foundation.dart';
@@ -104,15 +100,6 @@ class MyApp extends StatelessWidget {
       },
       navigatorKey: _interactor.navigatorKey(),
       onGenerateRoute: (settings) {
-        if (settings.name == "/configuration") {
-          return ConfigurationPage(
-            getIt<ConfigRepositoryInterface>(), 
-            getIt<NotificationService>(),
-            getIt<BackgroundServiceInterface>(),
-            getIt<CacheServiceInterface>()
-          ).getRoute(userTheme, theme);
-        }
-
         if (_pageContainer.hasPage(settings.name ?? '')) {
           Map<String, dynamic> arguments = settings.arguments != null ? settings.arguments as Map<String, dynamic> : {};
           return _pageContainer.getPage(settings.name ?? '').getRoute(arguments, userTheme, theme);

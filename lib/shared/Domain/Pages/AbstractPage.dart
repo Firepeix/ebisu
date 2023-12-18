@@ -1,4 +1,4 @@
-import 'package:ebisu/modules/core/core.dart';
+import 'package:ebisu/modules/layout/core.dart';
 import 'package:ebisu/modules/user/entry/component/user_context.dart';
 import 'package:ebisu/shared/configuration/app_configuration.dart';
 import 'package:ebisu/shared/dependency/dependency_container.dart';

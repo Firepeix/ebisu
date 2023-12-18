@@ -1,5 +1,5 @@
-import 'package:ebisu/modules/core/presenter.dart';
-import 'package:ebisu/modules/core/services/service.dart';
+import 'package:ebisu/modules/layout/presenter.dart';
+import 'package:ebisu/modules/layout/services/service.dart';
 import 'package:flutter/widgets.dart';
 import 'package:injectable/injectable.dart';
 

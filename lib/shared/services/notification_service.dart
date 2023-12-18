@@ -69,9 +69,13 @@ class NotificationService {
   Future<T?> displaySelectDialog<T>(String title, List<SelectOption> options, {String? appendix, BuildContext? context}) async {
     context = context ?? _contextService.getContext();
     if (context != null) {
-      return await showModalBottomSheet(context: context, builder: (_) => SelectDialog(title, options, appendix: appendix,));
+      return showSelectDialog(title: title, options: options, context: context, appendix: appendix);
     }
 
     return null;
   }
+}
+
+Future<T?> showSelectDialog<T>({required BuildContext context, required String title, required List<SelectOption> options, String? appendix }) async {
+  return await showModalBottomSheet(context: context, builder: (_) => SelectDialog(title, options, appendix: appendix,));
 }

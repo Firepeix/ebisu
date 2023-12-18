@@ -1,4 +1,4 @@
-import 'package:ebisu/modules/core/presenter.dart';
+import 'package:ebisu/modules/layout/presenter.dart';
 import 'package:ebisu/shared/dependency/dependency_container.dart';
 import 'package:ebisu/shared/navigator/navigator_interface.dart';
 import 'package:flutter/material.dart';

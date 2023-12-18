@@ -1,4 +1,6 @@
-import 'package:ebisu/modules/core/components/drawer.dart';
+import 'package:ebisu/configuration/UI/Pages/Configuration.dart';
+import 'package:ebisu/main.dart';
+import 'package:ebisu/modules/layout/components/drawer.dart';
 import 'package:ebisu/ui_components/chronos/bodies/body.dart';
 import 'package:ebisu/ui_components/chronos/buttons/float_action_button.dart';
 import 'package:flutter/material.dart';
@@ -34,7 +36,7 @@ class ViewBody extends StatelessWidget {
               size: 26.0,
             ),
             onPressed: () {
-              Navigator.pushNamed(context, '/configuration');
+              routeTo(context, ConfigurationPage());
             },
           )
         ]: null,

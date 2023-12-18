@@ -1,3 +1,4 @@
+import 'package:ebisu/ebisu.dart';
 import 'package:ebisu/main.dart';
 import 'package:ebisu/modules/card/domain/services/card_service.dart';
 import 'package:ebisu/modules/card/models/card.dart';
@@ -6,7 +7,6 @@ import 'package:ebisu/modules/expenditure/domain/expense_source.dart';
 import 'package:ebisu/modules/expenditure/domain/services/expense_service.dart';
 import 'package:ebisu/modules/expenditure/events/save_expense_notification.dart';
 import 'package:ebisu/modules/expenditure/infrastructure/transfer_objects/creates_expense.dart';
-import 'package:ebisu/shared/Infrastructure/Ebisu.dart';
 import 'package:ebisu/src/UI/Components/Nav/MainButtonPage.dart';
 import 'package:ebisu/src/UI/General/HomePage.dart';
 import 'package:ebisu/ui_components/chronos/layout/home_view.dart';

@@ -1,4 +1,4 @@
-import 'package:ebisu/modules/core/interactor.dart';
+import 'package:ebisu/modules/layout/interactor.dart';
 import 'package:ebisu/modules/scout/book/book.dart';
 import 'package:ebisu/shared/dependency/dependency_container.dart';
 import 'package:ebisu/shared/navigator/navigator_interface.dart';
