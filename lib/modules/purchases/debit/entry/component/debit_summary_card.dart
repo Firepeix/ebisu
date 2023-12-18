@@ -1,5 +1,5 @@
 import 'package:ebisu/main.dart';
-import 'package:ebisu/modules/card/pages/update_card_page.dart';
+import 'package:ebisu/modules/income/entry/page/income_list_page.dart';
 import 'package:ebisu/modules/purchases/debit/core/domain/debit_summary.dart';
 import 'package:ebisu/shared/UI/Components/EbisuCards.dart';
 import 'package:ebisu/shared/UI/Components/Shimmer.dart';
@@ -34,8 +34,8 @@ class DebitSummaryCard extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Text("Ativos Totais: ", style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),),
-          MoneyLabel(summary.totalAmount, size: 21,)
+          Text("Ativos Totais: ", style: TextStyle(fontSize: 19, fontWeight: FontWeight.bold),),
+          MoneyLabel(summary.totalAmount, size: 18, color: Colors.black54,)
         ],
       ),
     );
@@ -46,7 +46,7 @@ class DebitSummaryCard extends StatelessWidget {
     return GeneralCard(
       hasOwnPadding: true,
       child: TransparentButton(
-              onPressed: () => routeTo(context, UpdateCardPage("1", "asd"), animation: IntoViewAnimation.pop),
+              onPressed: () => routeTo(context, IncomeListPage(), animation: IntoViewAnimation.pop),
           child: Column(
             children: [
               availableAmount(),

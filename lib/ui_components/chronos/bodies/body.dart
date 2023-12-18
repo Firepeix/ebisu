@@ -9,7 +9,7 @@ class Body extends StatelessWidget {
   @override
   Widget build(BuildContext context) => Center(
     child: Padding(
-      padding: EdgeInsets.only(top: 20, left: horizontalPadding, right: horizontalPadding),
+      padding: EdgeInsets.only(top: 0, left: horizontalPadding, right: horizontalPadding),
       child: child,
     ),
   );

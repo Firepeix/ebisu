@@ -20,6 +20,10 @@ class UserContext extends StatelessWidget {
     return context.findAncestorWidgetOfExactType<UserContext>()!;
   }
 
+  UserContext copyWith({required Widget child}) {
+    return UserContext(id: toggle(tutu: AppTheme.tutu, wewe: AppTheme.wewe), child: child, theme: theme);
+  }
+
   Widget show({Widget? tutu, Widget? wewe}) {
     if (id == Skin.TUTU) {
       return tutu ?? Container();

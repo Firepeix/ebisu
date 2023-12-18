@@ -18,7 +18,8 @@ class NavigatorService {
   final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
   void routeTo(BuildContext context, Widget view, { IntoViewAnimation? animation, OnReturnCallback? onReturn }) {
-    final thenReturns = Navigator.push(context, NavigatorInterface.staticRoute(view, intoViewAnimation: animation));
+    final userContext = UserContext.of(context);
+    final thenReturns = Navigator.push(context, NavigatorInterface.staticRoute(view, userContext, intoViewAnimation: animation));
     if (onReturn != null) {
       thenReturns.then((value) => onReturn(value));
     }
@@ -53,8 +54,8 @@ abstract class NavigatorInterface {
         });
   }
 
-  static Route staticRoute(Widget route, { IntoViewAnimation? intoViewAnimation }) {
-    return _EbisuRoute(route, intoViewAnimation: intoViewAnimation);
+  static Route staticRoute(Widget route, UserContext userContext, { IntoViewAnimation? intoViewAnimation }) {
+    return _EbisuRoute(route, userContext, intoViewAnimation: intoViewAnimation);
   }
 
   Widget view(String name, Map<String, dynamic> arguments) {
@@ -67,17 +68,17 @@ abstract class NavigatorInterface {
 }
 
 class _EbisuRoute<T> extends PageRouteBuilder<T> {
-  _EbisuRoute(Widget route, { IntoViewAnimation? intoViewAnimation }) : super(
+  _EbisuRoute(Widget route, UserContext userContext, { IntoViewAnimation? intoViewAnimation }) : super(
       pageBuilder: (context, animation, secondaryAnimation) => route,
       transitionsBuilder: (context, animation, secondaryAnimation, child) {
         return Matcher.matchWhen(intoViewAnimation, {
-          IntoViewAnimation.slide: slide(child, animation),
-          IntoViewAnimation.pop: pop(child, animation)
+          IntoViewAnimation.slide: slide(child, userContext, animation),
+          IntoViewAnimation.pop: pop(child, userContext, animation)
         },
-            base: slide(child, animation));
+            base: slide(child, userContext, animation));
       });
 
-  static slide(Widget child, Animation<double> animation) {
+  static slide(Widget child, UserContext userContext, Animation<double> animation) {
     const begin = Offset(1.0, 0.0);
     const end = Offset.zero;
     const curve = Curves.ease;
@@ -90,11 +91,11 @@ class _EbisuRoute<T> extends PageRouteBuilder<T> {
 
     return SlideTransition(
       position: tween.animate(curvedAnimation),
-      child: child,
+      child: userContext.copyWith(child: child),
     );
   }
 
-  static pop(Widget child, Animation<double> animation) {
+  static pop(Widget child, UserContext userContext, Animation<double> animation) {
     const curve = Curves.ease;
 
     final curvedAnimation = CurvedAnimation(
@@ -104,7 +105,7 @@ class _EbisuRoute<T> extends PageRouteBuilder<T> {
 
     return ScaleTransition(
       scale: curvedAnimation,
-      child: child,
+      child: userContext.copyWith(child: child),
     );
   }
 

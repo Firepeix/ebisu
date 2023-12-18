@@ -52,4 +52,12 @@ class Money  {
 
     return Money(value - another.value);
   }
+
+  Money operator +(Money? another) {
+    if (another == null) {
+      return this;
+    }
+
+    return Money(value + another.value);
+  }
 }

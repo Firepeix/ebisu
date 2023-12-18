@@ -8,7 +8,7 @@ typedef WillMatchOk<T, R> = Future<R> Function(T value);
 typedef MatchErr<E extends ResultError, R> = R Function(E error);
 typedef WillMatchErr<E extends ResultError, R> = Future<R> Function(E error);
 
-abstract class Result<V, E extends ResultError> {
+abstract class Result<V, E extends ResultError> extends AnyResult<V> {
   void let<R>({MatchOk<V, R>? ok, MatchErr<E, R>? err});
 
   Future<void> willLet<R>({WillMatchOk<V, R>? ok, WillMatchErr<E, R>? err});
@@ -32,6 +32,11 @@ abstract class Result<V, E extends ResultError> {
   R to<R>({required R ok, required R err});
 
   Result<V, E> message(String message);
+}
+
+abstract class AnyResult<V> {
+  R fold<R>({required MatchOk<V, R> success, required MatchErr<ResultError, R> failure});
+  Future<R> willFold<R>({required WillMatchOk<V, R> success, required WillMatchErr<ResultError, R> failure});
 }
 
 class Ok<V, E extends ResultError> implements Result<V, E> {
@@ -100,6 +105,16 @@ class Ok<V, E extends ResultError> implements Result<V, E> {
   Result<V, E> message(String message) {
     return this;
   }
+
+  @override
+  R fold<R>({required MatchOk<V, R> success, required MatchErr<ResultError, R> failure}) {
+    return success(_value);
+  }
+
+  @override
+  Future<R> willFold<R>({required WillMatchOk<V, R> success, required WillMatchErr<ResultError, R> failure}) async {
+    return await success(_value);
+  }
 }
 
 class Err<V, E extends ResultError> implements Result<V, E> {
@@ -113,6 +128,15 @@ class Err<V, E extends ResultError> implements Result<V, E> {
     if (err != null) {
       err.call(_value);
     }
+  }
+
+  R fold<R>({required MatchOk<V, R> success, required MatchErr<ResultError, R> failure}) {
+    return failure.call(_value);
+  }
+
+  @override
+  Future<R> willFold<R>({required WillMatchOk<V, R> success, required WillMatchErr<ResultError, R> failure}) async {
+    return await failure(_value);
   }
 
   Future<void> willLet<R>({WillMatchOk<V, R>? ok, WillMatchErr<E, R>? err}) async {
