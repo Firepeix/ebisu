@@ -26,7 +26,7 @@ class ShoppingListViewModel extends StatelessWidget {
   final bool showPurchases;
   final ScrollController _scroll;
 
-  ShoppingListViewModel(this._list, this._scroll, {this.showPurchases: true});
+  ShoppingListViewModel(this._list, this._scroll, {this.showPurchases =  true});
 
   @override
   Widget build(BuildContext context) => Column(
@@ -71,7 +71,7 @@ class _ShoppingListSummaryProjection extends StatelessWidget {
   final String _lower;
   final String title;
 
-  _ShoppingListSummaryProjection(this._upper, this._lower, {this.title: 'Planejado'});
+  _ShoppingListSummaryProjection(this._upper, this._lower, {this.title =  'Planejado'});
   @override
   Widget build(BuildContext context) => Column(
     children: [

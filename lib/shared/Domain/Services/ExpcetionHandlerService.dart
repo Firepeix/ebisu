@@ -6,7 +6,7 @@ import 'package:injectable/injectable.dart';
 abstract class ExceptionHandlerServiceInterface {
   T? wrap<T>(Function callback, {String? errorContext});
   Future<T?> wrapAsync<T>(Function callback, {String? errorContext});
-  void displayError(String message, BuildContext context, {behavior: SnackBarBehavior.fixed});
+  void displayError(String message, BuildContext context, {behavior =  SnackBarBehavior.fixed});
 }
 
 @Singleton(as: ExceptionHandlerServiceInterface)
@@ -35,7 +35,7 @@ class ExceptionHandlerService implements ExceptionHandlerServiceInterface {
     }
   }
 
-  void displayError (String message, BuildContext context, {behavior: SnackBarBehavior.fixed}) {
+  void displayError (String message, BuildContext context, {behavior =  SnackBarBehavior.fixed}) {
     ScaffoldMessengerState messenger = ScaffoldMessenger.of(context);
     messenger.showSnackBar(SnackBar(
         content: Text('Erro: $message'),

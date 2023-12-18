@@ -14,7 +14,7 @@ class PurchaseForm extends StatefulWidget {
   final String defaultName;
   final GlobalKey<FormState> _internalFormKey = GlobalKey<FormState>();
 
-  PurchaseForm({Key? formKey, this.defaultName: 'Compra'}) : super(key: formKey);
+  PurchaseForm({Key? formKey, this.defaultName = 'Compra'}) : super(key: formKey);
 
   @override
   State<StatefulWidget> createState() =>  PurchaseFormState(formKey: _internalFormKey);

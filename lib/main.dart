@@ -92,6 +92,7 @@ class MyApp extends StatelessWidget {
 
     return MaterialApp(
       title: 'Ebisu',
+      themeMode: ThemeMode.light,
       theme: theme,
       initialRoute: '/',
       routes: {

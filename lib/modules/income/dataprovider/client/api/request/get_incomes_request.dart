@@ -1,4 +1,4 @@
-import 'package:ebisu/modules/income/dataprovider/client/api/entity/pruchases/debit/income_entity.dart';
+import 'package:ebisu/modules/income/dataprovider/client/api/entity/purchases/debit/income_entity.dart';
 import 'package:ebisu/modules/income/dataprovider/client/api/income_endpoints.dart';
 import 'package:ebisu/shared/http/request.dart';
 

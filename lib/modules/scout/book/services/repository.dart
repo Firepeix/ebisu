@@ -8,6 +8,7 @@ import 'package:ebisu/shared/exceptions/result_error.dart';
 import 'package:ebisu/shared/http/client.dart';
 import 'package:ebisu/shared/http/response.dart';
 import 'package:injectable/injectable.dart';
+
 import 'http/get_books.dart';
 
 typedef BookMethod = Future<void> Function(BookModel book, {bool earlyReturn});
@@ -54,12 +55,12 @@ class BookRepository implements BookRepositoryInterface {
   }
 
   @override
-  Future<Result<Success, ResultError>> readChapter(BookModel book, {earlyReturn: false}) async {
+  Future<Result<Success, ResultError>> readChapter(BookModel book, {earlyReturn = false}) async {
     return await _tank.put(ReadChapterOfBookRequest(book.id));
   }
 
   @override
-  Future<Result<Success, ResultError>> postpone(BookModel book, {earlyReturn: false}) async {
+  Future<Result<Success, ResultError>> postpone(BookModel book, {earlyReturn = false}) async {
     return await _tank.put(PostponeRequest(book.id));
   }
 

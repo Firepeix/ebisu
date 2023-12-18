@@ -1,8 +1,5 @@
-import 'package:ebisu/shared/http/response.dart';
 import 'package:ebisu/shared/utils/matcher.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/container.dart';
-import 'package:flutter/src/widgets/framework.dart';
 
 enum DocNoteType {
   Success(Color(0xFFA5D6A7), Colors.green),

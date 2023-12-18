@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class InputFormDecorator {
-  InputDecoration textForm (String? label, String? hint, {bool dense: false}) {
+  InputDecoration textForm (String? label, String? hint, {bool dense =  false}) {
     return InputDecoration(
       border: OutlineInputBorder(),
       hintText: hint ?? '',

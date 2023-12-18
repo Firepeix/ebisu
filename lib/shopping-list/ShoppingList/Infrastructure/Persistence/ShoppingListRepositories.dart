@@ -61,7 +61,7 @@ class GoogleSheetShoppingListRepository extends GoogleSheetsRepository implement
     });
   }
 
-  Purchase _buildPurchase(List<Cell> line, { int offset: 0 }) {
+  Purchase _buildPurchase(List<Cell> line, { int offset =  0 }) {
     final value = IntValueObject.integer(line[ListColumns.AMOUNT_VALUE.index + offset].value);
     final originalQuantity = line[ListColumns.AMOUNT.index + offset].value;
     final quantity = IntValueObject.normal(originalQuantity.replaceAll("g", ""));

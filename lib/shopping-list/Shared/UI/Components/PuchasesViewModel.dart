@@ -95,7 +95,7 @@ class _PurchasesListView extends StatefulWidget {
   final ScrollController _scroll;
   final String query;
 
-  _PurchasesListView(this._purchases, this._scroll, {Key? key, this.query: ''}) : super(key: key);
+  _PurchasesListView(this._purchases, this._scroll, {Key? key, this.query = ''}) : super(key: key);
 
 
   Widget _buildEmpty () => Column(
@@ -166,7 +166,7 @@ class _PurchasesListViewState extends State<_PurchasesListView> {
     });
   }
 
-  void _scroll ({max: true}) {
+  void _scroll ({max =  true}) {
     widget._scroll.position.animateTo(
       max ? 290  : 0,
       duration: Duration(milliseconds: 400),

@@ -37,12 +37,12 @@ mixin DispatchesCommands {
     }
   }
 
-  void showLoading(BuildContext context, {String message: 'Processando'}) {
+  void showLoading(BuildContext context, {String message = 'Processando'}) {
     ScaffoldMessengerState messenger = ScaffoldMessenger.of(context);
     messenger.showSnackBar(SnackBar(content: Text(message), behavior: SnackBarBehavior.floating, duration: Duration(milliseconds: 30 * 1000)));
   }
 
-  void showSuccess(BuildContext context, {String message: '', Function? onClose}) {
+  void showSuccess(BuildContext context, {String message = '', Function? onClose}) {
     ScaffoldMessengerState messenger = ScaffoldMessenger.of(context);
     final displayFor = Duration(seconds: 2);
     messenger.hideCurrentSnackBar();

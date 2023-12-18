@@ -1,4 +1,4 @@
-class IntValueObject extends Comparable<int> {
+class IntValueObject {
   late int value;
   IntValueObject(this.value);
 
@@ -38,7 +38,6 @@ class IntValueObject extends Comparable<int> {
   }
 
 
-  @override
   int compareTo(int other) {
     if (value == other) {
       return 0;
@@ -53,11 +52,10 @@ class IntValueObject extends Comparable<int> {
   int toJson() => value;
 }
 
-abstract class StringValueObject extends Comparable<String> {
+abstract class StringValueObject {
   String value;
   StringValueObject(this.value);
 
-  @override
   int compareTo(String other) {
     if (value == other) {
       return 0;

@@ -16,7 +16,7 @@ class NotificationService {
 
   NotificationService(this._contextService);
 
-  void displayLoading ({BuildContext? context, String message = "Processando", behavior: SnackBarBehavior.fixed}) {
+  void displayLoading ({BuildContext? context, String message = "Processando", behavior =  SnackBarBehavior.fixed}) {
     context = context ?? _contextService.getContext();
     if (context != null) {
       ScaffoldMessengerState messenger = ScaffoldMessenger.of(context);
@@ -28,7 +28,7 @@ class NotificationService {
     }
   }
 
-  void displaySuccess ({BuildContext? context, String message = "Sucesso", behavior: SnackBarBehavior.fixed}) {
+  void displaySuccess ({BuildContext? context, String message = "Sucesso", behavior =  SnackBarBehavior.fixed}) {
     context = context ?? _contextService.getContext();
     if (context != null) {
       ScaffoldMessengerState messenger = ScaffoldMessenger.of(context);
@@ -42,7 +42,7 @@ class NotificationService {
     }
   }
 
-  void displayError ({BuildContext? context, String message = "Erro", behavior: SnackBarBehavior.fixed}) {
+  void displayError ({BuildContext? context, String message = "Erro", behavior =  SnackBarBehavior.fixed}) {
     context = context ?? _contextService.getContext();
     if (context != null) {
       ScaffoldMessengerState messenger = ScaffoldMessenger.of(context);

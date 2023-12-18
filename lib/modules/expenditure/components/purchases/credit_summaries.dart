@@ -2,6 +2,8 @@ import 'package:ebisu/main.dart';
 import 'package:ebisu/modules/card/pages/update_card_page.dart';
 import 'package:ebisu/modules/common/core/domain/money.dart' as V;
 import 'package:ebisu/modules/expenditure/models/purchase/credit_expense_purchase_summary.dart';
+import 'package:ebisu/modules/expense/entry/components/expense_table.dart';
+import 'package:ebisu/modules/expense/entry/page/expense_list_page.dart';
 import 'package:ebisu/modules/purchases/credit/entry/components/strings.dart';
 import 'package:ebisu/modules/user/entry/component/user_context.dart';
 import 'package:ebisu/shared/UI/Components/EbisuCards.dart';
@@ -77,21 +79,25 @@ class _CreditSummary extends StatelessWidget {
     return _item(title: "Planejado", value: summary.planned);
   }
 
-  Widget _installments(UserContext context) {
+  Widget _installments(BuildContext buildContext, UserContext context) {
     final title = context.localize(CreditSummaryStrings.installment);
 
     return context.toggle(
         tutu: _item(title: title, value: summary.previousInstallmentSpent),
-        wewe: _item(title: title, value: summary.previousInstallmentSpent, onPressed: () {})
+        wewe: _item(title: title, value: summary.previousInstallmentSpent, onPressed: () {
+          routeTo(buildContext, ExpenseListPage(title: "Gastos Parcelados", filters: [ExpenseFilter.ONLY_INSTALLMENTS],));
+        })
     );
   }
 
-  Widget _spent(UserContext context) {
+  Widget _spent(BuildContext buildContext, UserContext context) {
     final title = context.localize(CreditSummaryStrings.spent);
 
     return context.toggle(
         tutu: _item(title: title, value: summary.spent),
-        wewe: _item(title: title, value: summary.spent, onPressed: () {})
+        wewe: _item(title: title, value: summary.spent, onPressed: () {
+          routeTo(buildContext, ExpenseListPage(title: "Gastos à Vista", filters: [ExpenseFilter.ONLY_DIRECT],));
+        })
     );
   }
 
@@ -163,9 +169,9 @@ class _CreditSummary extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     _bank(userContext),
-                    userContext.toggle(tutu: _planned(userContext), wewe: _spent(userContext)),
-                    _installments(userContext),
-                    userContext.show(tutu: _spent(userContext)),
+                    userContext.toggle(tutu: _planned(userContext), wewe: _spent(context, userContext)),
+                    _installments(context, userContext),
+                    userContext.show(tutu: _spent(context, userContext)),
                   ],
                 ),
               ),

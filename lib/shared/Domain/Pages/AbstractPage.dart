@@ -52,9 +52,9 @@ abstract class AbstractPage extends StatelessWidget  {
 
   @protected
   Widget scaffold(BuildContext context, {
-    String title: '',
+    String title =  '',
     required body ,
-    hasDrawer: true,
+    hasDrawer =  true,
     Widget? actionButton
   }) {
     return Scaffold(

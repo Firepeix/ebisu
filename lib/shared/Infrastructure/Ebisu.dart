@@ -1,22 +1,17 @@
-import 'package:ebisu/modules/core/core.dart';
 import 'package:ebisu/modules/expenditure/events/change_main_button_on_action_notification.dart';
 import 'package:ebisu/modules/expenditure/pages/create_expenses.dart';
 import 'package:ebisu/modules/expenditure/pages/list_expenses.dart';
-import 'package:ebisu/shared/dependency/dependency_container.dart';
 import 'package:ebisu/src/UI/Components/Nav/BottomNavBar.dart';
 import 'package:ebisu/src/UI/Components/Nav/MainButtonPage.dart';
 import 'package:ebisu/src/UI/General/HomePage.dart';
 import 'package:ebisu/ui_components/chronos/layout/home_view.dart';
 import 'package:flutter/material.dart';
 
+import '../../modules/core/components/drawer.dart';
+
 typedef ChangeExistentIndex = Function(int);
 
 class EbisuMainView extends StatefulWidget {
-
-  Widget getDrawer() {
-    return DependencyManager.get<CoreInterface>().getDrawer();
-  }
-
   @override
   EbisuMainViewState createState() => EbisuMainViewState();
 }
@@ -98,7 +93,7 @@ class EbisuMainViewState extends State<EbisuMainView> {
           )
         ],
       ),
-      drawer: widget.getDrawer(),
+      drawer: EbisuDrawer(),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       floatingActionButton: Visibility(
         visible: !keyboardIsOpen,

@@ -6,9 +6,11 @@ typedef RowData = Map<String, RowValue?>;
 class RowValue {
   final String title;
   final double? size;
+  final double? width;
   final bool? breakAtSpaces;
+  final Alignment alignment;
 
-  RowValue({required title, this.size, this.breakAtSpaces}): this.title = title ?? "-";
+  RowValue({required title, this.size, this.breakAtSpaces, this.width, this.alignment = Alignment.centerLeft}): this.title = title ?? "-";
 }
 
 class Column {
@@ -50,11 +52,11 @@ class SimpleTable extends StatelessWidget {
       return DataRow(
           cells: columns.map((column) {
             final value = rowData[column.id] ?? RowValue(title: "-");
-            if(value.breakAtSpaces == false) {
+            if(value.width != null) {
               return DataCell(Container(
-                alignment: Alignment.center,
+                alignment: value.alignment,
                 child: Text(value.title, style: TextStyle(fontSize: value.size), softWrap: value.breakAtSpaces,),
-                width: 85,
+                width: value.width,
               ));
             }
             return DataCell(Text(value.title, style: TextStyle(fontSize: value.size), softWrap: value.breakAtSpaces,));
@@ -68,6 +70,7 @@ class SimpleTable extends StatelessWidget {
   Widget build(BuildContext context) {
     return DataTable(
         horizontalMargin: 0,
+        columnSpacing: 10,
         columns: _createColumns(),
         rows: _createRows()
     );

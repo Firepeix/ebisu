@@ -61,6 +61,7 @@ class AppConfiguration {
 
   static ThemeData tutuTheme() {
     return ThemeData(
+      useMaterial3: false,
       primaryColor: Colors.red,
       primaryColorLight: Colors.red.shade300,
       colorScheme: ColorScheme.fromSeed(
@@ -74,6 +75,7 @@ class AppConfiguration {
   
   static ThemeData weweTheme() {
     return ThemeData(
+      useMaterial3: false,
       colorScheme: ColorScheme.fromSeed(
           primaryContainer: Colors.blue[700],
           seedColor: Colors.lightBlue,

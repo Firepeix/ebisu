@@ -12,7 +12,7 @@ class ShoppingListForm extends StatefulWidget {
   final GlobalKey<FormState> _internalFormKey = GlobalKey<FormState>();
   final SHOPPING_LIST_TYPE formType;
 
-  ShoppingListForm({this.formType: SHOPPING_LIST_TYPE.BLANK, Key? formKey}) : super(key: formKey);
+  ShoppingListForm({this.formType =  SHOPPING_LIST_TYPE.BLANK, Key? formKey}) : super(key: formKey);
 
   @override
   State<StatefulWidget> createState() =>  ShoppingListFormState(formKey: _internalFormKey);

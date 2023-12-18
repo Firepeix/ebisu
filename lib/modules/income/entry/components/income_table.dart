@@ -46,6 +46,10 @@ class _IncomeTableState extends State<IncomeTable> {
   }
 
   Money _getSumTotal() {
+    if(_incomes.isEmpty) {
+      return Money(0);
+    }
+
     return _incomes.map((e) => e.amount).reduce((value, element) => value + element);
   }
 

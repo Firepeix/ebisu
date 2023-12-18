@@ -2,7 +2,7 @@ import 'package:ebisu/shared/dependency/dependency_container.dart';
 import 'package:flutter/material.dart';
 
 class LoadingHandlerService {
-  static void displayLoading ({String message = "Processando", behavior: SnackBarBehavior.fixed}) {
+  static void displayLoading ({String message = "Processando", behavior =  SnackBarBehavior.fixed}) {
     final context = DependencyManager.getContext();
     if (context != null) {
       ScaffoldMessengerState messenger = ScaffoldMessenger.of(context);
@@ -14,7 +14,7 @@ class LoadingHandlerService {
     }
   }
 
-  static void displaySuccess ({String message = "Sucesso", behavior: SnackBarBehavior.fixed}) {
+  static void displaySuccess ({String message = "Sucesso", behavior =  SnackBarBehavior.fixed}) {
     final context = DependencyManager.getContext();
     if (context != null) {
       ScaffoldMessengerState messenger = ScaffoldMessenger.of(context);
