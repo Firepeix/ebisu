@@ -2,8 +2,7 @@ import 'package:ebisu/modules/income/dataprovider/client/api/entity/purchases/de
 import 'package:ebisu/modules/income/dataprovider/client/api/income_endpoints.dart';
 import 'package:ebisu/shared/http/request.dart';
 
-class
-GetIncomesRequest extends Request<List<IncomeEntity>> {
+class GetIncomesRequest extends Request<List<IncomeEntity>> {
   GetIncomesRequest();
 
   @override

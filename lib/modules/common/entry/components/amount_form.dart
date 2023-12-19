@@ -1,6 +1,8 @@
+import 'package:ebisu/main.dart';
 import 'package:ebisu/modules/card/models/card.dart';
 import 'package:ebisu/modules/common/core/domain/amount_form_model.dart';
 import 'package:ebisu/modules/common/core/domain/source.dart';
+import 'package:ebisu/modules/common/core/usecase/get_sources_usecase.dart';
 import 'package:ebisu/modules/common/entry/components/amount_form_validator.dart';
 import 'package:ebisu/modules/common/entry/components/amount_payment_type.dart';
 import 'package:ebisu/modules/expenditure/domain/expense_source.dart';
@@ -8,6 +10,7 @@ import 'package:ebisu/modules/expenditure/enums/expense_source_type.dart';
 import 'package:ebisu/modules/expenditure/events/change_main_button_on_action_notification.dart';
 import 'package:ebisu/modules/expense/core/domain/expense.dart';
 import 'package:ebisu/shared/UI/Components/Shimmer.dart';
+import 'package:ebisu/shared/exceptions/handler.dart';
 import 'package:ebisu/shared/utils/scope.dart';
 import 'package:ebisu/src/UI/Components/General/KeyboardAvoider.dart';
 import 'package:ebisu/ui_components/chronos/cards/doc_note.dart';
@@ -31,8 +34,10 @@ enum AmountFormFeature {
 class AmountForm extends StatefulWidget {
   final List<AmountFormFeature> features;
   final void Function(AmountFormModel) onSaved;
+  final bool isSourceRequired;
+  final bool isBeneficiaryRequired;
 
-  const AmountForm({super.key, required this.features, required this.onSaved});
+  const AmountForm({super.key, required this.features, required this.onSaved, this.isBeneficiaryRequired = false, this.isSourceRequired = false});
 
   bool isEnabled(AmountFormFeature feature) {
     return features.contains(feature);
@@ -43,8 +48,9 @@ class AmountForm extends StatefulWidget {
 }
 
 class _AmountFormState extends State<AmountForm> with TickerProviderStateMixin {
+  final useCase = getIt<GetSourcesUseCase>();
   final List<CardModel> cards = [];
-  final List<ExpenseSourceModel> sources = [];
+  List<Source> sources = [];
   final AmountFormModel model = AmountFormModel();
   AmountPaymentType? _paymentType;
   late AnimationController cardOptionsController;
@@ -55,6 +61,7 @@ class _AmountFormState extends State<AmountForm> with TickerProviderStateMixin {
   GlobalKey<FormFieldState<dynamic>>? _totalInstallmentState;
   GlobalKey<FormState>? _form;
   bool isSharedExpense = false;
+  bool isLoading = true;
 
   @override
   void initState() {
@@ -67,16 +74,7 @@ class _AmountFormState extends State<AmountForm> with TickerProviderStateMixin {
     _currentInstallmentState = GlobalKey<FormFieldState<dynamic>>();
     _totalInstallmentState = GlobalKey<FormFieldState<dynamic>>();
     _form = GlobalKey<FormState>();
-  }
-
-  void setMainButtonAction(BuildContext context) {
-    final onMainButtonPressed = () async {
-      if (_form?.currentState != null && _form!.currentState!.validate()) {
-        _form?.currentState?.save();
-        widget.onSaved.call(model);
-      }
-    };
-    context.dispatchNotification(ChangeMainButtonActionNotification(onMainButtonPressed));
+    _loadDependencies();
   }
 
   @override
@@ -89,6 +87,37 @@ class _AmountFormState extends State<AmountForm> with TickerProviderStateMixin {
     _totalInstallmentState = null;
     _form = null;
     super.dispose();
+  }
+
+  void _loadDependencies() async {
+    await Future.wait([
+      _loadSources()
+    ]);
+
+    setState(() {
+      isLoading = false;
+    });
+  }
+
+  Future<void> _loadSources() async {
+    if(!widget.isEnabled(AmountFormFeature.SOURCE) && !widget.isEnabled(AmountFormFeature.BENEFICIARY)) {
+      return;
+    }
+
+    (await useCase.getSources()).fold(
+        success: (it) => setState(() => sources = it),
+        failure: (err) => handleError(err, context)
+    );
+  }
+
+  void setMainButtonAction(BuildContext context) {
+    final onMainButtonPressed = () async {
+      if (_form?.currentState != null && _form!.currentState!.validate()) {
+        _form?.currentState?.save();
+        widget.onSaved.call(model);
+      }
+    };
+    context.dispatchNotification(ChangeMainButtonActionNotification(onMainButtonPressed));
   }
 
   void _handleTypeChange(ExpenseType? value) {
@@ -203,8 +232,7 @@ class _AmountFormState extends State<AmountForm> with TickerProviderStateMixin {
               inputKey: _cardState,
               onChanged: _onCardChanged,
               label: "Cartão",
-              validator: (value) =>
-                  validator.card(value, model.type != null && !model.type!.isDebit()),
+              validator: (value) => validator.card(value, model.type != null && !model.type!.isDebit()),
               items: [],
             ),
           ),
@@ -305,7 +333,8 @@ class _AmountFormState extends State<AmountForm> with TickerProviderStateMixin {
           value: model.source?.let((it) => ExpenseSourceModel(it.id, it.name, it.type == SourceType.USER ? ExpenseSourceType.USER : ExpenseSourceType.ESTABLISHMENT)),
           onChanged: (c) => model.source = c?.let((it) => Source(id: it.id, name: it.name, type: it.type == ExpenseSourceType.USER ? SourceType.USER : SourceType.ESTABLISHMENT )),
           label: title,
-          items: sources,
+          items: sources.map((it) => ExpenseSourceModel(it.id, it.name, it.type == SourceType.USER ? ExpenseSourceType.USER : ExpenseSourceType.ESTABLISHMENT)).toList(),
+          validator: (value) => validator.source(value, widget.isSourceRequired, AmountFormFeature.SOURCE),
         ),
       );
     }
@@ -320,7 +349,8 @@ class _AmountFormState extends State<AmountForm> with TickerProviderStateMixin {
         value: model.beneficiary?.let((it) => ExpenseSourceModel(it.id, it.name, it.type == SourceType.USER ? ExpenseSourceType.USER : ExpenseSourceType.ESTABLISHMENT)),
         onChanged: (c) => model.beneficiary = c?.let((it) => Source(id: it.id, name: it.name, type: it.type == ExpenseSourceType.USER ? SourceType.USER : SourceType.ESTABLISHMENT )),
         label: title,
-        items: sources,
+        items: sources.map((it) => ExpenseSourceModel(it.id, it.name, it.type == SourceType.USER ? ExpenseSourceType.USER : ExpenseSourceType.ESTABLISHMENT)).toList(),
+        validator: (value) => validator.source(value, widget.isBeneficiaryRequired, AmountFormFeature.BENEFICIARY),
       ),
     );
   }
@@ -328,6 +358,10 @@ class _AmountFormState extends State<AmountForm> with TickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     final validator = AmountFormValidator(widget.features);
+
+    if (isLoading) {
+      return AmountFormSkeleton(features: widget.features);
+    }
 
     return KeyboardAvoider(
       autoScroll: true,

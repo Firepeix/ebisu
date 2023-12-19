@@ -16,6 +16,7 @@ enum ExpenseFilter {
 
 class ExpenseTable extends StatefulWidget {
   final _useCase = getIt<GetExpensesUseCase>();
+  final void Function(Expense)? onClickExpense;
   final List<ExpenseFilter>? filters;
 
   final _installmentColumns = [
@@ -31,7 +32,7 @@ class ExpenseTable extends StatefulWidget {
     T.Column(id: "value", title: "Valor", align: Alignment.center)
   ];
 
-  ExpenseTable({this.filters, super.key});
+  ExpenseTable({this.filters, super.key, this.onClickExpense});
 
   @override
   State<ExpenseTable> createState() => _ExpenseTableState();
@@ -98,6 +99,7 @@ class _ExpenseTableState extends State<ExpenseTable> {
               T.SimpleTable(
                 columns: widget.filters?.contains(ExpenseFilter.ONLY_INSTALLMENTS) == true ? widget._installmentColumns : widget._columns,
                 rows: _filtered(),
+                onClickItem: widget.onClickExpense == null ? null : (Expense e) => widget.onClickExpense!.call(e),
               ),
               Divider(height: 1, thickness: 1,),
               Padding(

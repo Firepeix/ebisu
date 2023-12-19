@@ -5,7 +5,7 @@ import 'package:ebisu/modules/expense/core/domain/expense.dart';
 class AmountFormModel {
   String? name;
   int? amount;
-  DateTime? date;
+  DateTime? date = DateTime.now();
   ExpenseType? type;
   CardModel? card;
   Source? source;

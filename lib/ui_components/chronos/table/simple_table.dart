@@ -25,11 +25,12 @@ abstract class Row {
   RowData getRowData();
 }
 
-class SimpleTable extends StatelessWidget {
+class SimpleTable<T extends Row> extends StatelessWidget {
   final List<Column> columns;
-  final List<Row> rows;
+  final List<T> rows;
+  final void Function(T)? onClickItem;
 
-  const SimpleTable({required this.columns, required this.rows, super.key});
+  const SimpleTable({required this.columns, required this.rows, super.key, this.onClickItem});
 
   List<DataColumn> _createColumns() {
     return columns.map((it) {
@@ -57,9 +58,13 @@ class SimpleTable extends StatelessWidget {
                 alignment: value.alignment,
                 child: Text(value.title, style: TextStyle(fontSize: value.size), softWrap: value.breakAtSpaces,),
                 width: value.width,
-              ));
+              ),
+                onTap: onClickItem == null ? null : () => onClickItem!.call(it)
+              );
             }
-            return DataCell(Text(value.title, style: TextStyle(fontSize: value.size), softWrap: value.breakAtSpaces,));
+            return DataCell(Text(value.title, style: TextStyle(fontSize: value.size), softWrap: value.breakAtSpaces,),
+                onTap: onClickItem == null ? null : () => onClickItem!.call(it)
+            );
           }).toList()
       );
     }

@@ -1,6 +1,7 @@
 import 'package:ebisu/modules/card/models/card.dart';
 import 'package:ebisu/modules/common/core/domain/money.dart';
 import 'package:ebisu/modules/common/entry/components/amount_payment_type.dart';
+import 'package:ebisu/modules/expenditure/domain/expense_source.dart';
 import 'package:ebisu/modules/expense/core/domain/expense.dart';
 import 'package:ebisu/src/UI/Components/Form/InputValidator.dart';
 
@@ -57,6 +58,18 @@ class AmountFormValidator extends InputValidator {
     if (required && this.isRequired(value) && _features.contains(AmountFormFeature.PAYMENT_TYPE)) {
       return 'Obrigatório';
     }
+    return null;
+  }
+
+  String? source(ExpenseSourceModel? value, bool required, AmountFormFeature feature) {
+    if (required && isRequired(value) && _features.contains(feature)) {
+      return 'Fonte é obrigatória';
+    }
+
+    if (required && isRequired(value) && _features.contains(feature)) {
+      return 'Beneficiario é obrigatório';
+    }
+
     return null;
   }
 

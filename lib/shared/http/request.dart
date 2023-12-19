@@ -24,6 +24,14 @@ abstract class Request<Response> {
   bool hasCustomError() => false;
 }
 
+abstract class EmptyRequest extends Request<void> {
+
+  @override
+  void createResponse(Json body) {
+
+  }
+}
+
 abstract class RequestWithError<Response, Error extends ResultError> extends Request<Response> {
   bool hasCustomError() => true;
 

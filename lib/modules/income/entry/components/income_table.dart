@@ -3,8 +3,6 @@ import 'package:ebisu/modules/common/core/domain/money.dart';
 import 'package:ebisu/modules/income/core/domain/income.dart';
 import 'package:ebisu/modules/income/core/usecase/get_incomes_usecase.dart';
 import 'package:ebisu/shared/exceptions/handler.dart';
-import 'package:ebisu/ui_components/chronos/labels/label.dart';
-import 'package:ebisu/ui_components/chronos/labels/money.dart' as D;
 import 'package:ebisu/ui_components/chronos/loading/circular_loading.dart';
 import 'package:ebisu/ui_components/chronos/table/simple_table.dart' as T;
 import 'package:flutter/material.dart';
@@ -68,17 +66,17 @@ class _IncomeTableState extends State<IncomeTable> {
                 child: Column(
                   children: [
                     T.SimpleTable(columns: widget.columns, rows: _incomes,),
-                    Divider(height: 1, thickness: 1,),
-                    Padding(
-                      padding: EdgeInsets.only(right: 8, top: 10),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Label(text: "Total:", mode: LabelMode.NORMAL, size: 22, accent: Colors.black54,),
-                          D.MoneyLabel(_getSumTotal())
-                        ],
-                      ),
-                    )
+                    // Divider(height: 1, thickness: 1,),
+                    // Padding(
+                    //   padding: EdgeInsets.only(right: 8, top: 10),
+                    //   child: Row(
+                    //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    //     children: [
+                    //       Label(text: "Total:", mode: LabelMode.NORMAL, size: 22, accent: Colors.black54,),
+                    //       D.MoneyLabel(_getSumTotal())
+                    //     ],
+                    //   ),
+                    // )
                   ],
                 ),
               ),

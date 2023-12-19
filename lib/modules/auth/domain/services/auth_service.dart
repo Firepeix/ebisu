@@ -33,7 +33,7 @@ class AuthService implements AuthServiceInterface {
   Future<Result<void, ResultError>> login(String email, String password) async {
 
     _notificationService.displayLoading();
-    final result = await _client.post<TokenResponse, Map<dynamic, dynamic>>(_Endpoint.Login, { "email": email, "password": password }, (body) => body, decoder: (response) => TokenResponse(response["token"]));
+    final result = await _client.postLegacy<TokenResponse, Map<dynamic, dynamic>>(_Endpoint.Login, { "email": email, "password": password }, (body) => body, decoder: (response) => TokenResponse(response["token"]));
     _exceptionHandler.expect(result);
 
     await result.willLet(ok: (value) async {

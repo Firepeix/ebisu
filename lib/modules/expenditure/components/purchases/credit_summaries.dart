@@ -2,6 +2,7 @@ import 'package:ebisu/main.dart';
 import 'package:ebisu/modules/card/pages/update_card_page.dart';
 import 'package:ebisu/modules/common/core/domain/money.dart' as V;
 import 'package:ebisu/modules/expenditure/models/purchase/credit_expense_purchase_summary.dart';
+import 'package:ebisu/modules/expense/core/domain/expense.dart';
 import 'package:ebisu/modules/expense/entry/components/expense_table.dart';
 import 'package:ebisu/modules/expense/entry/page/expense_list_page.dart';
 import 'package:ebisu/modules/purchases/credit/entry/components/strings.dart';
@@ -22,8 +23,9 @@ class CreditSummaries extends StatelessWidget {
   static const double KNOWN_DEVICE_WIDTH = 411.42857142857144;
 
   final List<CreditExpensePurchaseSummaryModel> summaries;
+  final void Function(Expense)? onClickExpense;
 
-  const CreditSummaries({required this.summaries});
+  const CreditSummaries({required this.summaries, this.onClickExpense});
 
   @override
   Widget build(BuildContext context) {
@@ -48,6 +50,7 @@ class CreditSummaries extends StatelessWidget {
         itemBuilder: (BuildContext context, int index) {
           return _CreditSummary(
             summary: summaries[index],
+            onClickExpense: onClickExpense,
           );
         },
       ),
@@ -57,8 +60,9 @@ class CreditSummaries extends StatelessWidget {
 
 class _CreditSummary extends StatelessWidget {
   final CreditExpensePurchaseSummaryModel summary;
+  final void Function(Expense)? onClickExpense;
 
-  const _CreditSummary({required this.summary});
+  const _CreditSummary({required this.summary, this.onClickExpense});
 
   Widget _bank(UserContext context) {
     final closeDate = Moment(DateTime.now().copyWith(day: summary.card.closeDate?.day ?? 1));
@@ -85,7 +89,7 @@ class _CreditSummary extends StatelessWidget {
     return context.toggle(
         tutu: _item(title: title, value: summary.previousInstallmentSpent),
         wewe: _item(title: title, value: summary.previousInstallmentSpent, onPressed: () {
-          routeTo(buildContext, ExpenseListPage(title: "Gastos Parcelados", filters: [ExpenseFilter.ONLY_INSTALLMENTS],));
+          routeTo(buildContext, ExpenseListPage(title: "Gastos Parcelados", filters: [ExpenseFilter.ONLY_INSTALLMENTS], onClickExpense: onClickExpense,));
         })
     );
   }
@@ -96,7 +100,7 @@ class _CreditSummary extends StatelessWidget {
     return context.toggle(
         tutu: _item(title: title, value: summary.spent),
         wewe: _item(title: title, value: summary.spent, onPressed: () {
-          routeTo(buildContext, ExpenseListPage(title: "Gastos à Vista", filters: [ExpenseFilter.ONLY_DIRECT],));
+          routeTo(buildContext, ExpenseListPage(title: "Gastos à Vista", filters: [ExpenseFilter.ONLY_DIRECT], onClickExpense: onClickExpense,));
         })
     );
   }

@@ -43,7 +43,7 @@ class ExpenseRepository implements ExpenseRepositoryInterface {
 
   @override
   Future<Result<Success, ResultError>> insert(CreatesExpense expenditure) async {
-   return await _caron.post<Success, CreatesExpense>(_Endpoint.ExpensesIndex, expenditure, _mapper.toJson, errorDecoder: _mapErrors);
+   return await _caron.postLegacy<Success, CreatesExpense>(_Endpoint.ExpensesIndex, expenditure, _mapper.toJson, errorDecoder: _mapErrors);
   }
 
   ExpenseError _mapErrors(ErrorResponse response) {

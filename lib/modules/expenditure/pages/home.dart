@@ -2,6 +2,8 @@ import 'package:ebisu/main.dart';
 import 'package:ebisu/modules/expenditure/components/purchases/credit_summaries.dart';
 import 'package:ebisu/modules/expenditure/domain/services/purchase_service.dart';
 import 'package:ebisu/modules/expenditure/models/purchase/credit_expense_purchase_summary.dart';
+import 'package:ebisu/modules/expense/core/domain/expense.dart';
+import 'package:ebisu/modules/purchases/debit/core/domain/debit_summary.dart';
 import 'package:ebisu/modules/purchases/debit/core/usecase/summarize_debit_usecase.dart';
 import 'package:ebisu/modules/purchases/debit/entry/component/debit_summary_card.dart';
 import 'package:ebisu/modules/user/entry/component/user_context.dart';
@@ -10,7 +12,6 @@ import 'package:ebisu/shared/state/async_component.dart';
 import 'package:ebisu/ui_components/chronos/tab/card_tab_bar.dart';
 import 'package:flutter/material.dart';
 
-import '../../purchases/debit/core/domain/debit_summary.dart';
 
 enum DebitMode {
   FUTURE,
@@ -19,19 +20,23 @@ enum DebitMode {
 
 class ExpenditureHomePage extends StatelessWidget {
   final _service = getIt<ExpensePurchaseServiceInterface>();
+  final void Function(Expense)? onClickExpense;
+
+  ExpenditureHomePage({this.onClickExpense, super.key});
 
 
   @override
   Widget build(BuildContext context) {
-    return _Content(_service);
+    return _Content(_service, onClickExpense: onClickExpense,);
   }
 }
 
 class _Content extends StatefulWidget {
   final ExpensePurchaseServiceInterface _service;
   final _debitUseCase = getIt<SummarizeDebitUseCase>();
+  final void Function(Expense)? onClickExpense;
 
-  _Content(this._service);
+  _Content(this._service, { this.onClickExpense });
 
   Widget _monthSelector(_ContentState state) {
     return CardTabBar(
@@ -43,7 +48,7 @@ class _Content extends StatefulWidget {
   }
 
   Widget _getHomeDashboard (_ContentState state, BuildContext buildContext) {
-    final summary = state.creditSummaries.length > 0 ? CreditSummaries(summaries: state.creditSummaries,) : Container();
+    final summary = state.creditSummaries.length > 0 ? CreditSummaries(summaries: state.creditSummaries, onClickExpense: onClickExpense,) : Container();
     final context = UserContext.of(buildContext);
 
     return ListView(

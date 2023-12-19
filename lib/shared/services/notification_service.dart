@@ -19,12 +19,7 @@ class NotificationService {
   void displayLoading ({BuildContext? context, String message = "Processando", behavior =  SnackBarBehavior.fixed}) {
     context = context ?? _contextService.getContext();
     if (context != null) {
-      ScaffoldMessengerState messenger = ScaffoldMessenger.of(context);
-      messenger.showSnackBar(SnackBar(
-          content: Text(message),
-          duration: Duration(seconds: 100),
-          behavior: behavior
-      ));
+      showLoading(context: context, message: message, behavior: behavior);
     }
   }
 
@@ -78,4 +73,24 @@ class NotificationService {
 
 Future<T?> showSelectDialog<T>({required BuildContext context, required String title, required List<SelectOption> options, String? appendix }) async {
   return await showModalBottomSheet(context: context, builder: (_) => SelectDialog(title, options, appendix: appendix,));
+}
+
+void showLoading ({required BuildContext context, String message = "Processando", behavior = SnackBarBehavior.fixed}) {
+  ScaffoldMessengerState messenger = ScaffoldMessenger.of(context);
+  messenger.showSnackBar(SnackBar(
+      content: Text(message),
+      duration: Duration(seconds: 100),
+      behavior: behavior
+  ));
+}
+
+void showSuccess ({required BuildContext context, String message = "Sucesso", behavior = SnackBarBehavior.fixed}) {
+  ScaffoldMessengerState messenger = ScaffoldMessenger.of(context);
+  messenger.hideCurrentSnackBar();
+  messenger.showSnackBar(SnackBar(
+    content: Text(message),
+    backgroundColor: Colors.green,
+    duration: Duration(seconds: 2),
+    behavior: behavior,)
+  );
 }

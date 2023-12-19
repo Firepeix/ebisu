@@ -2,11 +2,14 @@ import 'package:ebisu/configuration/UI/Pages/Configuration.dart';
 import 'package:ebisu/main.dart';
 import 'package:ebisu/modules/expenditure/events/change_main_button_on_action_notification.dart';
 import 'package:ebisu/modules/expenditure/pages/create_expenses.dart';
+import 'package:ebisu/modules/expenditure/pages/edit_expense.dart';
 import 'package:ebisu/modules/expenditure/pages/list_expenses.dart';
 import 'package:ebisu/modules/income/entry/page/create_income_page.dart';
 import 'package:ebisu/modules/layout/core/domain/main_action.dart';
 import 'package:ebisu/modules/layout/entry/components/botton_nav_bar.dart';
 import 'package:ebisu/modules/layout/entry/components/main_action_button.dart';
+import 'package:ebisu/shared/navigator/navigator_interface.dart';
+import 'package:ebisu/shared/utils/list.dart';
 import 'package:ebisu/src/UI/Components/Nav/MainButtonPage.dart';
 import 'package:ebisu/src/UI/General/HomePage.dart';
 import 'package:ebisu/ui_components/chronos/layout/home_view.dart';
@@ -17,6 +20,12 @@ import 'modules/layout/components/drawer.dart';
 typedef ChangeExistentIndex = Function(int);
 
 class EbisuMainView extends StatefulWidget {
+  final bool enableBackButton;
+  final Map<int, HomeView>? pages;
+  final int initialPage;
+
+  EbisuMainView({this.enableBackButton = false, this.pages, this.initialPage = 0});
+
   @override
   EbisuMainViewState createState() => EbisuMainViewState();
 }
@@ -31,6 +40,7 @@ class EbisuMainViewState extends State<EbisuMainView> {
   @override
   void initState() {
     super.initState();
+    currentPageIndex  = widget.initialPage;
     _addPages();
     changePageTo(currentPageIndex);
   }
@@ -40,8 +50,6 @@ class EbisuMainViewState extends State<EbisuMainView> {
       MainAction.ADD_EXPENSE: () => changePageTo(CreateExpenditurePage.PAGE_INDEX),
       MainAction.ADD_INCOME: () => changePageTo(CreateIncomePage.PAGE_INDEX),
     };
-
-
 
     if (currentPage is MainButtonPage) {
       var mainButtonPage = (currentPage as MainButtonPage);
@@ -88,20 +96,21 @@ class EbisuMainViewState extends State<EbisuMainView> {
   }
 
   void _addPages () {
-    this._pages.add(HomePage());
+    this._pages.add(HomePage(onClickExpense: (e) {
+      routeTo(context, EbisuMainView(enableBackButton: true, pages: {4: UpdateExpensePage(e.id, onSaveExpense: (v) => routeToBack(context),)}, initialPage: 4,), animation: IntoViewAnimation.pop);
+    },));
     this._pages.add(CreateExpenditurePage(onSaveExpense: (value) => this.changePageTo(value),));
     this._pages.add(ListExpendituresPage(onClickExpense: (value) => this.changeTo(value), onSaveExpense: (value) => this.changePageTo(value),));
     this._pages.add(CreateIncomePage(onDone: () => changePageTo(0),));
+
+    widget.pages?.forEach((key, value) {
+      _pages.replace(key, value);
+    });
   }
 
   Widget build(BuildContext context) {
     bool keyboardIsOpen = MediaQuery.of(context).viewInsets.bottom != 0;
-    final bottomBar = BottomNavBar(
-      onTabSelected: (int value) => changePageTo(value),
-      centerItemText: 'Adicionar',
-      selectedIndex: currentPageIndex,
-    );
-
+    final _mainButton = _getMainButton(context);
     return Scaffold(
       appBar: AppBar(
         title: Text('Ebisu'),
@@ -123,9 +132,13 @@ class EbisuMainViewState extends State<EbisuMainView> {
         visible: !keyboardIsOpen,
         child: _getMainButton(context),
       ),
-      bottomNavigationBar: bottomBar,
+      bottomNavigationBar: BottomNavBar(
+        onTabSelected: (int value) => changePageTo(value),
+        centerItemText: _mainButton is FloatingActionButton && _mainButton.tooltip != null ? _mainButton.tooltip! : "Adicionar",
+        selectedIndex: currentPageIndex,
+      ),
       body: PopScope(
-        canPop: false,
+        canPop: widget.enableBackButton,
         child: NotificationListener<ChangeMainButtonActionNotification>(
           child: currentPage != null ? currentPage! : Column(),
           onNotification: (notification) {
@@ -134,12 +147,14 @@ class EbisuMainViewState extends State<EbisuMainView> {
           },
         ),
         onPopInvoked: (didPop) {
-          if (_pageStack.isEmpty) {
-            return changePageTo(0);
-          }
+          if (widget.enableBackButton == false) {
+            if (_pageStack.isEmpty) {
+              return changePageTo(0);
+            }
 
-          if(currentPageIndex != _pageStack[0]) {
-            changePageTo(_pageStack[0], isReturn: true);
+            if(currentPageIndex != _pageStack[0]) {
+              changePageTo(_pageStack[0], isReturn: true);
+            }
           }
         },
       ),

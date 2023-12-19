@@ -1,6 +1,6 @@
 import 'package:ebisu/shared/exceptions/result_error.dart';
 
-typedef ResultMapper<B, T> = T Function(B value);
+typedef ResultMapper<B, T> = T Function(B it);
 
 typedef MatchOk<T, R> = R Function(T value);
 typedef WillMatchOk<T, R> = Future<R> Function(T value);
@@ -23,8 +23,6 @@ abstract class Result<V, E extends ResultError> extends AnyResult<V> {
 
   V unwrap<V>();
 
-  Result<B, E> map<B, E extends ResultError>(ResultMapper<V, B> mapper);
-
   Result<B, ME> mapErr<B, ME extends ResultError>(ResultMapper<E, ME> mapper);
 
   Result<B, ME> mapErrTo<B, ME extends ResultError>(ME mapper);
@@ -35,6 +33,7 @@ abstract class Result<V, E extends ResultError> extends AnyResult<V> {
 }
 
 abstract class AnyResult<V> {
+  Result<B, E> map<B, E extends ResultError>(ResultMapper<V, B> mapper);
   R fold<R>({required MatchOk<V, R> success, required MatchErr<ResultError, R> failure});
   Future<R> willFold<R>({required WillMatchOk<V, R> success, required WillMatchErr<ResultError, R> failure});
 }

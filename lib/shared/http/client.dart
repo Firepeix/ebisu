@@ -90,6 +90,15 @@ class Caron {
     }
   }
 
+  Future<Result<V, ResultError>> post<V>(Request<V> request) async {
+    try {
+      final response = await http.post(await _url(request.endpoint()), headers: await _headers(), body: jsonEncode(request.body()));
+      return _parse<V>(request, response);
+    } catch (error) {
+      return _parseError(error: error);
+    }
+  }
+
   Future<Result<DataResponse<V>, ResultError>> getLegacy<V>(String endpoint, DecodeJson<V> decoder,
       {DecodeError? errorDecoder}) async {
     try {
@@ -110,7 +119,7 @@ class Caron {
     }
   }
 
-  Future<Result<R, ResultError>> post<R extends Response, B>(String endpoint, B body, EncodeJson<B> encoder,
+  Future<Result<R, ResultError>> postLegacy<R extends Response, B>(String endpoint, B body, EncodeJson<B> encoder,
       {DecodeJson<R>? decoder, DecodeError? errorDecoder}) async {
     try {
       final response =
@@ -167,6 +176,9 @@ class Caron {
 
   Result<R, ResultError> _parse<R>(Request<R> request, http.Response response) {
     if (response.statusCode.toString().startsWith("2")) {
+      if(request is EmptyRequest) {
+        return Ok(request.createResponse({}));
+      }
       return Ok(request.createResponse(jsonDecode(response.body)));
     }
 
