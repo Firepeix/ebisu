@@ -10,19 +10,19 @@ import 'package:injectable/injectable.dart';
 
 @Injectable(as: IncomeGateway)
 class ApiIncomeGateway implements IncomeGateway{
-  final Caron _caron;
+  final Kebisu _kebisu;
 
-  ApiIncomeGateway(this._caron);
+  ApiIncomeGateway(this._kebisu);
 
   @override
-  Future<AnyResult<List<Income>>> getIncomes() async {
-    final request = GetIncomesRequest();
-    final result = await _caron.get(request);
+  Future<AnyResult<List<Income>>> getIncomes({int futureMonth = 0}) async {
+    final request = GetIncomesRequest(futureMonth: futureMonth);
+    final result = await _kebisu.get(request);
     return result.map((value) => value.map((e) => e.toIncome()).toList());
   }
 
   @override
   Future<AnyResult<void>> createIncome(Income income) async {
-    return await _caron.post(CreateIncomeRequest(income));
+    return await _kebisu.post(CreateIncomeRequest(income));
   }
 }

@@ -14,8 +14,7 @@ import 'package:ebisu/shared/navigator/navigator_interface.dart';
 import 'package:ebisu/ui_components/chronos/buttons/billboard_button.dart';
 import 'package:ebisu/ui_components/chronos/buttons/transparent_button.dart';
 import 'package:ebisu/ui_components/chronos/cards/general_card.dart';
-import 'package:ebisu/ui_components/chronos/labels/money.dart';
-import 'package:ebisu/ui_components/chronos/time/moment.dart';
+import 'package:ebisu/ui_components/chronos/labels/money_label.dart';
 import 'package:flutter/material.dart';
 
 class CreditSummaries extends StatelessWidget {
@@ -61,19 +60,17 @@ class CreditSummaries extends StatelessWidget {
 class _CreditSummary extends StatelessWidget {
   final CreditExpensePurchaseSummaryModel summary;
   final void Function(Expense)? onClickExpense;
-
+  static const FAKE_CARDS = ["18", "14"];
   const _CreditSummary({required this.summary, this.onClickExpense});
 
   Widget _bank(UserContext context) {
-    final closeDate = Moment(DateTime.now().copyWith(day: summary.card.closeDate?.day ?? 1));
-
     return Column(
       children: [
         Text(
           summary.card.name,
           style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: summary.card.color),
         ),
-        context.show(wewe: Padding(padding: EdgeInsets.only(bottom: 0), child: Text("${closeDate.addMonths(1)}",)))
+        context.show(wewe: Padding(padding: EdgeInsets.only(bottom: 0), child: Text("${summary.card.getCurrentCloseDate()}",)))
       ],
     );
   }
@@ -85,29 +82,42 @@ class _CreditSummary extends StatelessWidget {
 
   Widget _installments(BuildContext buildContext, UserContext context) {
     final title = context.localize(CreditSummaryStrings.installment);
-
+    final filters = [
+      ExpenseFilter(ExpenseFilterMode.ONLY_INSTALLMENTS),
+      ExpenseFilter(ExpenseFilterMode.ONLY_CARD, data: summary.card.id),
+    ];
     return context.toggle(
         tutu: _item(title: title, value: summary.previousInstallmentSpent),
         wewe: _item(title: title, value: summary.previousInstallmentSpent, onPressed: () {
-          routeTo(buildContext, ExpenseListPage(title: "Gastos Parcelados", filters: [ExpenseFilter.ONLY_INSTALLMENTS], onClickExpense: onClickExpense,));
+          routeTo(buildContext, ExpenseListPage(title: "Gastos Parcelados", filters: filters, onClickExpense: onClickExpense,));
         })
     );
   }
 
   Widget _spent(BuildContext buildContext, UserContext context) {
     final title = context.localize(CreditSummaryStrings.spent);
+    final filters = [
+      ExpenseFilter(ExpenseFilterMode.ONLY_DIRECT),
+      ExpenseFilter(ExpenseFilterMode.ONLY_CARD, data: summary.card.id),
+    ];
 
     return context.toggle(
         tutu: _item(title: title, value: summary.spent),
         wewe: _item(title: title, value: summary.spent, onPressed: () {
-          routeTo(buildContext, ExpenseListPage(title: "Gastos à Vista", filters: [ExpenseFilter.ONLY_DIRECT], onClickExpense: onClickExpense,));
+          routeTo(buildContext, ExpenseListPage(title: "Gastos à Vista", filters: filters, onClickExpense: onClickExpense,));
         })
     );
   }
 
-  Widget _available(UserContext context) {
+  Widget _available(UserContext context, BuildContext buildContext) {
+    if (FAKE_CARDS.contains(summary.card.id)) {
+      return Container();
+    }
+
     return context.toggle(
-        wewe: _item(title: 'Limite Disponivel', value: summary.difference, onPressed: () {}),
+        wewe: _item(title: 'Limite Disponivel', value: summary.difference, onPressed: () {
+          routeTo(buildContext, UpdateCardPage(summary.card.id, summary.card.name),  animation: IntoViewAnimation.pop);
+        }),
         tutu: Padding(
           padding: EdgeInsets.only(top: 4, left: 4, right: 4, bottom: 4),
           child: Column(
@@ -181,10 +191,10 @@ class _CreditSummary extends StatelessWidget {
               ),
               userContext.show(tutu: EbisuDivider()),
               userContext.toggle(
-                  tutu: _available(userContext),
+                  tutu: _available(userContext, context),
                   wewe: Padding(
                       padding: EdgeInsets.symmetric(horizontal: 10),
-                    child: _available(userContext),
+                      child: _available(userContext, context),
                   )
               )
             ],

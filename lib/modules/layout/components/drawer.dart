@@ -1,5 +1,5 @@
 import 'package:ebisu/main.dart';
-import 'package:ebisu/pages/travel/days/travel_expense_page.dart';
+import 'package:ebisu/modules/travel/entry/page/travel_home_page.dart';
 import 'package:ebisu/shared/configuration/app_configuration.dart';
 import 'package:ebisu/shared/dependency/dependency_container.dart';
 import 'package:ebisu/ui_components/chronos/drawer/header.dart' as E;
@@ -37,7 +37,7 @@ class EbisuDrawer extends StatelessWidget {
       "travel": E.DrawerItem(
           icon: Icon(Icons.airplanemode_active),
           title:"Viagens",
-          onTap: () => routeTo(context, TravelExpensePage())
+          onTap: () => routeTo(context, TravelHomePage())
       )
     };
   }
@@ -51,6 +51,7 @@ class EbisuDrawer extends StatelessWidget {
         items.add(item);
       }
     });
+
     return items;
   }
 

@@ -30,6 +30,7 @@ class CreateIncomeUseCase {
   }
 
   String _decodeFrequency(AmountFormModel model) {
+    return "ONCE";
     if (model.currentInstallment == null) {
       return "UNIT";
     }

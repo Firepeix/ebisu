@@ -71,4 +71,12 @@ class Moment {
     final format = "$date${timestamp.length > 1 ? " ${timestamp[1]}" : ""}";
     return Moment(DateTime.parse(format));
   }
+
+  Moment minus(Duration duration) {
+    return Moment(_value.subtract(duration));
+  }
+
+  int compareTo(Moment other) {
+    return _value.compareTo(other._value);
+  }
 }

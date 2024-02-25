@@ -7,7 +7,8 @@ typedef RemoteConfigDecoder<T> = T Function(String value);
 
 enum Application {
   Ebisu(ConfigRepository.EBISU_ENDPOINT_CONFIG_KEY),
-  Scout(ConfigRepository.SCOUT_ENDPOINT_CONFIG_KEY);
+  Scout(ConfigRepository.SCOUT_ENDPOINT_CONFIG_KEY),
+  Kebisu(ConfigRepository.KEBISU_ENDPOINT_CONFIG_KEY);
 
   final String endpointKey;
 
@@ -51,6 +52,7 @@ abstract class ConfigRepositoryInterface {
 class ConfigRepository implements ConfigRepositoryInterface {
   static const EBISU_ENDPOINT_CONFIG_KEY = 'EBISU_ENDPOINT';
   static const SCOUT_ENDPOINT_CONFIG_KEY = 'SCOUT_ENDPOINT';
+  static const KEBISU_ENDPOINT_CONFIG_KEY = 'KEBISU_ENDPOINT';
   static const LOCAL_ENDPOINT_CONFIG_KEY = 'LOCAL_ENDPOINT';
   static const SHOULD_USE_LOCAL_ENDPOINT_KEY = 'SHOULD_USE_LOCAL_ENDPOINT';
   static const AUTH_TOKEN_CONFIG_KEY = 'AUTH_TOKEN';
@@ -65,6 +67,10 @@ class ConfigRepository implements ConfigRepositoryInterface {
 
   @override
   Future<String> getEndpointUrl(Application app) async {
+    if (app == Application.Kebisu) {
+      return Future.value(kDebugMode ? "http://192.168.18.20:3002" : "https://kebisu.arthurfernandes.dev.br");
+    }
+
     if (await shouldUseLocalEndpoint(app)) {
       return await getLocalEndpoint(app);
     }

@@ -55,7 +55,7 @@ class _Content extends StatefulWidget {
       children: [
         Padding(padding: EdgeInsets.only(top: 10)),
         context.show(tutu: _monthSelector(state)),
-        state.debitLoaded && state.debitSummary != null ? DebitSummaryCard(state.debitSummary!) : DebitSummaryCardSkeleton(),
+        state.debitLoaded && state.debitSummary != null ? DebitSummaryCard(state.debitSummary!, isFuture: state.isFuture,) : DebitSummaryCardSkeleton(),
         state.creditLoaded ? summary : CreditSummariesSkeleton(state.creditSummaryQuantity),
       ],
     );
@@ -80,6 +80,7 @@ class _ContentState extends State<_Content> with AsyncComponent<_Content>{
   int creditSummaryQuantity = 4;
   List<CreditExpensePurchaseSummaryModel> creditSummaries = [];
   DebitSummary? debitSummary;
+  bool isFuture = false;
 
   @override
   void initState() {
@@ -104,7 +105,10 @@ class _ContentState extends State<_Content> with AsyncComponent<_Content>{
   }
 
   Future<void> loadDebitSummary () async {
-    updateState(() => debitLoaded = false);
+    updateState(() {
+      debitLoaded = false;
+      isFuture = false;
+    });
 
     final result = await widget._debitUseCase.getDebitSummary();
     result.match(
@@ -116,7 +120,10 @@ class _ContentState extends State<_Content> with AsyncComponent<_Content>{
   }
 
   Future<void> loadFutureDebitSummary () async {
-    updateState(() => debitLoaded = false);
+    updateState(() {
+      debitLoaded = false;
+      isFuture = true;
+    });
 
     final result = await widget._debitUseCase.getFutureDebitSummary();
     result.match(

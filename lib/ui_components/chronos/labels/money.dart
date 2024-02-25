@@ -1,4 +1,3 @@
-import 'package:ebisu/modules/common/core/domain/money.dart' as V;
 import 'package:ebisu/modules/common/core/domain/money.dart';
 import 'package:ebisu/shared/utils/matcher.dart';
 import 'package:flutter/material.dart';
@@ -22,11 +21,7 @@ class Money extends StatelessWidget {
 
   Color _color(BuildContext context) {
     if (valueBasedColor) {
-      return Matcher.matchWhen(strata, {
-        MoneyStrata.positive: Colors.green.shade800,
-        MoneyStrata.zeroed: Colors.blue.shade800,
-        MoneyStrata.negative: Colors.red.shade800,
-      });
+      return getStrataColor();
     }
 
     return color ?? Theme.of(context).colorScheme.secondary;
@@ -74,34 +69,12 @@ class Money extends StatelessWidget {
 
     return Money(value - another.value);
   }
-}
 
-class MoneyLabel extends StatelessWidget {
-  final V.Money value;
-  final Color? color;
-  final double size;
-  final bool valueBasedColor;
-  const MoneyLabel(this.value, {Key? key, this.color, this.valueBasedColor = false, this.size = 19}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) => Text(
-    value.toReal(),
-    style: TextStyle(
-        fontWeight: FontWeight.w700,
-        fontSize: size,
-        color: _color(context)
-    ),
-  );
-
-  Color _color(BuildContext context) {
-    if (valueBasedColor) {
-      return Matcher.matchWhen(value.strata, {
-        MoneyStrata.positive: Colors.green.shade800,
-        MoneyStrata.zeroed: Colors.blue.shade800,
-        MoneyStrata.negative: Colors.red.shade800,
-      });
-    }
-
-    return color ?? Theme.of(context).colorScheme.secondary;
+  Color getStrataColor() {
+    return Matcher.matchWhen(strata, {
+      MoneyStrata.positive: Colors.green.shade800,
+      MoneyStrata.zeroed: Colors.blue.shade800,
+      MoneyStrata.negative: Colors.red.shade800,
+    });
   }
 }

@@ -11,6 +11,10 @@ class UnknownError extends ResultError {
   UnknownError(details) : super("Ops! Ocorreu um erro. Tente Novamente mais tarde.", "FU1", details);
 }
 
+class UnknownException extends ResultError {
+  UnknownException(dynamic error) : super("Ops! Ocorreu um erro. Tente Novamente mais tarde.", "FU1", Details(data: error));
+}
+
 class Details {
   String? messageAddon;
   String? messageOverride;

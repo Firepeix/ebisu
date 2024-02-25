@@ -18,7 +18,7 @@ class NavigatorService {
   final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
   void routeTo(BuildContext context, Widget view, { IntoViewAnimation? animation, OnReturnCallback? onReturn }) {
-    final userContext = UserContext.of(context);
+    final userContext = view is UserContext ? view : UserContext.of(context);
     final thenReturns = Navigator.push(context, NavigatorInterface.staticRoute(view, userContext, intoViewAnimation: animation));
     if (onReturn != null) {
       thenReturns.then((value) => onReturn(value));

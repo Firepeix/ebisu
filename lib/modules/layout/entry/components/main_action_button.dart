@@ -37,7 +37,6 @@ class MainActionButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return FloatingActionButton(
       onPressed: () async {
-        //this.;,
         final action = await _showMainActions(context);
         if(action != null) {
           _actions[action]?.call();

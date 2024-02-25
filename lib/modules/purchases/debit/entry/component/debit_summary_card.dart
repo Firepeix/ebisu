@@ -6,14 +6,15 @@ import 'package:ebisu/shared/UI/Components/Shimmer.dart';
 import 'package:ebisu/shared/navigator/navigator_interface.dart';
 import 'package:ebisu/ui_components/chronos/buttons/transparent_button.dart';
 import 'package:ebisu/ui_components/chronos/cards/general_card.dart';
-import 'package:ebisu/ui_components/chronos/labels/money.dart';
+import 'package:ebisu/ui_components/chronos/labels/money_label.dart';
 import 'package:flutter/material.dart';
 
 class DebitSummaryCard extends StatelessWidget {
   final DebitSummary summary;
+  final bool isFuture;
 
 
-  const DebitSummaryCard(this.summary, {super.key});
+  const DebitSummaryCard(this.summary, {super.key, this.isFuture = false});
 
   Padding availableAmount() {
     return Padding(
@@ -46,7 +47,7 @@ class DebitSummaryCard extends StatelessWidget {
     return GeneralCard(
       hasOwnPadding: true,
       child: TransparentButton(
-              onPressed: () => routeTo(context, IncomeListPage(), animation: IntoViewAnimation.pop),
+              onPressed: () => routeTo(context, IncomeListPage(futureMonth: isFuture ? 1 : 0), animation: IntoViewAnimation.pop),
           child: Column(
             children: [
               availableAmount(),

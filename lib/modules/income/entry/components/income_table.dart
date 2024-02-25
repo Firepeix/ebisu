@@ -8,6 +8,7 @@ import 'package:ebisu/ui_components/chronos/table/simple_table.dart' as T;
 import 'package:flutter/material.dart';
 
 class IncomeTable extends StatefulWidget {
+  final int futureMonth;
   final _getIncomeUseCase = getIt<GetIncomesUseCase>();
   final columns = [
     T.Column(id: "source", title: "Fonte"),
@@ -15,7 +16,7 @@ class IncomeTable extends StatefulWidget {
     T.Column(id: "value", title: "Valor", align: Alignment.center)
   ];
 
-  IncomeTable({super.key});
+  IncomeTable({super.key, this.futureMonth = 0});
 
   @override
   State<IncomeTable> createState() => _IncomeTableState();
@@ -33,7 +34,7 @@ class _IncomeTableState extends State<IncomeTable> {
 
   Future<void> _loadIncomes() async {
     setState(() => isLoading = true);
-    final result = await widget._getIncomeUseCase.getIncomes();
+    final result = await widget._getIncomeUseCase.getIncomes(futureMonth: widget.futureMonth);
     result.fold(
         success: (it) {
           setState(() => _incomes = it);

@@ -12,8 +12,9 @@ class ExpenseEntity {
   final String? beneficiaryType;
   final int? currentInstallment;
   final int? totalInstallments;
+  final String? cardId;
 
-  ExpenseEntity({required this.id, required this.name, required this.amount, required this.date, required this.type, required this.sourceId, required this.sourceName, required this.sourceType, required this.beneficiaryId, required this.beneficiaryName, required this.beneficiaryType, required this.currentInstallment, required this.totalInstallments});
+  ExpenseEntity({required this.id, required this.name, required this.amount, required this.date, required this.type, required this.sourceId, required this.sourceName, required this.sourceType, required this.beneficiaryId, required this.beneficiaryName, required this.beneficiaryType, required this.currentInstallment, required this.totalInstallments, required this.cardId});
 }
 
 

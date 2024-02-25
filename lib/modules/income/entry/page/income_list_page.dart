@@ -4,7 +4,9 @@ import 'package:ebisu/ui_components/chronos/layout/view_body.dart';
 import 'package:flutter/material.dart' as M;
 
 class IncomeListPage extends M.StatelessWidget {
-  const IncomeListPage ({super.key});
+  final int futureMonth;
+
+  const IncomeListPage ({super.key, this.futureMonth = 0});
 
   @override
   M.Widget build(M.BuildContext context) {
@@ -13,7 +15,7 @@ class IncomeListPage extends M.StatelessWidget {
           body: Body(
             child: M.Container(
               alignment: M.Alignment.topCenter,
-              child: IncomeTable(),
+              child: IncomeTable(futureMonth: futureMonth,),
             ),
           ),
         );

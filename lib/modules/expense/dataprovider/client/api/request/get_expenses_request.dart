@@ -18,6 +18,7 @@ class GetExpensesRequest extends Request<List<ExpenseEntity>> {
       final installments = json["installments"] as Json?;
       final source = json["source"] as Json?;
       final beneficiary = json["beneficiary"] as Json?;
+      final card = json["card"] as Json?;
 
       return ExpenseEntity(
           id: json["id"],
@@ -25,6 +26,7 @@ class GetExpensesRequest extends Request<List<ExpenseEntity>> {
           amount: json["amount"],
           date: json["date"],
           type: json["type"],
+          cardId: card?.let((it) => it["id"]),
           currentInstallment: installments?.let((it) => it["current"]),
           totalInstallments: installments?.let((it) => it["total"]),
           sourceId: source?.let((it) => it["id"]),

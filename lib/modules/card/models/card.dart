@@ -2,6 +2,8 @@ import 'package:ebisu/modules/card/infrastructure/transfer_objects/SaveCardModel
 import 'package:ebisu/ui_components/chronos/form/inputs/select_input.dart';
 import 'package:flutter/material.dart';
 
+import '../../../ui_components/chronos/time/moment.dart';
+
 @immutable
 class CardModel implements CanBePutInSelectBox, SaveCardModel {
   final String id;
@@ -68,5 +70,12 @@ class CardModel implements CanBePutInSelectBox, SaveCardModel {
 
   int get sharedAmount {
     return isShared ? sisters.length + 1 : 0;
+  }
+
+  Moment getCurrentCloseDate() {
+    final currentDueDate = Moment(DateTime.now().copyWith(day: dueDate?.day ?? 1)).addMonths(1);
+    final difference = dueDate?.difference(closeDate ?? DateTime.now());
+
+    return currentDueDate.minus(difference ?? Duration(days: 1));
   }
 }

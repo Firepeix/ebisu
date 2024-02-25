@@ -4,14 +4,22 @@ import 'package:ebisu/modules/expense/core/domain/expense.dart';
 import 'package:ebisu/modules/expense/core/usecase/get_expenses_usecase.dart';
 import 'package:ebisu/shared/exceptions/handler.dart';
 import 'package:ebisu/ui_components/chronos/labels/label.dart';
-import 'package:ebisu/ui_components/chronos/labels/money.dart' as D;
+import 'package:ebisu/ui_components/chronos/labels/money_label.dart';
 import 'package:ebisu/ui_components/chronos/loading/circular_loading.dart';
 import 'package:ebisu/ui_components/chronos/table/simple_table.dart' as T;
 import 'package:flutter/material.dart';
 
-enum ExpenseFilter {
+enum ExpenseFilterMode {
   ONLY_INSTALLMENTS,
+  ONLY_CARD,
   ONLY_DIRECT;
+}
+
+class ExpenseFilter<T> {
+  final ExpenseFilterMode mode;
+  final T? data;
+
+  ExpenseFilter(this.mode, { this.data });
 }
 
 class ExpenseTable extends StatefulWidget {
@@ -49,19 +57,18 @@ class _ExpenseTableState extends State<ExpenseTable> {
   }
 
   List<Expense> _filtered() {
-    if (widget.filters == null) {
-      return _expenses;
-    }
+    Iterable<Expense> expenses = _expenses;
 
-    if (widget.filters!.contains(ExpenseFilter.ONLY_DIRECT)) {
-      return _expenses.where((element) => element.installment == null).toList();
-    }
 
-    if (widget.filters!.contains(ExpenseFilter.ONLY_INSTALLMENTS)) {
-      return _expenses.where((element) => element.installment != null).toList();
-    }
+    widget.filters?.forEach((filter) {
+      expenses = switch(filter.mode) {
+        ExpenseFilterMode.ONLY_DIRECT =>  expenses.where((element) => element.installment == null || element.installment?.current == 1),
+        ExpenseFilterMode.ONLY_INSTALLMENTS =>  expenses.where((element) => element.installment != null && element.installment!.current != 1),
+        ExpenseFilterMode.ONLY_CARD =>  expenses.where((element) => element.cardId == filter.data),
+      };
+    });
 
-    return _expenses;
+    return expenses.toList();
   }
 
   Future<void> _loadExpenses() async {
@@ -97,7 +104,7 @@ class _ExpenseTableState extends State<ExpenseTable> {
           child: Column(
             children: [
               T.SimpleTable(
-                columns: widget.filters?.contains(ExpenseFilter.ONLY_INSTALLMENTS) == true ? widget._installmentColumns : widget._columns,
+                columns: widget.filters?.contains((a) => a.mode == ExpenseFilterMode.ONLY_INSTALLMENTS) == true ? widget._installmentColumns : widget._columns,
                 rows: _filtered(),
                 onClickItem: widget.onClickExpense == null ? null : (Expense e) => widget.onClickExpense!.call(e),
               ),
@@ -108,7 +115,7 @@ class _ExpenseTableState extends State<ExpenseTable> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Label(text: "Total:", mode: LabelMode.NORMAL, size: 22, accent: Colors.black54,),
-                    D.MoneyLabel(_getSumTotal())
+                    MoneyLabel(_getSumTotal())
                   ],
                 ),
               )

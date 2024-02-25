@@ -33,9 +33,19 @@ abstract class Result<V, E extends ResultError> extends AnyResult<V> {
 }
 
 abstract class AnyResult<V> {
+  V getOrThrow();
   Result<B, E> map<B, E extends ResultError>(ResultMapper<V, B> mapper);
+  AnyResult<B> next<B>(ResultMapper<V, AnyResult<B>> mapper);
+  Future<AnyResult<B>> willNext<B>(ResultMapper<V, Future<AnyResult<B>>> mapper);
   R fold<R>({required MatchOk<V, R> success, required MatchErr<ResultError, R> failure});
   Future<R> willFold<R>({required WillMatchOk<V, R> success, required WillMatchErr<ResultError, R> failure});
+}
+
+extension AsyncExt<V> on Future<AnyResult<V>> {
+  Future<AnyResult<B>> willThen<B>(ResultMapper<V, Future<AnyResult<B>>> mapper) async {
+    final result = await this;
+    return result.willFold(success: (it) async => await mapper(it), failure: (e) async => Err(e));
+  }
 }
 
 class Ok<V, E extends ResultError> implements Result<V, E> {
@@ -114,6 +124,21 @@ class Ok<V, E extends ResultError> implements Result<V, E> {
   Future<R> willFold<R>({required WillMatchOk<V, R> success, required WillMatchErr<ResultError, R> failure}) async {
     return await success(_value);
   }
+
+  @override
+  V getOrThrow() {
+    return _value;
+  }
+
+  @override
+  AnyResult<B> next<B>(ResultMapper<V, AnyResult<B>> mapper) {
+    return mapper(_value);
+  }
+
+  @override
+  Future<AnyResult<B>> willNext<B>(ResultMapper<V, Future<AnyResult<B>>> mapper) async {
+    return await mapper(_value);
+  }
 }
 
 class Err<V, E extends ResultError> implements Result<V, E> {
@@ -189,5 +214,20 @@ class Err<V, E extends ResultError> implements Result<V, E> {
   Result<V, E> message(String message) {
     _value.intrisincs?.messageOverride = message;
     return this;
+  }
+
+  @override
+  V getOrThrow() {
+   throw _value;
+  }
+
+  @override
+  AnyResult<B> next<B>(ResultMapper<V, AnyResult<B>> mapper) {
+    return Err(_value);
+  }
+
+  @override
+  Future<AnyResult<B>> willNext<B>(ResultMapper<V, Future<AnyResult<B>>> mapper) {
+    return Future.value(Err(_value));
   }
 }

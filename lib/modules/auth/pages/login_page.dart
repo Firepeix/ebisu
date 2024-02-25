@@ -45,6 +45,7 @@ class _LoginPageState extends State<LoginPage> {
         child: Center(
           child: Column(
             children: [
+              Padding(padding: EdgeInsets.only(top: 30)),
               Input(
                 label: "Email",
                 validator: (value) => value != "" ? null : "Email é obrigatório",

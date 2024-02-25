@@ -13,6 +13,7 @@ extension ExpenseMapper on ExpenseEntity {
       amount: Money(amount),
       type: ExpenseType.values.firstWhere((element) => element.name == type),
       date: Moment.parse(date),
+      cardId: cardId,
       installment: currentInstallment?.let((it) => Installment(current: it, total: totalInstallments)),
       source: sourceId?.let((it) => Source(
           id: it,

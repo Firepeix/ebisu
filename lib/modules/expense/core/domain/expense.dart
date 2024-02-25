@@ -25,8 +25,9 @@ class Expense implements Row {
   final Installment? installment;
   final Source? source;
   final Source? beneficiary;
+  final String? cardId;
 
-  Expense({required this.id, required this.name, required this.amount, required this.type, required this.date, required this.installment, required this.source, required this.beneficiary,});
+  Expense({required this.id, required this.name, required this.amount, required this.type, required this.date, required this.installment, required this.source, required this.beneficiary, required this.cardId});
 
   @override
   RowData getRowData() {

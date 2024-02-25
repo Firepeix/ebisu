@@ -14,9 +14,9 @@ import 'package:ebisu/ui_components/chronos/layout/home_view.dart';
 import 'package:flutter/material.dart';
 
 class UpdateExpensePage extends StatefulWidget implements MainButtonPage, HomeView {
-  static const PAGE_INDEX = 3;
+  static const PAGE_INDEX = 4;
   @override
-  int pageIndex() => 3;
+  int pageIndex() => PAGE_INDEX;
 
   final String _expenseId;
   final CardServiceInterface cardService = getIt();

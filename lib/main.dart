@@ -1,6 +1,4 @@
 import 'package:ebisu/Ebisu.dart';
-import 'package:ebisu/domain/travel/models/travel_day_model.dart';
-import 'package:ebisu/domain/travel/models/travel_expense_model.dart';
 import 'package:ebisu/modules/configuration/domain/repositories/config_repository.dart';
 import 'package:ebisu/modules/layout/interactor.dart';
 import 'package:ebisu/modules/notification/domain/notification_listener_service.dart';
@@ -15,7 +13,6 @@ import 'package:firebase_remote_config/firebase_remote_config.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
-import 'package:hive_flutter/hive_flutter.dart';
 import 'package:injectable/injectable.dart';
 
 import 'firebase_options.dart';
@@ -32,12 +29,6 @@ final getIt = GetIt.instance;
 void installDependencyInjection() {
   $initGetIt(getIt);
   ServiceContainer.register();
-  register();
-}
-
-void register() {
-  Hive.registerAdapter(TravelDayModelAdapter());
-  Hive.registerAdapter(TravelExpenseModelAdapter());
 }
 
 void installDependencies() async {

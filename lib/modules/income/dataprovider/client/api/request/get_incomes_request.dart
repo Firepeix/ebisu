@@ -3,10 +3,15 @@ import 'package:ebisu/modules/income/dataprovider/client/api/income_endpoints.da
 import 'package:ebisu/shared/http/request.dart';
 
 class GetIncomesRequest extends Request<List<IncomeEntity>> {
-  GetIncomesRequest();
+  final int futureMonth;
+  GetIncomesRequest({required this.futureMonth});
 
   @override
   String endpoint() => IncomeEndpoints.Incomes;
+
+  Query? query() => {
+    "future_month": futureMonth
+  };
 
   @override
   List<IncomeEntity> createResponse(Json response) {

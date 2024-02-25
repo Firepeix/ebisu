@@ -11,7 +11,7 @@ class GetIncomesUseCase {
 
   GetIncomesUseCase(this._gateway);
 
-  Future<AnyResult<List<Income>>> getIncomes() async {
-    return await _gateway.getIncomes();
+  Future<AnyResult<List<Income>>> getIncomes({int futureMonth = 0}) async {
+    return await _gateway.getIncomes(futureMonth: futureMonth);
   }
 }

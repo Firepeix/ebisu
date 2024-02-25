@@ -4,6 +4,8 @@ import 'package:ebisu/main.dart';
 import 'package:ebisu/modules/auth/domain/services/auth_service.dart';
 import 'package:ebisu/modules/auth/pages/login_page.dart';
 import 'package:ebisu/modules/configuration/domain/repositories/config_repository.dart';
+import 'package:ebisu/modules/user/entry/component/user_context.dart';
+import 'package:ebisu/shared/configuration/app_configuration.dart';
 import 'package:ebisu/shared/dependency/dependency_container.dart';
 import 'package:ebisu/shared/exceptions/handler.dart';
 import 'package:ebisu/shared/exceptions/result.dart';
@@ -39,14 +41,23 @@ class Tank extends Caron {
 }
 
 @singleton
+class Kebisu extends Caron {
+  Kebisu(super.mapper, super.configRepository, super.notificationService, super.handler);
+
+  @override
+  Application getApplication() {
+    return Application.Kebisu;
+  }
+}
+
+@singleton
 class Caron {
   Mapper _mapper;
   ConfigRepositoryInterface _configRepository;
   late ExceptionHandlerInterface _handler;
   late AuthServiceInterface _authService;
 
-  Caron(this._mapper, this._configRepository, NotificationService notificationService,
-      ExceptionHandlerInterface handler) {
+  Caron(this._mapper, this._configRepository, NotificationService notificationService, ExceptionHandlerInterface handler) {
     _handler = handler;
     _authService = AuthService(this, notificationService, _handler, _configRepository);
   }
@@ -77,7 +88,7 @@ class Caron {
   Future<Map<String, String>?> _headers() async {
     final token = await _configRepository.getAuthToken();
 
-    return {"Authorization": "Bearer $token", "Content-Type": "application/json"};
+    return {"Authorization": "Bearer $token", "Content-Type": "application/json; charset=utf-8"};
   }
 
   Future<Result<V, ResultError>> get<V>(Request<V> request) async {
@@ -179,7 +190,7 @@ class Caron {
       if(request is EmptyRequest) {
         return Ok(request.createResponse({}));
       }
-      return Ok(request.createResponse(jsonDecode(response.body)));
+      return Ok(request.createResponse(jsonDecode(utf8.decode(response.bodyBytes))));
     }
 
     return Err(_loadError(request, response));
@@ -194,14 +205,14 @@ class Caron {
       return HttpError.unauthorized();
     }
 
-    final errorResponse = _mapper.fromErrorJson(jsonDecode(response.body), response.statusCode);
+    final errorResponse = _mapper.fromErrorJson(jsonDecode(utf8.decode(response.bodyBytes)), response.statusCode);
 
     if (request is RequestWithError) {
       return request.createError(errorResponse);
     }
 
     return HttpError.server(
-        Details(messageAddon: "${errorResponse.message}", data: jsonDecode(response.body)));
+        Details(messageAddon: "${errorResponse.message}", data: jsonDecode(utf8.decode(response.bodyBytes))));
   }
 
   Result<R, ResultError> _parsePayload<R extends Response, V>(http.Response response,
@@ -211,7 +222,7 @@ class Caron {
         return Ok(successResponse);
       }
 
-      final payload = _mapper.fromResponse<R, V>(jsonDecode(response.body), decoder);
+      final payload = _mapper.fromResponse<R, V>(jsonDecode(utf8.decode(response.bodyBytes)), decoder);
       return Ok(payload as R);
     }
 
@@ -224,16 +235,16 @@ class Caron {
       if (response.statusCode == HttpCodes.Unauthorized) {
         final context = DependencyManager.getContext();
         if (context != null) {
-          routeTo(context, LoginPage(_authService));
+          routeTo(context, UserContext(id: AppTheme.wewe, child: LoginPage(_authService), theme: AppConfiguration.weweTheme()));
         }
         return Err(HttpError.unauthorized());
       }
 
-      final errorResponse = _mapper.fromErrorJson(jsonDecode(response.body), response.statusCode);
+      final errorResponse = _mapper.fromErrorJson(jsonDecode(utf8.decode(response.bodyBytes)), response.statusCode);
 
       return Err(errorDecoder?.call(errorResponse) ??
               HttpError.server(
-                  Details(messageAddon: "${errorResponse.message}", data: jsonDecode(response.body))));
+                  Details(messageAddon: "${errorResponse.message}", data: jsonDecode(utf8.decode(response.bodyBytes)))));
     }
 
     if (error != null) {
